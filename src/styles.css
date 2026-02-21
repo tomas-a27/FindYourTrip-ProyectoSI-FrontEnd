@@ -1,0 +1,42 @@
+/* El color verde pastel y su borde */
+.btn-pastel-green {
+  background-color: #b2d8b2;
+  border: 1px solid #9bc59b; /* Borde sutil un poco más oscuro */
+  color: #2d4a2d;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-pastel-green:hover {
+  background-color: #6fb86f;
+  transform: translateY(-1px);
+}
+
+.btn-light-cancel {
+  background-color: #c4333367;
+  border: 1px solid #dee2e600; /* Borde para el botón cancelar */
+  color: #000000;
+}
+
+.btn-light-cancel:hover {
+  background-color: #c93939;
+  transform: translateY(-1px);
+}
+
+/* Inputs con bordes sutiles */
+.custom-input {
+  border: 2px solid #e6dede; /* Borde gris suave */
+  border-radius: 8px;
+}
+
+.custom-input:focus {
+  border-color: #b2d8b2; /* Borde verde al escribir */
+  box-shadow: 0 0 0 0.25rem rgba(178, 216, 178, 0.25);
+  outline: none;
+}
+
+/* La tarjeta con borde completo */
+.custom-card {
+  border: 1px solid #e0e0e0;
+  border-top: 5px solid #b2d8b2;
+}

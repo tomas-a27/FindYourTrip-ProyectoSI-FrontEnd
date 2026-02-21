@@ -15,24 +15,26 @@ export function CrearLocalidad() {
     await post('localidad', newLocalidad);
   };
   return (
-    <div className="container my-4">
+    <div className="container my-5">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
-          <div className="d-flex flex-column bg-light p-4 border rounded shadow-sm">
+        <div className="col-12 col-md-8 col-lg-5">
+          <div className="d-flex flex-column bg-white p-4 rounded-4 shadow-sm custom-card">
             <h1 className="text-center mb-4">Agregar Localidad</h1>
 
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
-              <label htmlFor="codigo" className="form-label">
-                Código:
+              <label
+                htmlFor="codigo"
+                className="form-label fw-semibold text-secondary"
+              >
+                Código Postal
               </label>
               <input
                 required
                 type="text"
                 id="codigo"
-                className="form-control mb-3"
-                placeholder="Ingrese el código"
+                className="form-control mb-3 custom-input"
+                placeholder="Ej: 2000"
                 pattern="^[0-9]+$"
-                title="El código no puede tener letras"
                 value={newLocalidad.codPostal}
                 onChange={(e) =>
                   setNewLocalidad({
@@ -42,17 +44,19 @@ export function CrearLocalidad() {
                 }
               />
 
-              <label htmlFor="nombre" className="form-label">
-                Nombre:
+              <label
+                htmlFor="nombre"
+                className="form-label fw-semibold text-secondary"
+              >
+                Nombre
               </label>
               <input
                 required
                 type="text"
                 id="nombre"
-                className="form-control mb-4"
-                placeholder="Ingrese el nombre"
+                className="form-control mb-4 custom-input"
+                placeholder="Ej: Rosario"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
-                title="El nombre no puede tener números"
                 value={newLocalidad.nombre}
                 onChange={(e) =>
                   setNewLocalidad({ ...newLocalidad, nombre: e.target.value })
@@ -62,15 +66,18 @@ export function CrearLocalidad() {
               <div className="row gy-2 justify-content-between">
                 <div className="col-12 col-md-5">
                   <Link
-                    className="btn btn-secondary w-100"
+                    className="btn btn-light-cancel btn-danger fw-semibold w-100 shadow-sm"
                     to="/show-localidad"
                   >
                     Cancelar
                   </Link>
                 </div>
                 <div className="col-12 col-md-5">
-                  <button type="submit" className="btn btn-primary w-100">
-                    Guardar
+                  <button
+                    type="submit"
+                    className="btn btn-pastel-green w-100 shadow-sm"
+                  >
+                    Agregar
                   </button>
                 </div>
               </div>
