@@ -1,5 +1,5 @@
 interface BaseDTO {
-  id: number;
+  id: string;
 }
 
 interface LocalidadDTO extends BaseDTO {

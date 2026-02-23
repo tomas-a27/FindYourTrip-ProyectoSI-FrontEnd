@@ -1,18 +1,33 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { post } from '../../api/dataManager.ts';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link, useParams } from 'react-router-dom';
+import { patch } from '../../api/dataManager.ts';
+import { LocalidadDTO } from '../../entities/entities.ts';
+import { getOne } from '../../api/dataManager.ts';
 
-export function CrearLocalidad() {
-  const [newLocalidad, setNewLocalidad] = useState({
+export function EditarLocalidad() {
+  const { id } = useParams();
+  const navegate = useNavigate();
+  const { data } = getOne<LocalidadDTO>('localidad/' + id);
+
+  const [localidadToUpdate, setlocalidadToUpdate] = useState<LocalidadDTO>({
+    id: '',
     nombre: '',
     codPostal: '',
   });
 
-  const navegate = useNavigate();
+  useEffect(() => {
+    if (data) {
+      setlocalidadToUpdate({
+        id: data.id,
+        codPostal: data.codPostal,
+        nombre: data.nombre,
+      });
+    }
+  }, [data]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await post('localidad', newLocalidad);
+    await patch(`localidad/${localidadToUpdate.id}`, localidadToUpdate);
     navegate('/mostrar-localidad');
   };
   return (
@@ -34,12 +49,12 @@ export function CrearLocalidad() {
                 type="text"
                 id="codigo"
                 className="form-control mb-3 custom-input"
-                placeholder="Ej: 2000"
+                placeholder={localidadToUpdate.codPostal}
                 pattern="^[0-9]+$"
-                value={newLocalidad.codPostal}
+                value={localidadToUpdate.codPostal}
                 onChange={(e) =>
-                  setNewLocalidad({
-                    ...newLocalidad,
+                  setlocalidadToUpdate({
+                    ...localidadToUpdate,
                     codPostal: e.target.value,
                   })
                 }
@@ -56,11 +71,14 @@ export function CrearLocalidad() {
                 type="text"
                 id="nombre"
                 className="form-control mb-4 custom-input"
-                placeholder="Ej: Rosario"
+                placeholder={localidadToUpdate.codPostal}
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
-                value={newLocalidad.nombre}
+                value={localidadToUpdate.nombre}
                 onChange={(e) =>
-                  setNewLocalidad({ ...newLocalidad, nombre: e.target.value })
+                  setlocalidadToUpdate({
+                    ...localidadToUpdate,
+                    nombre: e.target.value,
+                  })
                 }
               />
 
@@ -68,7 +86,7 @@ export function CrearLocalidad() {
                 <div className="col-12 col-md-5">
                   <Link
                     className="btn btn-light-cancel btn-danger fw-semibold w-100 shadow-sm"
-                    to="/mostrar-localidad"
+                    to="/"
                   >
                     Cancelar
                   </Link>
@@ -78,7 +96,7 @@ export function CrearLocalidad() {
                     type="submit"
                     className="btn btn-pastel-green w-100 shadow-sm"
                   >
-                    Agregar
+                    Editar
                   </button>
                 </div>
               </div>
