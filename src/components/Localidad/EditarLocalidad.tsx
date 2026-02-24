@@ -10,7 +10,7 @@ export function EditarLocalidad() {
   const { data } = getOne<LocalidadDTO>('localidad/' + id);
 
   const [localidadToUpdate, setlocalidadToUpdate] = useState<LocalidadDTO>({
-    id: '',
+    id: 0,
     nombre: '',
     codPostal: '',
   });

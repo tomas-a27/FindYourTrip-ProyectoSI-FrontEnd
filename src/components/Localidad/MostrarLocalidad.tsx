@@ -72,7 +72,7 @@ export function MostrarLocalidad() {
                       Editar
                     </Link>
                     <DeleteEntityButton
-                      idToDelete={unaLocalidad.id}
+                      idToDelete={String(unaLocalidad.id)}
                       nameToDelete={unaLocalidad.nombre}
                       route={'localidad'}
                       entityToDelete={'localidad'}
