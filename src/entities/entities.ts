@@ -1,10 +1,20 @@
 interface BaseDTO {
-  id: string;
+  id: number;
 }
 
 interface LocalidadDTO extends BaseDTO {
   codPostal: string;
   nombre: string;
+}
+
+
+interface VehiculoDTO {
+  patente: string;
+  modelo: string;
+  cantLugares: number;
+  color: string;
+  marca: string;
+  usuario: UsuarioDTO;
 }
 
 interface UsuarioDTO {
@@ -26,6 +36,7 @@ interface UsuarioDTO {
   calificacionConductor?: number;
   estadoConductor?: string;
   fotoPerfil?: string;
+  vehiculos?: VehiculoDTO[];
 }
 
 interface ViajeDTO {
@@ -39,14 +50,52 @@ interface ViajeDTO {
   viajeComentario?: string;
   viajeAceptaMascotas: boolean;
   viajePrecio: number;
+  usuarioConductor: UsuarioDTO;
+  vehiculo: VehiculoDTO;
 }
 
-interface VehiculoDTO {
-  patente: string;
-  modelo: string;
-  cantLugares: number;
-  color: string;
-  marca: string;
+interface SolicitudViajeDTO {
+  solViajeId: number;
+  solViajeFecha: Date;
+  estadoSolicitud: string;
+  usuario: UsuarioDTO;
+  viaje: ViajeDTO;
 }
 
-export type { LocalidadDTO, UsuarioDTO, ViajeDTO, VehiculoDTO };
+interface CalificacionDTO {
+  idCalificacion: number;
+  calificacionTipo: string;
+  calificacionValoracionLikert: number;
+  usuario: UsuarioDTO;
+  viaje: ViajeDTO;
+}
+
+interface InfraccionDTO {
+  idInfraccion: number;
+  comentarioInfraccion: string;
+  descripcionInfraccion: string;
+  insfraccionFecha: Date;
+  calificacionTipo: string;
+  calificacion: CalificacionDTO;
+}
+
+interface SancionDTO {
+  idSancion: number;
+  sancionFechaIni: Date;
+  sancionFechaFin: Date;
+  sancionDescripcion: string;
+  usuario: UsuarioDTO;
+}
+
+interface SancionInfraccionDTO {
+  idSancionInfraccion: number;
+  sancion: SancionDTO;
+  infracciones: InfraccionDTO[];
+}
+
+interface PoliticaSancionDTO {
+  descripcion: string;
+  cantCriticaInfracciones: number;
+}
+
+export type { LocalidadDTO, UsuarioDTO, ViajeDTO, VehiculoDTO, SolicitudViajeDTO, CalificacionDTO, InfraccionDTO, SancionDTO, SancionInfraccionDTO, PoliticaSancionDTO };
