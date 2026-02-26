@@ -15,20 +15,20 @@ import { EditarLocalidad } from './components/Localidad/EditarLocalidad.tsx';
 
 import { CrearUsuario } from './components/Usuario/CrearUsuario.tsx';
 import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
+import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.tsx';
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
-
-        <Route index element={<LoginUsuario />} />
+        <Route index element={<PantallaInicioUsuario />} />
 
         <Route path="home" element={<Inicio />} />
         {/* Rutas de Localidad */}
         <Route path="crear-localidad" element={<CrearLocalidad />} />
         <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
         <Route path="editar-localidad/:id" element={<EditarLocalidad />} />
-        
+
         {/* Rutas de Usuario */}
         <Route path="crear-usuario" element={<CrearUsuario />} />
         <Route path="login" element={<LoginUsuario />} />
