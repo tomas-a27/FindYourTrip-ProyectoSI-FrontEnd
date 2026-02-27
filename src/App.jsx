@@ -16,6 +16,9 @@ import { CrearUsuario } from './components/Usuario/CrearUsuario.tsx';
 import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
 import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.tsx';
 
+//import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
+import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
+
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -23,6 +26,10 @@ function App() {
         <Route index element={<PantallaInicioUsuario />} />
 
         <Route path="home" element={<Inicio />} />
+        {/* Rutas de Viaje */}
+        
+        <Route path="/publicar-viaje" element={<PublicarViaje />} />
+
         {/* Rutas de Localidad */}
         <Route path="crear-localidad" element={<CrearLocalidad />} />
         <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
