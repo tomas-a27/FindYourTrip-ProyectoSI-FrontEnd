@@ -19,17 +19,17 @@ interface VehiculoDTO {
 
 interface UsuarioDTO {
   idUsuario: number;
-  tipoUsuario: string;
+  tipoUsuario?: string;
   nombreUsuario: string;
   apellidoUsuario: string;
-  tipoDocumento: string;
-  nroDocumento: string;
+  tipoDocumento?: string;
+  nroDocumento?: string;
   email: string;
   telefono: string;
-  contrasenaUsuario: string;
+  contrasenaUsuario?: string;
   generoUsuario: string;
   calificacionPas?: number;
-  estadoUsuario: string;
+  estadoUsuario?: string;
   nroLicenciaConductorUsuario?: string;
   vigenciaLicenciaConductorUsuario?: Date;
   fotoLicenciaConductorUsuario?: string;

@@ -18,6 +18,7 @@ import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.t
 
 //import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
+import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
 
 function App() {
   const router = createBrowserRouter(
@@ -38,6 +39,7 @@ function App() {
         {/* Rutas de Usuario */}
         <Route path="crear-usuario" element={<CrearUsuario />} />
         <Route path="login" element={<LoginUsuario />} />
+        <Route path="editar-usuario/:id" element={<EditarUsuario />} />
       </Route>,
     ),
   );
