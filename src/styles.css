@@ -140,3 +140,13 @@
   background: transparent;
   cursor: pointer;
 }
+
+.modificar-pass-container {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.modificar-pass-link {
+  text-decoration: underline;
+  cursor: pointer;
+}

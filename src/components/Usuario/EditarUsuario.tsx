@@ -13,6 +13,9 @@ export const EditarUsuario = () => {
     apellidoUsuario: '',
     email: '',
     telefono: '',
+    contrasenaUsuario: '',
+    contrasenaUsuarioConfirmacion: '',
+    contrasenaUsuarioActual: '',
     generoUsuario: '',
   });
 
@@ -24,6 +27,9 @@ export const EditarUsuario = () => {
         apellidoUsuario: data.apellidoUsuario,
         email: data.email,
         telefono: data.telefono,
+        contrasenaUsuario: data.contrasenaUsuario,
+        contrasenaUsuarioConfirmacion: data.contrasenaUsuarioConfirmacion,
+        contrasenaUsuarioActual: data.contrasenaUsuarioActual,
         generoUsuario: data.generoUsuario,
       });
     }
@@ -34,6 +40,11 @@ export const EditarUsuario = () => {
   const [nuevoApellido, setNuevoApellido] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const [mostrarModalPass, setMostrarModalPass] = useState(false);
+  const [passActual, setPassActual] = useState('');
+  const [passNueva, setPassNueva] = useState('');
+  const [passConfirmacion, setPassConfirmacion] = useState('');
 
   const handleEditar = (campo: string) => {
     setCampoSeleccionado(campo);
@@ -85,6 +96,32 @@ export const EditarUsuario = () => {
     }
   };
 
+  const handleCambiarPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (passNueva !== passConfirmacion) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    try {
+      await patch(`usuario/${usuarioToUpdate.idUsuario}`, {
+        contrasenaUsuarioActual: passActual,
+        contrasenaUsuario: passNueva,
+        contrasenaUsuarioConfirmacion: passConfirmacion,
+      });
+
+      setError('');
+      setSuccess('El campo se actualizó correctamente');
+      setMostrarModalPass(false);
+      setPassActual('');
+      setPassNueva('');
+      setPassConfirmacion('');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Error al cambiar contraseña');
+    }
+  };
+
   if (!usuarioToUpdate.idUsuario)
     return <p className="text-center mt-5">Usuario no encontrado</p>;
 
@@ -115,6 +152,18 @@ export const EditarUsuario = () => {
           {renderCampo('Género', usuarioToUpdate.generoUsuario, 'generoUsuario')}
           {renderCampo('Teléfono', usuarioToUpdate.telefono, 'telefono')}
           {renderCampo('Email', usuarioToUpdate.email, 'email')}
+
+          <div className="modificar-pass-container">
+            <span
+              className="modificar-pass-link"
+              onClick={() => {
+                setError('');
+                setMostrarModalPass(true);
+              }}
+            >
+              Modificar contraseña
+            </span>
+          </div>
         </div>
       </div>
 
@@ -165,6 +214,48 @@ export const EditarUsuario = () => {
                 />
               )}
 
+              <div className="d-flex justify-content-center">
+                <button className="btn btn-pastel-green px-4">
+                  Actualizar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {mostrarModalPass && (
+        <div className="modal-overlay">
+          <div className="custom-modal">
+            <button onClick={() => setMostrarModalPass(false)} className="btn-cerrar">X</button>
+
+            <h5 className="text-center mb-3">Modificar contraseña</h5>
+
+            <form onSubmit={handleCambiarPassword}>
+              <input
+                type="password"
+                className="form-control mb-2"
+                placeholder="Contraseña actual"
+                value={passActual}
+                onChange={(e) => setPassActual(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                className="form-control mb-2"
+                placeholder="Nueva contraseña"
+                value={passNueva}
+                onChange={(e) => setPassNueva(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                className="form-control mb-3"
+                placeholder="Repetir nueva contraseña"
+                value={passConfirmacion}
+                onChange={(e) => setPassConfirmacion(e.target.value)}
+                required
+              />
               <div className="d-flex justify-content-center">
                 <button className="btn btn-pastel-green px-4">
                   Actualizar

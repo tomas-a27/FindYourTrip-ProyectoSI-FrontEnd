@@ -26,7 +26,9 @@ interface UsuarioDTO {
   nroDocumento?: string;
   email: string;
   telefono: string;
-  contrasenaUsuario?: string;
+  contrasenaUsuario: string;
+  contrasenaUsuarioConfirmacion?: string;
+  contrasenaUsuarioActual?: string;
   generoUsuario: string;
   calificacionPas?: number;
   estadoUsuario?: string;
