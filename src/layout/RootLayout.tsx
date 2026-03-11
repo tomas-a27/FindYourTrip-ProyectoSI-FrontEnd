@@ -1,20 +1,19 @@
-import { Outlet, useLocation } from 'react-router-dom';
-import { Footer } from '../footer/Footer.tsx';
+import { Outlet } from 'react-router-dom';
+import { Footer } from '../footer/Footer';
 
-export function RootLayout() {
-  const location = useLocation();
-
-  const showFooter = location.pathname === '/home' || location.pathname === '';
-
+export const RootLayout = () => {
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
-    >
-      {/*<MainNavbar />*/}
-      <main style={{ minHeight: '100vh', flex: '1' }}>
-        <Outlet />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      
+      <main style={{ flexGrow: 1, paddingBottom: '80px' }}>
+        <Outlet /> 
       </main>
-      {showFooter && <Footer />}
+
+      {/* Footer fijo al final */}
+      <div style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 1000 }}>
+        <Footer />
+      </div>
+      
     </div>
   );
-}
+};

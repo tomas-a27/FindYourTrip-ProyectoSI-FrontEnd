@@ -54,6 +54,15 @@ async function patch<T>(url: string, data?: T, config?: object) {
   }
 }
 
+async function put<T>(url: string, data?: T, config?: object) {
+  try {
+    return await axios.put(`${BACKEND_URL}/api/${url}`, data, config);
+  } catch (err: any) {
+    console.error(err.message);
+    throw err; 
+  }
+}
+
 function getOne<T>(url: string) {
   const [data, setData] = useState<T>();
   useEffect(() => {
@@ -72,4 +81,4 @@ function getOne<T>(url: string) {
   return { data };
 }
 
-export { post, get, remove, patch, getOne };
+export { post, get, remove, patch, put, getOne };

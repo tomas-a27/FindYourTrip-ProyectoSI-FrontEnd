@@ -17,6 +17,16 @@ export const Inicio = () => {
 
   if (!usuario) return null;
 
+  const handlePublicarViaje = () => {
+    // Verificamos si es conductor 
+    if (usuario?.tipoUsuario?.toLowerCase() === 'conductor') {
+      navigate('/publicar-viaje');
+    } else {
+      // Si es pasajero, lo mandamos a pedir permiso
+      navigate('/solicitar-conductor');
+    }
+  };
+
   return (
     <div className="container mt-5 text-center">
       <h1 className="mb-4" style={{ color: '#2d4a2d', fontWeight: 'bold' }}>
@@ -40,7 +50,7 @@ export const Inicio = () => {
         {/* Botón Publicar Viaje */}
         <div className="col-12 col-md-5">
           <button 
-            onClick={() => navigate('/publicar-viaje')}
+            onClick={handlePublicarViaje}
             className="btn btn-success w-100 p-5 shadow-sm d-flex flex-column align-items-center"
             style={{ borderRadius: '15px', backgroundColor: '#2d4a2d' }}
           >

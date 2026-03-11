@@ -15,9 +15,18 @@ export const LoginUsuario = () => {
     const response = await post('usuario/login', { email, contrasenaUsuario });
 
     if (response && response.status === 200) {
+      // Guardamos el token y los datos del usuario
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('usuario', JSON.stringify(response.data.data));
-      navigate('/home'); // Redirigir al inicio tras loguearse
+      
+      const tipo = response.data.data.tipoUsuario;
+      
+      if (tipo === 'Administrador' || tipo === 'administrador') {
+        navigate('/admin-home'); // Redirigir al panel de control de administrador
+      } else {
+        navigate('/home'); // Redirigir al inicio normal de pasajeros/conductores
+      }
+      
     } else {
       setError(response?.data?.message || 'Error al iniciar sesión');
     }
