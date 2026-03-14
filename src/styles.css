@@ -150,3 +150,41 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.usuario-foto {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 25px;
+}
+
+.usuario-foto-grande {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.usuario-flecha {
+  font-size: 20px;
+  color: #070000;
+  margin-left: 20px;
+}
+
+.aprobar-conductor-card {
+  max-width: 650px;
+  position: relative;
+}
+
+.calificacion-badge {
+  background-color: transparent;
+  color: black;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid black;
+}
