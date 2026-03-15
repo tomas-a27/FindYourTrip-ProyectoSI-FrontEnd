@@ -126,7 +126,7 @@ export const EditarUsuario = () => {
     return <p className="text-center mt-5">Usuario no encontrado</p>;
 
   return (
-    <div className="container mt-5 d-flex justify-content-center">
+    <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
       <div className="editar-usuario-wrapper">
         <h2 className="text-center mb-3">Editar datos de cuenta</h2>
 

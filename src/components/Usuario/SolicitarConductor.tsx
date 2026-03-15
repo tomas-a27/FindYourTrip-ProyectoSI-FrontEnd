@@ -103,7 +103,7 @@ export const SolicitarConductor = () => {
   };
 
   return (
-    <div className="container mt-5 mb-5 d-flex justify-content-center">
+    <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
       <div className="card custom-card shadow-sm w-100" style={{ maxWidth: '700px' }}>
         <div className="card-body p-4">
           <h2 className="text-center mb-2" style={{ color: '#2d4a2d' }}>Convertite en Conductor </h2>
