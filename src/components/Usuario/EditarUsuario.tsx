@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getOne, patch } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
 
 export const EditarUsuario = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { data } = getOne<UsuarioDTO>('usuario/' + id);
 
@@ -153,7 +154,14 @@ export const EditarUsuario = () => {
           {renderCampo('Teléfono', usuarioToUpdate.telefono, 'telefono')}
           {renderCampo('Email', usuarioToUpdate.email, 'email')}
 
-          <div className="modificar-pass-container">
+          <div className="modificar-pass-container d-flex justify-content-between">
+            <button
+              className="btn btn-light"
+              onClick={() => navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)}
+            >
+              Ver mis vehículos
+            </button>
+
             <span
               className="modificar-pass-link"
               onClick={() => {
