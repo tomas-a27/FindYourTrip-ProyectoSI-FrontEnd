@@ -89,54 +89,79 @@ export const CrearVehiculo = () => {
 
           {error && <div className="alert alert-danger fw-bold">{error}</div>}
 
-          <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label text-muted fw-bold">Modelo</label>
-                <input
-                  type="text"
-                  className="form-control custom-input"
-                  value={modelo}
-                  onChange={(e) => setModelo(e.target.value)}
-                  required
-                />
-              </div>
+          <form className="d-flex flex-column" onSubmit={handleSubmit}>
+            <div className="mb-3 d-flex align-items-center">
+              <label
+                className="form-label text-muted fw-bold me-3 mb-0"
+                style={{ width: '150px' }}
+              >
+                Modelo
+              </label>
+              <input
+                type="text"
+                className="form-control custom-input"
+                placeholder="Ej: Etios"
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                required
+              />
+            </div>
 
-              <div className="mb-3">
-                <label className="form-label text-muted fw-bold">Marca</label>
-                <input
-                  type="text"
-                  className="form-control custom-input"
-                  value={marca}
-                  onChange={(e) => setMarca(e.target.value)}
-                  required
-                />
-              </div>
+            <div className="mb-3 d-flex align-items-center">
+              <label
+                className="form-label text-muted fw-bold me-3 mb-0"
+                style={{ width: '150px' }}
+              >
+                Marca
+              </label>
+              <input
+                type="text"
+                className="form-control custom-input"
+                placeholder="Ej: Toyota"
+                value={marca}
+                onChange={(e) => setMarca(e.target.value)}
+                required
+              />
+            </div>
 
-              <div className="mb-3">
-                <label className="form-label text-muted fw-bold">Color</label>
-                <input
-                  type="text"
-                  className="form-control custom-input"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  required
-                />
-              </div>
+            <div className="mb-3 d-flex align-items-center">
+              <label
+                className="form-label text-muted fw-bold me-3 mb-0"
+                style={{ width: '150px' }}
+              >
+                Color
+              </label>
+              <input
+                type="text"
+                className="form-control custom-input"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                required
+              />
+            </div>
 
-              <div className="mb-3">
-                <label className="form-label text-muted fw-bold">Patente</label>
-                <input
-                  type="text"
-                  className="form-control custom-input"
-                  placeholder="AAA111 o AA111AA"
-                  value={patente}
-                  onChange={(e) => setPatente(e.target.value)}
-                  required
-                />
-              </div>
+            <div className="mb-3 d-flex align-items-center">
+              <label
+                className="form-label text-muted fw-bold me-3 mb-0"
+                style={{ width: '150px' }}
+              >
+                Patente
+              </label>
+              <input
+                type="text"
+                className="form-control custom-input"
+                placeholder="AAA111 o AA111AA"
+                value={patente}
+                onChange={(e) => setPatente(e.target.value)}
+                required
+              />
+            </div>
 
-            <div className="mb-3">
-              <label className="form-label text-muted fw-bold">
+            <div className="mb-3 d-flex align-items-center">
+              <label
+                className="form-label text-muted fw-bold me-3 mb-0"
+                style={{ width: '150px' }}
+              >
                 Cantidad de asientos
               </label>
               <input
@@ -150,21 +175,25 @@ export const CrearVehiculo = () => {
               />
             </div>
 
-            <div className="d-flex justify-content-between mt-4">
-              <button
-                type="button"
-                className="btn btn-light-cancel px-4"
-                onClick={handleVolver}
-              >
-                Volver
-              </button>
+            <div className="row gy-2 justify-content-between mt-2">
+              <div className="col-12 col-md-5">
+                <button
+                  type="button"
+                  className="btn btn-light-cancel w-100"
+                  onClick={handleVolver}
+                >
+                  Volver
+                </button>
+              </div>
 
-              <button
-                type="submit"
-                className="btn btn-pastel-green px-5"
-              >
-                Confirmar
-              </button>
+              <div className="col-12 col-md-5">
+                <button
+                  type="submit"
+                  className="btn btn-pastel-green w-100"
+                >
+                  Confirmar
+                </button>
+              </div>
             </div>
           </form>
         </div>

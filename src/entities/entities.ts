@@ -14,7 +14,7 @@ interface VehiculoDTO {
   cantLugares: number;
   color: string;
   marca: string;
-  usuario: UsuarioDTO;
+  usuario?: UsuarioDTO;
 }
 
 interface UsuarioDTO {

@@ -28,22 +28,25 @@ export const MostrarVehiculo = () => {
               border: "1px solid #555"
             }}
           >
-            <div className="card-body">
-              <h5 className="card-title mb-3">
-                {v.marca} {v.modelo}
-              </h5>
+            <div className="card-body position-relative">
+              <i className="bi bi-car-front-fill icono-auto-card"></i>
 
-              <p className="card-text ms-3 mb-1">
-                Color: {v.color}
-              </p>
+              <h5 className="card-title mb-3">{v.marca} {v.modelo}</h5>
 
-              <p className="card-text ms-3 mb-1">
-                Patente: {v.patente.toUpperCase()}
-              </p>
+              <p className="card-text ms-3 mb-1">Color: {v.color}</p>
+              <p className="card-text ms-3 mb-1">Patente: {v.patente.toUpperCase()}</p>
+              <p className="card-text ms-3">Cantidad de lugares: {v.cantLugares}</p>
 
-              <p className="card-text ms-3">
-                Cantidad de lugares: {v.cantLugares}
-              </p>
+              <hr className="mb-1"/>
+
+              <div className="mt-2 d-flex justify-content-between">
+                <button
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={() => navigate(`/editar-vehiculo/${v.patente}`)}
+                >
+                  Editar datos
+                </button>
+              </div>
             </div>
           </div>
         ))}

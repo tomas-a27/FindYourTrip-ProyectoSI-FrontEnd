@@ -188,3 +188,12 @@
   gap: 4px;
   border: 1px solid black;
 }
+
+.icono-auto-card {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  font-size: 2rem;
+  color: #2d4a2d;
+  opacity: 0.8;
+}

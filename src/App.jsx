@@ -17,6 +17,7 @@ import { EditarLocalidad } from './components/Localidad/EditarLocalidad.tsx';
 
 import { MostrarVehiculo } from './components/Vehiculo/MostrarVehiculo.tsx';
 import { CrearVehiculo } from './components/Vehiculo/CrearVehiculo.tsx';
+import { EditarVehiculo } from './components/Vehiculo/EditarVehiculo.tsx';
 
 import { CrearUsuario } from './components/Usuario/CrearUsuario.tsx';
 import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
@@ -63,6 +64,7 @@ function App() {
           {/* Rutas de Vehiculo */}
           <Route path="mostrar-vehiculo/:id" element={<MostrarVehiculo />} />
           <Route path="crear-vehiculo" element={<CrearVehiculo />} />
+          <Route path="editar-vehiculo/:id" element={<EditarVehiculo />} />
 
           {/* Rutas de Perfil */}
           <Route path="editar-usuario/:id" element={<EditarUsuario />} />
