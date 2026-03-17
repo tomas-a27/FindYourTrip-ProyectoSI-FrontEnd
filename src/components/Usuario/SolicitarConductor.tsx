@@ -218,7 +218,7 @@ export const SolicitarConductor = () => {
                 />
               </div>
               <div className="col-md-6 mb-4">
-                <label className="form-label text-muted fw-bold">Asientos Libres</label>
+                <label className="form-label text-muted fw-bold">Cantidad de asientos</label>
                 <input 
                   type="number" 
                   className="form-control custom-input" 

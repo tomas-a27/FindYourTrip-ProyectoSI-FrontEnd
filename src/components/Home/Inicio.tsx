@@ -28,33 +28,50 @@ export const Inicio = () => {
   };
 
   return (
-    <div className="container mt-5 text-center">
-      <h1 className="mb-4" style={{ color: '#2d4a2d', fontWeight: 'bold' }}>
-        ¡Hola, {usuario.nombreUsuario}!
-      </h1>
-      <p className="text-muted mb-5">¿Qué querés hacer hoy?</p>
+    <div className="container mt-5 text-center"
+      style={{
+        paddingBottom: '100px' 
+      }}>
+      <div className="d-flex justify-content-center mb-4">
+        <div style={{ maxWidth: '400px' }}> {/* Limitamos el ancho de la imagen */}
+          <img
+            src="./src/images/imagenInicio.jpg"
+            alt="Find Your Trip"
+            className="img-fluid shadow-sm"
+            style={{ borderRadius: '15px' }}
+          />
+        </div>
+      </div>
 
-      <div className="row g-4 justify-content-center">
+      <div className="px-3 mb-2">
+        <p style={{ fontSize: '1.1rem', color: '#444', lineHeight: '1.6' }}>
+          Encontrá tu viaje ideal o publicá tu viaje para que otros pasajeros puedan unirse.
+          <br />
+          <strong>¡Todo en un mismo lugar!</strong>
+        </p>
+      </div>
+
+      <div className="row g-3 justify-content-center">
         {/* Botón Buscar Viaje */}
-        <div className="col-12 col-md-5">
+        <div className="col-10 col-sm-6 col-md-4">
           <button 
             onClick={() => navigate('/buscar-viaje')}
-            className="btn btn-outline-success w-100 p-5 shadow-sm border-2 d-flex flex-column align-items-center"
+            className=" btn btn-custom-outline w-100 p-3 shadow-sm border-2 d-flex align-items-center justify-content-center"
             style={{ borderRadius: '15px' }}
           >
-            <span style={{ fontSize: '2rem' }}>🔍</span>
+            <span style={{ fontSize: '2rem', marginRight: '10px' }}></span>
             <span className="fw-bold mt-2">Buscar un Viaje</span>
           </button>
         </div>
 
         {/* Botón Publicar Viaje */}
-        <div className="col-12 col-md-5">
+        <div className="col-10 col-sm-6 col-md-4">
           <button 
             onClick={handlePublicarViaje}
-            className="btn btn-success w-100 p-5 shadow-sm d-flex flex-column align-items-center"
-            style={{ borderRadius: '15px', backgroundColor: '#2d4a2d' }}
+            className="btn btn-outline-custom-dark w-100 p-3 shadow-sm border-2 d-flex align-items-center justify-content-center"
+            style={{ borderRadius: '15px' }}
           >
-            <span style={{ fontSize: '2rem' }}>🚗</span>
+            <span style={{ fontSize: '2rem', marginRight: '10px' }}></span>
             <span className="fw-bold mt-2">Publicar un Viaje</span>
           </button>
         </div>

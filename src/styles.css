@@ -197,3 +197,38 @@
   color: #2d4a2d;
   opacity: 0.8;
 }
+
+.btn-outline-custom-dark {
+  background-color: #2d4a2d !important;
+    /* Verde de fondo inicial */
+    border: 2px solid #2d4a2d;
+    color: white !important;
+    /* Letras blancas iniciales */
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom-dark:hover {
+  background-color: transparent !important;
+    /* Se vacía el fondo */
+    color: #2d4a2d !important;
+    /* Las letras pasan a verde */
+    border: 2px solid #2d4a2d !important;
+    transform: translateY(-1px);
+}
+
+.btn-custom-outline {
+  background-color: transparent !important;
+  border: 2px solid #2d4a2d !important;
+  color: #2d4a2d !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-custom-outline:hover {
+  background-color: #2d4a2d !important;
+  /* Se llena con tu verde oscuro */
+  color: white !important;
+  /* Letras pasan a blanco */
+  transform: translateY(-1px);
+}
