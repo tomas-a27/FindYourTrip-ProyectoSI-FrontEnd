@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { post, get } from '../../api/dataManager'; 
+import { post, get, getOne } from '../../api/dataManager'; 
 import { UsuarioDTO, LocalidadDTO } from '../../entities/entities';
 
 export const PublicarViaje = () => {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState<UsuarioDTO | null>(null);
+
+  const userJson = localStorage.getItem('usuario');
+  const userLocal = userJson ? JSON.parse(userJson) : null;
+
+  // CORRECCIÓN: Le sacamos el "loading" porque getOne no lo tiene
+  const { data: usuarioCompleto } = getOne<UsuarioDTO>(
+    userLocal?.idUsuario ? `usuario/${userLocal.idUsuario}` : ''
+  );
+  
   const { data: localidades, loading: cargandoLocs } = get<LocalidadDTO>('localidades');
 
   const [formData, setFormData] = useState({
@@ -21,40 +29,41 @@ export const PublicarViaje = () => {
   });
 
   useEffect(() => {
-    const userJson = localStorage.getItem('usuario');
-    if (userJson) {
-      const user = JSON.parse(userJson);
-      
-      if (user.estadoConductor?.toLowerCase() === 'pendiente') {
-        alert("Usted podrá publicar un viaje una vez que su solicitud sea aprobada.");
-        navigate('/home');
-        return; 
-      }
-
-      if (user.tipoUsuario?.toLowerCase() !== 'conductor' && user.estadoConductor?.toLowerCase() !== 'aprobado') {
-        alert("Debes registrarte y ser aprobado como conductor para publicar viajes.");
-        navigate('/home');
-        return; 
-      }
-
-      setUsuario(user);
-      
-      //  Tiene que tener vehículos
-      if (!user.vehiculos || user.vehiculos.length === 0) {
-        alert("Primero debés registrar un vehículo para publicar un viaje.");
-        navigate('/perfil');
-      }
-    } else {
+    if (!userLocal) {
       navigate('/login');
+      return;
     }
-  }, [navigate]);
+
+    if (!usuarioCompleto) return;
+
+    // Validamos que el usuario sea conductor aprobado antes de mostrar el formulario
+    if (usuarioCompleto.estadoConductor?.toLowerCase() === 'pendiente') {
+      alert("Usted podrá publicar un viaje una vez que su solicitud sea aprobada.");
+      navigate('/home');
+      return; 
+    }
+    
+    // Validamos que el usuario sea conductor aprobado antes de mostrar el formulario
+    if (usuarioCompleto.tipoUsuario?.toLowerCase() !== 'conductor' && usuarioCompleto.estadoConductor?.toLowerCase() !== 'aprobado') {
+      alert("Debes registrarte y ser aprobado como conductor para publicar viajes.");
+      navigate('/home');
+      return; 
+    }
+
+    // Verificamos que tenga vehículos registrados
+    if (!usuarioCompleto.vehiculos || usuarioCompleto.vehiculos.length === 0) {
+      alert("Primero debés registrar un vehículo para publicar un viaje.");
+      navigate('/crear-vehiculo'); 
+    }
+
+  }, [navigate, userLocal, usuarioCompleto]); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const viajeAPublicar = { 
       ...formData, 
-      usuarioConductor: usuario?.idUsuario 
+      usuarioConductor: usuarioCompleto?.idUsuario 
     };
 
     const response = await post('viajes', viajeAPublicar);
@@ -68,7 +77,9 @@ export const PublicarViaje = () => {
     }
   };
 
-  if (!usuario) return null;
+  if (!usuarioCompleto) {
+    return <p className="text-center mt-5 text-muted fw-bold">Cargando datos de tu perfil...</p>;
+  }
 
   return (
     <div className="container mt-4 mb-5">
@@ -86,7 +97,7 @@ export const PublicarViaje = () => {
               onChange={(e) => setFormData({...formData, vehiculo: e.target.value})}
             >
               <option value="">Seleccioná tu auto...</option>
-              {usuario.vehiculos?.map(v => (
+              {usuarioCompleto.vehiculos?.map(v => (
                 <option key={v.patente} value={v.patente}>{v.marca} {v.modelo} ({v.patente})</option>
               ))}
             </select>
