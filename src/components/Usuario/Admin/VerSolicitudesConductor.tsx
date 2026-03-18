@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { get } from '../../api/dataManager';
-import { UsuarioDTO } from '../../entities/entities';
+import { get } from '../../../api/dataManager';
+import { UsuarioDTO } from '../../../entities/entities';
+import { AprobarConductor } from './AprobarConductor'; // <-- Importamos el modal
 
 export const VerSolicitudesConductor = () => {
-  const navigate = useNavigate();
   const { data, loading, error } = get<UsuarioDTO>('usuario/conductoresPendientes');
   const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
+  
+  // Estado para controlar qué usuario se muestra en el Pop-Up
+  const [usuarioSeleccionadoId, setUsuarioSeleccionadoId] = useState<number | null>(null);
 
   useEffect(() => {
     if (data) {
@@ -15,7 +17,12 @@ export const VerSolicitudesConductor = () => {
   }, [data]);
 
   const verDetalle = (idUsuario: number) => {
-    navigate(`/aprobar-conductor/${idUsuario}`);
+    setUsuarioSeleccionadoId(idUsuario);
+  };
+
+  const manejarAccionExitosa = (idUsuarioProcesado: number) => {
+    setUsuarios((prev) => prev.filter((u) => u.idUsuario !== idUsuarioProcesado));
+    setUsuarioSeleccionadoId(null);
   };
 
   const bufferToBase64 = (buffer: any) => {
@@ -31,7 +38,7 @@ export const VerSolicitudesConductor = () => {
   if (loading) return <p className="text-center mt-5">Cargando solicitudes...</p>;
 
   return (
-    <div className="container-fluid mt-5 px-5">
+    <div className="container-fluid mt-5 px-5 position-relative">
 
       <h2 style={{ color: '#2d4a2d' }}>
         Solicitudes
@@ -50,8 +57,8 @@ export const VerSolicitudesConductor = () => {
           {usuarios.map((usuario, index) => (
             <div key={usuario.idUsuario}>
               <div
-                className="d-flex align-items-center justify-content-between py-2"
-                style={{ cursor: "pointer" }}
+                className="d-flex align-items-center justify-content-between py-2 list-hover"
+                style={{ cursor: "pointer", transition: "0.2s" }}
                 onClick={() => verDetalle(usuario.idUsuario)}
               >
                 <div className="d-flex align-items-center w-100">
@@ -80,7 +87,7 @@ export const VerSolicitudesConductor = () => {
                   </div>
                 </div>
 
-                <div className="usuario-flecha">
+                <div className="usuario-flecha text-success fw-bold ps-3">
                   ▼
                 </div>
               </div>
@@ -90,6 +97,15 @@ export const VerSolicitudesConductor = () => {
           ))}
         </div>
       )}
+
+      {usuarioSeleccionadoId && (
+        <AprobarConductor 
+          usuarioId={usuarioSeleccionadoId} 
+          onClose={() => setUsuarioSeleccionadoId(null)} 
+          onSuccess={manejarAccionExitosa}
+        />
+      )}
+
     </div>
   );
 };

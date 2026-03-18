@@ -28,8 +28,7 @@ import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 
 // Importamos el componente nuevo que te pasé en el mensaje anterior
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
-import { VerSolicitudesConductor } from './components/Usuario/VerSolicitudesConductor.tsx';
-import { AprobarConductor } from './components/Usuario/AprobarConductor.tsx';
+import { VerSolicitudesConductor } from './components/Usuario/Admin/VerSolicitudesConductor.tsx';
 
 // Creamos un Layout "invisible" para las pantallas que NO llevan Footer
 const AuthLayout = () => <Outlet />;
@@ -39,16 +38,19 @@ function App() {
     createRoutesFromElements(
       <Route path="/">
         
-        
+        {/* Rutas SIN FOOTER */}
+
         <Route element={<AuthLayout />}>
           <Route index element={<PantallaInicioUsuario />} />
           <Route path="login" element={<LoginUsuario />} />
           <Route path="crear-usuario" element={<CrearUsuario />} />
           <Route path="admin-home" element={<InicioAdmin />} />
 
+          {/* Rutas del admin */}
+          <Route path="aprobar-conductores" element={<VerSolicitudesConductor />} />
         </Route>
 
-        
+        {/* Rutas CON FOOTER */}
         <Route element={<RootLayout />}>
           <Route path="home" element={<Inicio />} />
           
@@ -69,9 +71,7 @@ function App() {
           {/* Rutas de Perfil */}
           <Route path="editar-usuario/:id" element={<EditarUsuario />} />
 
-          {/* Rutas del admin */}
-          <Route path="aprobar-conductores" element={<VerSolicitudesConductor />} />
-          <Route path="aprobar-conductor/:id" element={<AprobarConductor />} />
+          
         </Route>
       </Route>,
     ),
