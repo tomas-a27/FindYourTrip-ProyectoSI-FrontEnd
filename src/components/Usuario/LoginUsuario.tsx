@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { post } from '../../api/dataManager';
 
+// Importamos el logo
+import logo from '../../images/logoFYT.png';
+
 export const LoginUsuario = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -33,10 +36,29 @@ export const LoginUsuario = () => {
   };
 
   return (
-    <div className="container mt-5 d-flex justify-content-center">
-      <div className="card custom-card shadow-sm" style={{ width: '100%', maxWidth: '400px' }}>
-        <div className="card-body p-4">
-          <h2 className="text-center mb-4" style={{ color: '#2d4a2d' }}>Iniciar Sesión</h2>
+    <div className="container mt-5 d-flex justify-content-center align-items-center" style={{ minHeight: '75vh' }}>
+      
+      <div className="card custom-card shadow-lg border-0" style={{ width: '100%', maxWidth: '420px', borderRadius: '15px' }}>
+        <div className="card-body p-5">
+          
+          <div className="text-center mb-4">
+            <img 
+              src={logo} 
+              alt="Find Your Trip Logo" 
+              className="mb-3 shadow-sm" 
+              style={{ 
+                width: '90px', 
+                height: '90px', 
+                objectFit: 'cover', 
+                borderRadius: '50%',
+                border: '3px solid #2d4a2d' 
+              }} 
+            />
+            <h2 className="fw-bold mb-1" style={{ color: '#2d4a2d' }}>
+              Find Your Trip
+            </h2>
+            <p className="text-muted fw-semibold fs-5 mt-2">Iniciar Sesión</p>
+          </div>
           
           {error && <div className="alert alert-danger">{error}</div>}
           
@@ -63,12 +85,14 @@ export const LoginUsuario = () => {
               />
             </div>
             
-            <div className="d-grid gap-2">
-              <button type="submit" className="btn btn-pastel-green">Ingresar</button>
+            <div className="d-grid gap-2 mt-4">
+              <button type="submit" className="btn btn-pastel-green py-2 fw-bold fs-5">
+                Ingresar
+              </button>
             </div>
           </form>
 
-          <div className="text-center mt-3">
+          <div className="text-center mt-4">
             <span className="text-muted">¿No tenés cuenta? </span>
             <Link to="/crear-usuario" className="text-decoration-none" style={{ color: '#6fb86f', fontWeight: 'bold' }}>
               Registrate acá
