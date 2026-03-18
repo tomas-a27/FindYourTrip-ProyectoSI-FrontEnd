@@ -114,7 +114,6 @@ export const SolicitarConductor = () => {
           {error && <div className="alert alert-danger fw-bold">{error}</div>}
 
           <form onSubmit={handleSubmit}>
-            {/* SECCIÓN 1: FOTOS Y LICENCIA */}
             <h5 className="fw-bold mt-4 mb-3" style={{ color: '#2d4a2d', borderBottom: '2px solid #b2d8b2', paddingBottom: '5px' }}>
               1. Datos Personales y Licencia
             </h5>
@@ -165,7 +164,7 @@ export const SolicitarConductor = () => {
               </div>
             </div>
 
-            {/* SECCIÓN 2: VEHÍCULO */}
+            {/* VEHÍCULO */}
             <h5 className="fw-bold mt-4 mb-3" style={{ color: '#2d4a2d', borderBottom: '2px solid #b2d8b2', paddingBottom: '5px' }}>
               2. Datos de tu Vehículo
             </h5>
@@ -175,7 +174,7 @@ export const SolicitarConductor = () => {
                 <input 
                   type="text" 
                   className="form-control custom-input" 
-                  placeholder="AAA111 o AA111AA"
+                  placeholder="Ej: AAA111 o AA111AA"
                   value={patente} 
                   onChange={(e) => setPatente(e.target.value)} 
                   required 
@@ -186,7 +185,7 @@ export const SolicitarConductor = () => {
                 <input 
                   type="text" 
                   className="form-control custom-input" 
-                  placeholder="Solo letras"
+                  placeholder="Ej: Ford"
                   value={marca} 
                   onChange={(e) => setMarca(e.target.value)} 
                   required 
@@ -211,7 +210,7 @@ export const SolicitarConductor = () => {
                 <input 
                   type="text" 
                   className="form-control custom-input" 
-                  placeholder="Solo letras"
+                  placeholder="Ej: Rojo"
                   value={color} 
                   onChange={(e) => setColor(e.target.value)} 
                   required 
