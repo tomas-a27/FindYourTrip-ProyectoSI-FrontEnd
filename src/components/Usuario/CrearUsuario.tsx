@@ -17,6 +17,15 @@ export const CrearUsuario = () => {
   });
   const [error, setError] = useState('');
 
+  const esDocValido = formData.nroDocumento.length >= 7 && !isNaN(Number(formData.nroDocumento));
+  
+  const esTelValido = formData.telefono.length >= 8 && !isNaN(Number(formData.telefono.replace(/\s/g, "")));
+  
+  const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+  
+  const esContraLarga = formData.contrasenaUsuario.length >= 8;
+  const contrasenasCoinciden = formData.contrasenaUsuario === formData.contrasenaUsuarioConfirmacion && formData.contrasenaUsuario !== '';
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -26,6 +35,12 @@ export const CrearUsuario = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Doble chequeo antes de enviar al backend
+    if (!esDocValido || !esTelValido || !esEmailValido || !esContraLarga || !contrasenasCoinciden) {
+      setError('Por favor, revise los campos en rojo antes de continuar.');
+      return;
+    }
 
     const response = await post('usuario', formData);
 
@@ -40,15 +55,15 @@ export const CrearUsuario = () => {
   return (
     <div className="container mt-5 mb-5 d-flex justify-content-center">
       <div
-        className="card custom-card shadow-sm"
-        style={{ width: '100%', maxWidth: '600px' }}
+        className="card custom-card shadow-sm border-0"
+        style={{ width: '100%', maxWidth: '600px', borderRadius: '15px' }}
       >
-        <div className="card-body p-4">
-          <h2 className="text-center mb-4" style={{ color: '#2d4a2d' }}>
+        <div className="card-body p-4 p-md-5">
+          <h2 className="text-center mb-4 fw-bold" style={{ color: '#2d4a2d' }}>
             Crear una Cuenta
           </h2>
 
-          {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger fw-bold">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="row">
@@ -64,9 +79,7 @@ export const CrearUsuario = () => {
                 />
               </div>
               <div className="col-md-6 mb-3">
-                <label className="form-label text-muted fw-bold">
-                  Apellido
-                </label>
+                <label className="form-label text-muted fw-bold">Apellido</label>
                 <input
                   type="text"
                   className="form-control custom-input"
@@ -79,10 +92,8 @@ export const CrearUsuario = () => {
             </div>
 
             <div className="row">
-              <div className="col-md-6 mb-3">
-                <label className="form-label text-muted fw-bold">
-                  Tipo Doc.
-                </label>
+              <div className="col-md-4 mb-3">
+                <label className="form-label text-muted fw-bold">Tipo Doc.</label>
                 <select
                   className="form-select custom-input"
                   name="tipoDocumento"
@@ -94,34 +105,40 @@ export const CrearUsuario = () => {
                   <option value="Cedula">Cédula</option>
                 </select>
               </div>
-              <div className="col-md-6 mb-3">
-                <label className="form-label text-muted fw-bold">
-                  Nro. Documento
-                </label>
+              <div className="col-md-8 mb-3">
+                <label className="form-label text-muted fw-bold">Nro. Documento</label>
                 <input
                   type="text"
-                  className="form-control custom-input"
+                  className={`form-control custom-input ${formData.nroDocumento && !esDocValido ? 'is-invalid' : ''} ${formData.nroDocumento && esDocValido ? 'is-valid' : ''}`}
                   name="nroDocumento"
                   value={formData.nroDocumento}
                   onChange={handleChange}
                   required
                 />
+                {formData.nroDocumento && !esDocValido && (
+                  <div className="invalid-feedback fw-semibold">
+                    Debe contener al menos 7 números.
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="row">
               <div className="col-md-6 mb-3">
-                <label className="form-label text-muted fw-bold">
-                  Teléfono
-                </label>
+                <label className="form-label text-muted fw-bold">Teléfono</label>
                 <input
                   type="text"
-                  className="form-control custom-input"
+                  className={`form-control custom-input ${formData.telefono && !esTelValido ? 'is-invalid' : ''} ${formData.telefono && esTelValido ? 'is-valid' : ''}`}
                   name="telefono"
                   value={formData.telefono}
                   onChange={handleChange}
                   required
                 />
+                {formData.telefono && !esTelValido && (
+                  <div className="invalid-feedback fw-semibold">
+                    Debe tener al menos 8 números.
+                  </div>
+                )}
               </div>
               <div className="col-md-6 mb-3">
                 <label className="form-label text-muted fw-bold">Género</label>
@@ -134,9 +151,7 @@ export const CrearUsuario = () => {
                   <option value="Femenino">Femenino</option>
                   <option value="Masculino">Masculino</option>
                   <option value="Otro">Otro</option>
-                  <option value="Prefiero no decirlo">
-                    Prefiero no decirlo
-                  </option>
+                  <option value="Prefiero no decirlo">Prefiero no decirlo</option>
                 </select>
               </div>
             </div>
@@ -145,42 +160,55 @@ export const CrearUsuario = () => {
               <label className="form-label text-muted fw-bold">Email</label>
               <input
                 type="email"
-                className="form-control custom-input"
+                className={`form-control custom-input ${formData.email && !esEmailValido ? 'is-invalid' : ''} ${formData.email && esEmailValido ? 'is-valid' : ''}`}
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
               />
+              {formData.email && !esEmailValido && (
+                <div className="invalid-feedback fw-semibold">
+                  Formato de email incorrecto.
+                </div>
+              )}
             </div>
 
-            <div className="mb-4">
-              <label className="form-label text-muted fw-bold">
-                Contraseña
-              </label>
-              <input
-                type="password"
-                className="form-control custom-input"
-                name="contrasenaUsuario"
-                value={formData.contrasenaUsuario}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="form-label text-muted fw-bold">
-                Repetir contraseña
-              </label>
-              <input
-                type="password"
-                className="form-control custom-input"
-                name="contrasenaUsuarioConfirmacion"
-                value={formData.contrasenaUsuarioConfirmacion}
-                onChange={handleChange}
-                required
-              />
+            <div className="row">
+              <div className="col-md-6 mb-4">
+                <label className="form-label text-muted fw-bold">Contraseña</label>
+                <input
+                  type="password"
+                  className={`form-control custom-input ${formData.contrasenaUsuario && !esContraLarga ? 'is-invalid' : ''} ${formData.contrasenaUsuario && esContraLarga ? 'is-valid' : ''}`}
+                  name="contrasenaUsuario"
+                  value={formData.contrasenaUsuario}
+                  onChange={handleChange}
+                  required
+                />
+                {formData.contrasenaUsuario && !esContraLarga && (
+                  <div className="invalid-feedback fw-semibold" style={{ fontSize: '0.8rem' }}>
+                    Mínimo 8 caracteres.
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 mb-4">
+                <label className="form-label text-muted fw-bold">Repetir contraseña</label>
+                <input
+                  type="password"
+                  className={`form-control custom-input ${formData.contrasenaUsuarioConfirmacion && !contrasenasCoinciden ? 'is-invalid' : ''} ${formData.contrasenaUsuarioConfirmacion && contrasenasCoinciden ? 'is-valid' : ''}`}
+                  name="contrasenaUsuarioConfirmacion"
+                  value={formData.contrasenaUsuarioConfirmacion}
+                  onChange={handleChange}
+                  required
+                />
+                {formData.contrasenaUsuarioConfirmacion && !contrasenasCoinciden && (
+                  <div className="invalid-feedback fw-semibold" style={{ fontSize: '0.8rem' }}>
+                    Las contraseñas no coinciden.
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="d-flex justify-content-between mt-4">
+            <div className="d-flex justify-content-between mt-2">
               <button
                 type="button"
                 className="btn btn-light-cancel px-4"
@@ -188,7 +216,12 @@ export const CrearUsuario = () => {
               >
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-pastel-green px-5">
+              
+              <button 
+                type="submit" 
+                className="btn btn-pastel-green px-5"
+                disabled={!esDocValido || !esTelValido || !esEmailValido || !esContraLarga || !contrasenasCoinciden}
+              >
                 Crear Cuenta
               </button>
             </div>
