@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../../api/dataManager';
+import DeleteEntityButton from '../DeleteEntityBotton.tsx';
 
 export const MostrarVehiculo = () => {
   const navigate = useNavigate();
@@ -46,6 +47,13 @@ export const MostrarVehiculo = () => {
                 >
                   Editar datos
                 </button>
+
+                <DeleteEntityButton
+                  idToDelete={String(v.patente)}
+                  nameToDelete={`${v.marca} ${v.modelo}`}
+                  route={'vehiculo'}
+                  entityToDelete={'vehiculo'}
+                />
               </div>
             </div>
           </div>
