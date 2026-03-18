@@ -24,7 +24,22 @@ export const PublicarViaje = () => {
     const userJson = localStorage.getItem('usuario');
     if (userJson) {
       const user = JSON.parse(userJson);
+      
+      if (user.estadoConductor?.toLowerCase() === 'pendiente') {
+        alert("Usted podrá publicar un viaje una vez que su solicitud sea aprobada.");
+        navigate('/home');
+        return; 
+      }
+
+      if (user.tipoUsuario?.toLowerCase() !== 'conductor' && user.estadoConductor?.toLowerCase() !== 'aprobado') {
+        alert("Debes registrarte y ser aprobado como conductor para publicar viajes.");
+        navigate('/home');
+        return; 
+      }
+
       setUsuario(user);
+      
+      //  Tiene que tener vehículos
       if (!user.vehiculos || user.vehiculos.length === 0) {
         alert("Primero debés registrar un vehículo para publicar un viaje.");
         navigate('/perfil');
@@ -46,7 +61,7 @@ export const PublicarViaje = () => {
 
     if (response && response.status === 201) {
       alert("¡Viaje publicado con éxito!");
-      navigate('/inicio');
+      navigate('/home');
     } else {
       const errorMsg = response?.data?.message || "Ocurrió un error inesperado";
       alert("Error: " + errorMsg);
@@ -87,7 +102,7 @@ export const PublicarViaje = () => {
                 onChange={(e) => setFormData({...formData, viajeOrigen: e.target.value})}
               >
                 <option value="">Desde...</option>
-                {!cargandoLocs && localidades.map(l => (
+                {!cargandoLocs && localidades?.map(l => (
                   <option key={l.id} value={l.id}>{l.nombre}</option>
                 ))}
               </select>
@@ -101,7 +116,7 @@ export const PublicarViaje = () => {
                 onChange={(e) => setFormData({...formData, viajeDestino: e.target.value})}
               >
                 <option value="">Hacia...</option>
-                {!cargandoLocs && localidades.map(l => (
+                {!cargandoLocs && localidades?.map(l => (
                   <option key={l.id} value={l.id}>{l.nombre}</option>
                 ))}
               </select>
