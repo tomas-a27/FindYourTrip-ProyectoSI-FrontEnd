@@ -47,6 +47,12 @@ export const EditarUsuario = () => {
   const [passNueva, setPassNueva] = useState('');
   const [passConfirmacion, setPassConfirmacion] = useState('');
 
+  const esTelValido = nuevoValor.length >= 8 && !isNaN(Number(nuevoValor.replace(/\s/g, "")));
+  const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoValor);
+  
+  const esPassNuevaLarga = passNueva.length >= 8;
+  const contrasenasCoinciden = passNueva === passConfirmacion && passNueva !== '';
+
   const handleEditar = (campo: string) => {
     setCampoSeleccionado(campo);
 
@@ -70,6 +76,10 @@ export const EditarUsuario = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validar antes de enviar
+    if (campoSeleccionado === 'telefono' && !esTelValido) return;
+    if (campoSeleccionado === 'email' && !esEmailValido) return;
+
     let dataPatch: any;
 
     if (campoSeleccionado === 'nombreCompleto') {
@@ -84,7 +94,7 @@ export const EditarUsuario = () => {
     }
 
     try {
-      const response = await patch(`usuario/${usuarioToUpdate.idUsuario}`, dataPatch);
+      await patch(`usuario/${usuarioToUpdate.idUsuario}`, dataPatch);
 
       setUsuarioToUpdate({
         ...usuarioToUpdate,
@@ -100,8 +110,8 @@ export const EditarUsuario = () => {
   const handleCambiarPassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (passNueva !== passConfirmacion) {
-      setError('Las contraseñas no coinciden');
+    if (!esPassNuevaLarga || !contrasenasCoinciden) {
+      setError('Revise los requisitos de la nueva contraseña');
       return;
     }
 
@@ -125,6 +135,12 @@ export const EditarUsuario = () => {
 
   if (!usuarioToUpdate.idUsuario)
     return <p className="text-center mt-5">Usuario no encontrado</p>;
+
+  const botonDeshabilitado = () => {
+    if (campoSeleccionado === 'telefono') return !esTelValido;
+    if (campoSeleccionado === 'email') return !esEmailValido;
+    return false;
+  };
 
   return (
     <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
@@ -154,48 +170,51 @@ export const EditarUsuario = () => {
           {renderCampo('Teléfono', usuarioToUpdate.telefono, 'telefono')}
           {renderCampo('Email', usuarioToUpdate.email, 'email')}
 
-          <div className="modificar-pass-container d-flex justify-content-between">
+          <div className="modificar-pass-container d-flex justify-content-between mt-4">
             <button
-              className="btn btn-light"
+              className="btn btn-outline-secondary"
               onClick={() => navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)}
             >
               Ver mis vehículos
             </button>
 
-            <span
-              className="modificar-pass-link"
+            <button
+              className="btn btn-outline-danger"
               onClick={() => {
                 setError('');
                 setMostrarModalPass(true);
               }}
             >
               Modificar contraseña
-            </span>
+            </button>
           </div>
         </div>
       </div>
 
+      {/* --- MODAL PARA EDITAR DATOS --- */}
       {campoSeleccionado && (
         <div className="modal-overlay">
-          <div className="custom-modal">
-            <button onClick={cerrarModal} className="btn-cerrar">
-              X
+          <div className="custom-modal p-4" style={{ maxWidth: '400px' }}>
+            <button onClick={cerrarModal} className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted">
+              <i className="bi bi-x-lg"></i>
             </button>
 
-            <h6 className="text-center mb-3">Ingrese nuevo (dato elegido)</h6>
+            <h5 className="text-center mb-4 fw-bold text-dark">
+              Actualizar {campoSeleccionado === 'nombreCompleto' ? 'Nombre' : campoSeleccionado}
+            </h5>
 
             <form onSubmit={handleSubmit}>
               {campoSeleccionado === 'nombreCompleto' ? (
                 <>
                   <input
-                    className="form-control mb-2"
+                    className="form-control mb-3 p-2"
                     placeholder="Nombre"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
                     required
                   />
                   <input
-                    className="form-control mb-2"
+                    className="form-control mb-3 p-2"
                     placeholder="Apellido"
                     value={nuevoApellido}
                     onChange={(e) => setNuevoApellido(e.target.value)}
@@ -204,7 +223,7 @@ export const EditarUsuario = () => {
                 </>
               ) : campoSeleccionado === 'generoUsuario' ? (
                 <select
-                  className="form-control mb-2"
+                  className="form-select mb-4 p-2"
                   value={nuevoValor}
                   onChange={(e) => setNuevoValor(e.target.value)}
                 >
@@ -213,18 +232,53 @@ export const EditarUsuario = () => {
                   <option value="Otro">Otro</option>
                   <option value="Prefiero no decirlo">Prefiero no decirlo</option>
                 </select>
+              ) : campoSeleccionado === 'telefono' ? (
+                <div className="mb-4">
+                  <input
+                    className={`form-control p-2 ${nuevoValor && !esTelValido ? 'is-invalid' : ''} ${nuevoValor && esTelValido ? 'is-valid' : ''}`}
+                    placeholder="Teléfono"
+                    value={nuevoValor}
+                    onChange={(e) => setNuevoValor(e.target.value)}
+                    required
+                  />
+                  {nuevoValor && !esTelValido && (
+                    <div className="invalid-feedback fw-semibold mt-1">
+                      Debe contener al menos 8 números.
+                    </div>
+                  )}
+                </div>
+              ) : campoSeleccionado === 'email' ? (
+                <div className="mb-4">
+                  <input
+                    type="email"
+                    className={`form-control p-2 ${nuevoValor && !esEmailValido ? 'is-invalid' : ''} ${nuevoValor && esEmailValido ? 'is-valid' : ''}`}
+                    placeholder="Email"
+                    value={nuevoValor}
+                    onChange={(e) => setNuevoValor(e.target.value)}
+                    required
+                  />
+                  {nuevoValor && !esEmailValido && (
+                    <div className="invalid-feedback fw-semibold mt-1">
+                      Formato de email incorrecto.
+                    </div>
+                  )}
+                </div>
               ) : (
                 <input
-                  className="form-control mb-2"
+                  className="form-control mb-4 p-2"
                   value={nuevoValor}
                   onChange={(e) => setNuevoValor(e.target.value)}
                   required
                 />
               )}
 
-              <div className="d-flex justify-content-center">
-                <button className="btn btn-pastel-green px-4">
-                  Actualizar
+              <div className="d-grid mt-2">
+                <button 
+                  type="submit" 
+                  className="btn btn-success py-2 fw-bold shadow-sm"
+                  disabled={botonDeshabilitado()}
+                >
+                  Guardar Cambios
                 </button>
               </div>
             </form>
@@ -232,41 +286,67 @@ export const EditarUsuario = () => {
         </div>
       )}
 
+      {/* --- MODAL DE CONTRASEÑA --- */}
       {mostrarModalPass && (
         <div className="modal-overlay">
-          <div className="custom-modal">
-            <button onClick={() => setMostrarModalPass(false)} className="btn-cerrar">X</button>
+          <div className="custom-modal p-4" style={{ maxWidth: '400px' }}>
+            <button onClick={() => setMostrarModalPass(false)} className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted">
+              <i className="bi bi-x-lg"></i>
+            </button>
 
-            <h5 className="text-center mb-3">Modificar contraseña</h5>
+            <h5 className="text-center mb-4 fw-bold text-dark">Modificar contraseña</h5>
 
             <form onSubmit={handleCambiarPassword}>
-              <input
-                type="password"
-                className="form-control mb-2"
-                placeholder="Contraseña actual"
-                value={passActual}
-                onChange={(e) => setPassActual(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                className="form-control mb-2"
-                placeholder="Nueva contraseña"
-                value={passNueva}
-                onChange={(e) => setPassNueva(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                className="form-control mb-3"
-                placeholder="Repetir nueva contraseña"
-                value={passConfirmacion}
-                onChange={(e) => setPassConfirmacion(e.target.value)}
-                required
-              />
-              <div className="d-flex justify-content-center">
-                <button className="btn btn-pastel-green px-4">
-                  Actualizar
+              <div className="mb-3">
+                <label className="text-muted small fw-bold mb-1">Contraseña Actual</label>
+                <input
+                  type="password"
+                  className="form-control p-2"
+                  value={passActual}
+                  onChange={(e) => setPassActual(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="text-muted small fw-bold mb-1">Nueva Contraseña</label>
+                <input
+                  type="password"
+                  className={`form-control p-2 ${passNueva && !esPassNuevaLarga ? 'is-invalid' : ''} ${passNueva && esPassNuevaLarga ? 'is-valid' : ''}`}
+                  value={passNueva}
+                  onChange={(e) => setPassNueva(e.target.value)}
+                  required
+                />
+                {passNueva && !esPassNuevaLarga && (
+                  <div className="invalid-feedback fw-semibold" style={{ fontSize: '0.8rem' }}>
+                    Mínimo 8 caracteres.
+                  </div>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <label className="text-muted small fw-bold mb-1">Repetir Nueva Contraseña</label>
+                <input
+                  type="password"
+                  className={`form-control p-2 ${passConfirmacion && !contrasenasCoinciden ? 'is-invalid' : ''} ${passConfirmacion && contrasenasCoinciden ? 'is-valid' : ''}`}
+                  value={passConfirmacion}
+                  onChange={(e) => setPassConfirmacion(e.target.value)}
+                  required
+                />
+                {passConfirmacion && !contrasenasCoinciden && (
+                  <div className="invalid-feedback fw-semibold" style={{ fontSize: '0.8rem' }}>
+                    Las contraseñas no coinciden.
+                  </div>
+                )}
+              </div>
+
+              <div className="d-grid mt-2">
+                <button 
+                  type="submit" 
+                  className="btn btn-success py-2 fw-bold shadow-sm"
+                  disabled={!esPassNuevaLarga || !contrasenasCoinciden || !passActual}
+                >
+                  Actualizar Contraseña
                 </button>
               </div>
             </form>
@@ -278,14 +358,18 @@ export const EditarUsuario = () => {
 
   function renderCampo(label: string, valor: string, campo: string) {
     return (
-      <div className="campo-box">
-        <div className="campo-label">{label}</div>
-        <div className="campo-valor-row">
-          <span>{valor}</span>
-          <button onClick={() => handleEditar(campo)} className="btn-icono-editar">
-            <i className="bi bi-pencil-square"></i>
-          </button>
+      <div className="campo-box d-flex justify-content-between align-items-center border-bottom py-3">
+        <div>
+          <div className="text-muted small fw-bold">{label}</div>
+          <div className="fs-5 text-dark">{valor}</div>
         </div>
+        <button 
+          onClick={() => handleEditar(campo)} 
+          className="btn btn-light rounded-circle shadow-sm"
+          style={{ width: '40px', height: '40px' }}
+        >
+          <i className="bi bi-pencil-fill text-success"></i>
+        </button>
       </div>
     );
   }

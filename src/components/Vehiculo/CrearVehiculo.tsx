@@ -150,7 +150,7 @@ export const CrearVehiculo = () => {
               <input
                 type="text"
                 className="form-control custom-input"
-                placeholder="AAA111 o AA111AA"
+                placeholder="Ej: AAA111 o AA111AA"
                 value={patente}
                 onChange={(e) => setPatente(e.target.value)}
                 required

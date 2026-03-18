@@ -20,6 +20,22 @@ export const SolicitarConductor = () => {
   const [color, setColor] = useState('');
   const [cantLugares, setCantLugares] = useState(1);
 
+
+  const esLicenciaValida = nroLicencia.length >= 5 && /^[a-zA-Z0-9]+$/.test(nroLicencia);
+  
+  const regexPatente = /^[A-Z]{3}\d{3}$|^[A-Z]{2}\d{3}[A-Z]{2}$/i;
+  const esPatenteValida = patente.length >= 6 && regexPatente.test(patente.trim().replace(/\s/g, ""));
+  
+  const regexLetras = /^[a-zA-Z\sÀ-ÿ]+$/;
+  const esMarcaValida = marca.length >= 1 && regexLetras.test(marca.trim());
+  const esColorValido = color.length >= 1 && regexLetras.test(color.trim());
+  
+  const esModeloValido = modelo.length >= 1;
+  const lugaresValidos = cantLugares > 0;
+  
+  const formValido = esLicenciaValida && esPatenteValida && esMarcaValida && esColorValido && esModeloValido && lugaresValidos && fotoPerfil && fotoLicencia && vigenciaLicencia;
+  // ------------------------------------
+
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem('usuario');
     if (usuarioGuardado) {
@@ -40,28 +56,9 @@ export const SolicitarConductor = () => {
 
     if (!usuario) return;
 
-    if (!fotoPerfil || !fotoLicencia || !nroLicencia || !vigenciaLicencia || !patente || !marca || !modelo || !color || !cantLugares) {
-      setError('Por favor, complete todos los campos y adjunte las imágenes solicitadas.');
+    if (!formValido) {
+      setError('Por favor, revise los campos marcados en rojo y adjunte las imágenes.');
       return;
-    }
-
-    
-    const regexPatente = /^[A-Z]{3}\d{3}$|^[A-Z]{2}\d{3}[A-Z]{2}$/i;
-    if (!regexPatente.test(patente.trim())) {
-      setError('Formato de patente inválido. Debe ser AAA111 o AA111AA.');
-      return; 
-    }
-
-    const regexLetras = /^[a-zA-Z\sÀ-ÿ]+$/;
-    if (!regexLetras.test(marca.trim()) || !regexLetras.test(color.trim())) {
-      setError('La marca y el color solo pueden contener letras.');
-      return; 
-    }
-
-    const regexLicencia = /^[a-zA-Z0-9]+$/;
-    if (!regexLicencia.test(nroLicencia.trim())) {
-      setError('El número de licencia no tiene un formato válido.');
-      return; 
     }
 
     const formData = new FormData();
@@ -69,7 +66,7 @@ export const SolicitarConductor = () => {
     formData.append('vigenciaLicenciaConductorUsuario', vigenciaLicencia);
     
     const vehiculoData = {
-      patente: patente.trim().toUpperCase(),
+      patente: patente.trim().toUpperCase().replace(/\s/g, ""), // Limpiamos espacios como dice el schema
       marca: marca.trim(),
       modelo: modelo.trim(),
       color: color.trim(),
@@ -78,8 +75,8 @@ export const SolicitarConductor = () => {
     formData.append('vehiculo', JSON.stringify(vehiculoData));
 
     // Adjuntamos los archivos físicos
-    formData.append('fotoPerfil', fotoPerfil);
-    formData.append('fotoLicencia', fotoLicencia);
+    formData.append('fotoPerfil', fotoPerfil as Blob);
+    formData.append('fotoLicencia', fotoLicencia as Blob);
 
     try {
       const response = await put(
@@ -104,9 +101,9 @@ export const SolicitarConductor = () => {
 
   return (
     <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
-      <div className="card custom-card shadow-sm w-100" style={{ maxWidth: '700px' }}>
-        <div className="card-body p-4">
-          <h2 className="text-center mb-2" style={{ color: '#2d4a2d' }}>Convertite en Conductor </h2>
+      <div className="card custom-card shadow-sm w-100 border-0" style={{ maxWidth: '700px', borderRadius: '15px' }}>
+        <div className="card-body p-4 p-md-5">
+          <h2 className="text-center mb-2 fw-bold" style={{ color: '#2d4a2d' }}>Convertite en Conductor </h2>
           <p className="text-center text-muted mb-4">
             Completá tus datos de manejo y registrá el vehículo que vas a usar.
           </p>
@@ -146,11 +143,17 @@ export const SolicitarConductor = () => {
                 <label className="form-label text-muted fw-bold">Número de Licencia</label>
                 <input 
                   type="text" 
-                  className="form-control custom-input" 
+                  className={`form-control custom-input ${nroLicencia && !esLicenciaValida ? 'is-invalid' : ''} ${nroLicencia && esLicenciaValida ? 'is-valid' : ''}`}
+                  placeholder="Coincide con el numero de DNI"
                   value={nroLicencia} 
                   onChange={(e) => setNroLicencia(e.target.value)} 
                   required 
                 />
+                {nroLicencia && !esLicenciaValida && (
+                  <div className="invalid-feedback fw-semibold mt-1">
+                    Mínimo 5 caracteres.
+                  </div>
+                )}
               </div>
               <div className="col-md-6 mb-3">
                 <label className="form-label text-muted fw-bold">Fecha de Vencimiento</label>
@@ -173,29 +176,39 @@ export const SolicitarConductor = () => {
                 <label className="form-label text-muted fw-bold">Patente</label>
                 <input 
                   type="text" 
-                  className="form-control custom-input" 
+                  className={`form-control custom-input ${patente && !esPatenteValida ? 'is-invalid' : ''} ${patente && esPatenteValida ? 'is-valid' : ''}`}
                   placeholder="Ej: AAA111 o AA111AA"
                   value={patente} 
                   onChange={(e) => setPatente(e.target.value)} 
                   required 
                 />
+                {patente && !esPatenteValida && (
+                  <div className="invalid-feedback fw-semibold mt-1" style={{ fontSize: '0.8rem' }}>
+                    Formato AAA111 o AA111AA.
+                  </div>
+                )}
               </div>
               <div className="col-md-4 mb-3">
                 <label className="form-label text-muted fw-bold">Marca</label>
                 <input 
                   type="text" 
-                  className="form-control custom-input" 
+                  className={`form-control custom-input ${marca && !esMarcaValida ? 'is-invalid' : ''} ${marca && esMarcaValida ? 'is-valid' : ''}`}
                   placeholder="Ej: Ford"
                   value={marca} 
                   onChange={(e) => setMarca(e.target.value)} 
                   required 
                 />
+                {marca && !esMarcaValida && (
+                  <div className="invalid-feedback fw-semibold mt-1" style={{ fontSize: '0.8rem' }}>
+                    Solo letras.
+                  </div>
+                )}
               </div>
               <div className="col-md-4 mb-3">
                 <label className="form-label text-muted fw-bold">Modelo</label>
                 <input 
                   type="text" 
-                  className="form-control custom-input" 
+                  className={`form-control custom-input ${modelo && !esModeloValido ? 'is-invalid' : ''} ${modelo && esModeloValido ? 'is-valid' : ''}`}
                   placeholder="Ej: Fiesta"
                   value={modelo} 
                   onChange={(e) => setModelo(e.target.value)} 
@@ -209,18 +222,23 @@ export const SolicitarConductor = () => {
                 <label className="form-label text-muted fw-bold">Color</label>
                 <input 
                   type="text" 
-                  className="form-control custom-input" 
+                  className={`form-control custom-input ${color && !esColorValido ? 'is-invalid' : ''} ${color && esColorValido ? 'is-valid' : ''}`}
                   placeholder="Ej: Rojo"
                   value={color} 
                   onChange={(e) => setColor(e.target.value)} 
                   required 
                 />
+                {color && !esColorValido && (
+                  <div className="invalid-feedback fw-semibold mt-1">
+                    Solo letras.
+                  </div>
+                )}
               </div>
               <div className="col-md-6 mb-4">
                 <label className="form-label text-muted fw-bold">Cantidad de asientos</label>
                 <input 
                   type="number" 
-                  className="form-control custom-input" 
+                  className={`form-control custom-input ${cantLugares && !lugaresValidos ? 'is-invalid' : ''} ${cantLugares && lugaresValidos ? 'is-valid' : ''}`}
                   min="1" 
                   max="20"
                   value={cantLugares} 
@@ -234,7 +252,12 @@ export const SolicitarConductor = () => {
               <button type="button" className="btn btn-light-cancel px-4" onClick={handleCancelar}>
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-pastel-green px-5">
+              
+              <button 
+                type="submit" 
+                className="btn btn-pastel-green px-5"
+                disabled={!formValido} 
+              >
                 Aceptar
               </button>
             </div>

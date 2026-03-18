@@ -11,9 +11,15 @@ export const LoginUsuario = () => {
   const [contrasenaUsuario, setContrasenaUsuario] = useState('');
   const [error, setError] = useState('');
 
+  const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const esContraValida = contrasenaUsuario.trim().length > 0;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Doble barrera de seguridad antes de enviar al backend
+    if (!esEmailValido || !esContraValida) return;
 
     const response = await post('usuario/login', { email, contrasenaUsuario });
 
@@ -60,25 +66,30 @@ export const LoginUsuario = () => {
             <p className="text-muted fw-semibold fs-5 mt-2">Iniciar Sesión</p>
           </div>
           
-          {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger fw-bold">{error}</div>}
           
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label text-muted fw-bold">Email</label>
               <input 
                 type="email" 
-                className="form-control custom-input" 
+                className={`form-control custom-input ${email && !esEmailValido ? 'is-invalid' : ''} ${email && esEmailValido ? 'is-valid' : ''}`}
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
               />
+              {email && !esEmailValido && (
+                <div className="invalid-feedback fw-semibold mt-1">
+                  Formato de email incorrecto.
+                </div>
+              )}
             </div>
             
             <div className="mb-4">
               <label className="form-label text-muted fw-bold">Contraseña</label>
               <input 
                 type="password" 
-                className="form-control custom-input" 
+                className={`form-control custom-input ${contrasenaUsuario && !esContraValida ? 'is-invalid' : ''} ${contrasenaUsuario && esContraValida ? 'is-valid' : ''}`}
                 value={contrasenaUsuario} 
                 onChange={(e) => setContrasenaUsuario(e.target.value)} 
                 required 
@@ -86,7 +97,11 @@ export const LoginUsuario = () => {
             </div>
             
             <div className="d-grid gap-2 mt-4">
-              <button type="submit" className="btn btn-pastel-green py-2 fw-bold fs-5">
+              <button 
+                type="submit" 
+                className="btn btn-pastel-green py-2 fw-bold fs-5 shadow-sm"
+                disabled={!esEmailValido || !esContraValida}
+              >
                 Ingresar
               </button>
             </div>
