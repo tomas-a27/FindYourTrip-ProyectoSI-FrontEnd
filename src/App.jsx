@@ -46,7 +46,10 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path="admin-home" element={<InicioAdmin />} />
           <Route path="aprobar-conductores" element={<VerSolicitudesConductor />} />
-          
+          {/* Rutas de Localidad */}
+          <Route path="crear-localidad" element={<CrearLocalidad />} />
+          <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
+          <Route path="editar-localidad/:id" element={<EditarLocalidad />} />
         </Route>
 
         {/*RUTAS DEL USUARIO (Footer) */}
@@ -56,11 +59,7 @@ function App() {
           <Route path="publicar-viaje" element={<PublicarViaje />} />
           <Route path="solicitar-conductor" element={<SolicitarConductor />} />
 
-          {/* Rutas de Localidad */}
-          <Route path="crear-localidad" element={<CrearLocalidad />} />
-          <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
-          <Route path="editar-localidad/:id" element={<EditarLocalidad />} />
-
+          
           {/* Rutas de Vehiculo */}
           <Route path="mostrar-vehiculo/:id" element={<MostrarVehiculo />} />
           <Route path="crear-vehiculo" element={<CrearVehiculo />} />

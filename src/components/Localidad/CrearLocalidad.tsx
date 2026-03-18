@@ -54,7 +54,7 @@ export function CrearLocalidad() {
               <input
                 required
                 type="text"
-                id="nombre"
+                id="nombre" 
                 className="form-control mb-4 custom-input"
                 placeholder="Ej: Rosario"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
