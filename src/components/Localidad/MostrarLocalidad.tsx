@@ -13,6 +13,18 @@ export function MostrarLocalidad() {
   }, []);
   return (
     <div className="ShowLocalidades container mt-4 mb-5">
+
+      <div className="mb-3">
+        <Link
+          to="/admin-home"
+          className="btn d-flex align-items-center text-success fw-bold p-0 text-decoration-none"
+          style={{ border: 'none', background: 'none' }}
+        >
+          <i className="bi bi-arrow-left-circle-fill fs-4 me-2"></i>
+          Volver al Menú
+        </Link>
+      </div>
+
       <h1
         className="mb-4"
         style={{

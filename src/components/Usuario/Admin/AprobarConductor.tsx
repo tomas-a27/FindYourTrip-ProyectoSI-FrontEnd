@@ -54,8 +54,10 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
     );
   }
 
-  const calificacion = usuario.calificacionPas ?? 5;
-  const calificacionFormateada = calificacion.toFixed(2);
+  const calificacion = usuario.calificacionPas;
+  const calificacionFormateada = calificacion !== null && calificacion !== undefined
+    ? calificacion.toFixed(2)
+    : "Sin calificación";
 
   return (
     <div className="modal show fade modal-overlay d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
@@ -188,11 +190,21 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
               ></button>
 
               <div className="modal-body text-center mt-2">
-                <p className="fw-bold fs-5 mb-0" style={{ color: estadoAccion === 'aprobado' ? '#198754' : '#dc3545' }}>
+                <p className="fw-bold fs-3 mb-5" style={{ color: estadoAccion === 'aprobado' ? '#198754' : '#dc3545' }}>
                   {estadoAccion === "aprobado"
                   ? "Conductor aprobado"
                   : "Solicitud denegada"}
                 </p>
+                <div className="d-grid">
+                  <button
+                    type="button"
+                    className="btn btn-success py-1 fw-bold"
+                    style={{ borderRadius: '10px' }}
+                    onClick={handleCerrarExito} // Este ya llama a onSuccess y cierra todo
+                  >
+                    Volver al listado
+                  </button>
+                </div>
               </div>
             </div>
           </div>
