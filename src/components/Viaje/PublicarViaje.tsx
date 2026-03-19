@@ -38,8 +38,8 @@ export const PublicarViaje = () => {
     viajePrecio: 0,
     viajeAceptaMascotas: false,
     viajeComentario: '',
-    viajeOrigen: localidadOrigen,
-    viajeDestino: localidadDestino,
+    viajeOrigen: '', // ID de localidad por defecto (se actualizará al seleccionar)
+    viajeDestino: '', // ID de localidad por defecto (se actualizará al seleccionar
     vehiculo: '',
   });
 
@@ -96,7 +96,9 @@ export const PublicarViaje = () => {
       usuarioConductor: usuarioCompleto?.idUsuario,
     };
 
-    const response = await post('viajes', viajeAPublicar);
+    console.log('Datos del viaje a publicar:', viajeAPublicar);
+
+    const response = await post('viaje', viajeAPublicar);
 
     if (response && response.status === 201) {
       alert('¡Viaje publicado con éxito!');
@@ -176,7 +178,10 @@ export const PublicarViaje = () => {
                         key={l.id}
                         onClick={() => {
                           setLocalidadOrigen(l.nombre);
-                          setFormData({ ...formData, viajeOrigen: l.nombre });
+                          setFormData({
+                            ...formData,
+                            viajeOrigen: String(l.id),
+                          });
                           setMostrarSugerenciaOrigen(false);
                         }}
                       >
@@ -214,7 +219,10 @@ export const PublicarViaje = () => {
                         key={l.id}
                         onClick={() => {
                           setLocalidadDestino(l.nombre);
-                          setFormData({ ...formData, viajeDestino: l.nombre });
+                          setFormData({
+                            ...formData,
+                            viajeDestino: String(l.id),
+                          });
                           setMostrarSugerenciaDestino(false);
                         }}
                       >
