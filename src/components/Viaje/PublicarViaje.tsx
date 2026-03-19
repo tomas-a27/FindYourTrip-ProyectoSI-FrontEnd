@@ -30,6 +30,7 @@ export const PublicarViaje = () => {
     l.nombre.toLowerCase().startsWith(localidadDestino.toLowerCase()),
   );
 
+  const [cantAsientosDisponibles, setCantAsientosDisponibles] = useState(1);
   const [formData, setFormData] = useState({
     viajeFecha: '',
     viajeHorario: '',
@@ -38,7 +39,7 @@ export const PublicarViaje = () => {
     viajeAceptaMascotas: false,
     viajeComentario: '',
     viajeOrigen: localidadOrigen,
-    viajeDestino: '',
+    viajeDestino: localidadDestino,
     vehiculo: '',
   });
 
@@ -131,9 +132,13 @@ export const PublicarViaje = () => {
               className="form-select"
               required
               value={formData.vehiculo}
-              onChange={(e) =>
-                setFormData({ ...formData, vehiculo: e.target.value })
-              }
+              onChange={(e) => {
+                const selectedVehiculo = usuarioCompleto.vehiculos?.find(
+                  (v) => v.patente === e.target.value,
+                );
+                setFormData({ ...formData, vehiculo: e.target.value });
+                setCantAsientosDisponibles(selectedVehiculo?.cantLugares || 1);
+              }}
             >
               <option value="">Seleccioná tu auto...</option>
               {usuarioCompleto.vehiculos?.map((v) => (
@@ -152,7 +157,7 @@ export const PublicarViaje = () => {
                 type="text"
                 required
                 className="form-control"
-                placeholder="Hacia..."
+                placeholder="Ej: Rosario"
                 value={localidadOrigen}
                 onChange={(e) => {
                   setLocalidadOrigen(e.target.value);
@@ -190,7 +195,7 @@ export const PublicarViaje = () => {
                 type="text"
                 required
                 className="form-control"
-                placeholder="Hacia..."
+                placeholder="Ej: Buenos Aires"
                 value={localidadDestino}
                 onChange={(e) => {
                   setLocalidadDestino(e.target.value);
@@ -256,6 +261,7 @@ export const PublicarViaje = () => {
                 type="number"
                 className="form-control"
                 min="1"
+                max={cantAsientosDisponibles}
                 required
                 onChange={(e) =>
                   setFormData({
@@ -268,7 +274,9 @@ export const PublicarViaje = () => {
             <div className="col-6 mb-3">
               <label className="form-label fw-bold">Precio ($)</label>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 className="form-control"
                 min="0"
                 required
@@ -303,8 +311,10 @@ export const PublicarViaje = () => {
             <label className="form-label fw-bold">Comentarios (opcional)</label>
             <textarea
               className="form-control"
-              rows={2}
+              rows={3}
+              style={{ resize: 'none' }}
               placeholder="Ej: No se puede fumar..."
+              maxLength={1000}
               onChange={(e) =>
                 setFormData({ ...formData, viajeComentario: e.target.value })
               }
