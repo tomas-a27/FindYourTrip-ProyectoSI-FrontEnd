@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { get } from '../../../api/dataManager';
 import { UsuarioDTO } from '../../../entities/entities';
 import { AprobarConductor } from './AprobarConductor'; // <-- Importamos el modal
@@ -6,6 +7,7 @@ import { AprobarConductor } from './AprobarConductor'; // <-- Importamos el moda
 export const VerSolicitudesConductor = () => {
   const { data, loading, error } = get<UsuarioDTO>('usuario/conductoresPendientes');
   const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
+  
   
   // Estado para controlar qué usuario se muestra en el Pop-Up
   const [usuarioSeleccionadoId, setUsuarioSeleccionadoId] = useState<number | null>(null);
@@ -39,6 +41,17 @@ export const VerSolicitudesConductor = () => {
 
   return (
     <div className="container-fluid mt-5 px-5 position-relative">
+
+      <div className="mb-3">
+        <Link
+          to="/admin-home" 
+          className="btn d-flex align-items-center text-success fw-bold p-0 text-decoration-none"
+          style={{ border: 'none', background: 'none' }}
+        >
+          <i className="bi bi-arrow-left-circle-fill fs-4 me-2"></i>
+          Volver al Menú
+        </Link>
+      </div>
 
       <h2 style={{ color: '#2d4a2d' }}>
         Solicitudes

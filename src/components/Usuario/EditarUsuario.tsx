@@ -18,6 +18,7 @@ export const EditarUsuario = () => {
     contrasenaUsuarioConfirmacion: '',
     contrasenaUsuarioActual: '',
     generoUsuario: '',
+    tipoUsuario: '',
   });
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export const EditarUsuario = () => {
         contrasenaUsuarioConfirmacion: data.contrasenaUsuarioConfirmacion,
         contrasenaUsuarioActual: data.contrasenaUsuarioActual,
         generoUsuario: data.generoUsuario,
+        tipoUsuario: data.tipoUsuario,
       });
     }
   }, [data]);
@@ -49,7 +51,7 @@ export const EditarUsuario = () => {
 
   const esTelValido = nuevoValor.length >= 8 && !isNaN(Number(nuevoValor.replace(/\s/g, "")));
   const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoValor);
-  
+
   const esPassNuevaLarga = passNueva.length >= 8;
   const contrasenasCoinciden = passNueva === passConfirmacion && passNueva !== '';
 
@@ -171,12 +173,14 @@ export const EditarUsuario = () => {
           {renderCampo('Email', usuarioToUpdate.email, 'email')}
 
           <div className="modificar-pass-container d-flex justify-content-between mt-4">
-            <button
-              className="btn btn-outline-secondary"
-              onClick={() => navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)}
-            >
-              Ver mis vehículos
-            </button>
+            {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)}
+              >
+                Ver mis vehículos
+              </button>
+            )}
 
             <button
               className="btn btn-outline-danger"
@@ -273,8 +277,8 @@ export const EditarUsuario = () => {
               )}
 
               <div className="d-grid mt-2">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-success py-2 fw-bold shadow-sm"
                   disabled={botonDeshabilitado()}
                 >
@@ -341,8 +345,8 @@ export const EditarUsuario = () => {
               </div>
 
               <div className="d-grid mt-2">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-success py-2 fw-bold shadow-sm"
                   disabled={!esPassNuevaLarga || !contrasenasCoinciden || !passActual}
                 >
@@ -363,8 +367,8 @@ export const EditarUsuario = () => {
           <div className="text-muted small fw-bold">{label}</div>
           <div className="fs-5 text-dark">{valor}</div>
         </div>
-        <button 
-          onClick={() => handleEditar(campo)} 
+        <button
+          onClick={() => handleEditar(campo)}
           className="btn btn-light rounded-circle shadow-sm"
           style={{ width: '40px', height: '40px' }}
         >
