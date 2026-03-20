@@ -16,6 +16,9 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
   const [estadoAccion, setEstadoAccion] = useState<string>("");
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
 
+  // NUEVO: Estado para controlar si se muestra la licencia en pantalla completa
+  const [mostrarLicenciaAmpliada, setMostrarLicenciaAmpliada] = useState(false);
+
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
 
@@ -112,14 +115,44 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
 
             <hr/>
 
-            <p><b>Nro Licencia:</b> {usuario.nroLicenciaConductorUsuario}</p>
+            <div className="row">
+              <div className="col-md-6">
+                <p><b>Nro Licencia:</b> {usuario.nroLicenciaConductorUsuario}</p>
+                <p>
+                  <b>Vencimiento Licencia:</b>{" "}
+                  {usuario.vigenciaLicenciaConductorUsuario
+                    ? new Date(usuario.vigenciaLicenciaConductorUsuario).toLocaleDateString()
+                    : "No informado"}
+                </p>
+              </div>
 
-            <p>
-              <b>Vencimiento Licencia:</b>{" "}
-              {usuario.vigenciaLicenciaConductorUsuario
-                ? new Date(usuario.vigenciaLicenciaConductorUsuario).toLocaleDateString()
-                : "No informado"}
-            </p>
+              {/* --- ACÁ INYECTAMOS LA MINIATURA DE LA LICENCIA --- */}
+              <div className="col-md-6 text-center border-start">
+                <p className="fw-bold mb-2">Foto de la Licencia:</p>
+                {usuario.fotoLicenciaConductorUsuario ? (
+                  <div 
+                    className="position-relative d-inline-block shadow-sm" 
+                    style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
+                    onClick={() => setMostrarLicenciaAmpliada(true)}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    <img
+                      src={bufferToBase64(usuario.fotoLicenciaConductorUsuario)}
+                      alt="Licencia"
+                      className="rounded border"
+                      style={{ width: '160px', height: '100px', objectFit: 'cover' }}
+                    />
+                    <div className="position-absolute bottom-0 w-100 bg-dark bg-opacity-75 text-white py-1 rounded-bottom" style={{ fontSize: '0.75rem' }}>
+                      <i className="bi bi-zoom-in me-1"></i> Ampliar
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-muted fst-italic">No adjuntó foto de licencia</p>
+                )}
+              </div>
+              {/* -------------------------------------------------- */}
+            </div>
 
             <hr/>
 
@@ -141,6 +174,29 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
           </div>
         </div>
       </div>
+
+      {/* --- NUEVO: MODAL PARA AMPLIAR LA LICENCIA --- */}
+      {mostrarLicenciaAmpliada && (
+        <div className="modal show fade modal-overlay d-block" style={{ backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 1060 }} onClick={() => setMostrarLicenciaAmpliada(false)}>
+          <button 
+            className="position-absolute top-0 end-0 m-4 bg-transparent border-0 text-white fs-1" 
+            onClick={() => setMostrarLicenciaAmpliada(false)}
+            style={{ cursor: 'pointer' }}
+          >
+            &times;
+          </button>
+          <div className="modal-dialog modal-dialog-centered modal-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content bg-transparent border-0 d-flex justify-content-center align-items-center">
+              <img
+                src={bufferToBase64(usuario.fotoLicenciaConductorUsuario)}
+                alt="Licencia Ampliada"
+                className="img-fluid rounded shadow-lg"
+                style={{ maxHeight: '85vh', objectFit: 'contain' }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {mostrarModalConfirmacion && (
         <div className="modal show fade modal-overlay d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
