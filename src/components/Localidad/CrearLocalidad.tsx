@@ -3,17 +3,18 @@ import { useNavigate, Link } from 'react-router-dom';
 import { post } from '../../api/dataManager.ts';
 
 export function CrearLocalidad() {
+  const navegate = useNavigate();
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const [newLocalidad, setNewLocalidad] = useState({
     nombre: '',
     codPostal: '',
   });
 
-  const navegate = useNavigate();
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await post('localidad', newLocalidad);
-    navegate('/mostrar-localidad');
+    setShowSuccess(true);
   };
   return (
     <div className="container my-5">
@@ -86,6 +87,24 @@ export function CrearLocalidad() {
           </div>
         </div>
       </div>
+
+      {showSuccess && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <button
+              className="btn-cerrar"
+              onClick={() => {
+                setShowSuccess(false);
+                navegate('/mostrar-localidad');
+              }}
+            >
+              X
+            </button>
+
+            <h5 className="mt-3">¡Localidad registrada con éxito!</h5>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ export function EditarLocalidad() {
   const { id } = useParams();
   const navegate = useNavigate();
   const { data } = getOne<LocalidadDTO>('localidad/' + id);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [localidadToUpdate, setlocalidadToUpdate] = useState<LocalidadDTO>({
     id: 0,
@@ -28,7 +29,7 @@ export function EditarLocalidad() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await patch(`localidad/${localidadToUpdate.id}`, localidadToUpdate);
-    navegate('/mostrar-localidad');
+    setShowSuccess(true);
   };
   return (
     <div className="container my-5">
@@ -104,6 +105,24 @@ export function EditarLocalidad() {
           </div>
         </div>
       </div>
+
+      {showSuccess && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <button
+              className="btn-cerrar"
+              onClick={() => {
+                setShowSuccess(false);
+                navegate('/mostrar-localidad');
+              }}
+            >
+              X
+            </button>
+
+            <h5 className="mt-3">Se editó la localidad con éxito</h5>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
