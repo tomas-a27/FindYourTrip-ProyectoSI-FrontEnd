@@ -33,6 +33,8 @@ export const EditarUsuario = () => {
         tipoUsuario: data.tipoUsuario,
         tipoDocumento: data.tipoDocumento,
         nroDocumento: data.nroDocumento,
+        vigenciaLicenciaConductorUsuario: data.vigenciaLicenciaConductorUsuario,
+        fotoPerfil: data.fotoPerfil,
 
         contrasenaUsuario: '',
         contrasenaUsuarioConfirmacion: '',
@@ -46,6 +48,8 @@ export const EditarUsuario = () => {
   const [nuevoApellido, setNuevoApellido] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
+  const [fotoPerfilTemp, setFotoPerfilTemp] = useState<File | null>(null);
 
   const [mostrarModalPass, setMostrarModalPass] = useState(false);
   const [passActual, setPassActual] = useState('');
@@ -76,39 +80,63 @@ export const EditarUsuario = () => {
     setNuevoValor('');
     setNuevoApellido('');
     setError('');
+    setFotoPerfilTemp(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validar antes de enviar
     if (campoSeleccionado === 'telefono' && !esTelValido) return;
     if (campoSeleccionado === 'email' && !esEmailValido) return;
 
-    let dataPatch: any;
-
-    const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, ...dataBase } = usuarioToUpdate;
-
-    if (campoSeleccionado === 'nombreCompleto') {
-      dataPatch = {
-        ...dataBase,
-        nombreUsuario: nuevoValor,
-        apellidoUsuario: nuevoApellido,
-      };
-    } else {
-      dataPatch = {
-        ...dataBase,
-        [campoSeleccionado]: nuevoValor,
-      };
-    }
+    const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, fotoPerfil, ...dataBase } = usuarioToUpdate;
 
     try {
-      await put(`usuario/${usuarioToUpdate.idUsuario}`, dataPatch);
+      if (campoSeleccionado === 'fotoPerfil') {
+        const formData = new FormData();
 
-      setUsuarioToUpdate({
-        ...usuarioToUpdate,
-        ...dataPatch,
-      });
+        Object.entries(dataBase).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            formData.append(key, String(value));
+          }
+        });
+
+        if (fotoPerfilTemp) {
+          formData.append('fotoPerfil', fotoPerfilTemp);
+        }
+
+        await put(`usuario/${usuarioToUpdate.idUsuario}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        if (fotoPerfilTemp) {
+          setFotoPerfil(fotoPerfilTemp);
+          setFotoPerfilTemp(null);
+        }
+      } else {
+        let dataPatch: any;
+
+        if (campoSeleccionado === 'nombreCompleto') {
+          dataPatch = {
+            ...dataBase,
+            nombreUsuario: nuevoValor,
+            apellidoUsuario: nuevoApellido,
+          };
+        } else {
+          dataPatch = {
+            ...dataBase,
+            [campoSeleccionado]: nuevoValor,
+          };
+        }
+
+        await put(`usuario/${usuarioToUpdate.idUsuario}`, dataPatch);
+
+        setUsuarioToUpdate({
+          ...usuarioToUpdate,
+          ...dataPatch,
+        });
+      }
+
       setSuccess('El campo se actualizó correctamente');
       cerrarModal();
     } catch (err: any) {
@@ -125,7 +153,7 @@ export const EditarUsuario = () => {
     }
 
     try {
-      const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, ...dataBase } = usuarioToUpdate;
+      const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, fotoPerfil, ...dataBase } = usuarioToUpdate;
 
       await put(`usuario/${usuarioToUpdate.idUsuario}`, {
         ...dataBase,
@@ -154,6 +182,16 @@ export const EditarUsuario = () => {
     return false;
   };
 
+  const bufferToBase64 = (buffer: any) => {
+    if (!buffer?.data) return '';
+
+    const binary = buffer.data
+      .map((byte: number) => String.fromCharCode(byte))
+      .join('');
+
+    return `data:image/jpeg;base64,${btoa(binary)}`;
+  };
+
   return (
     <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
       <div className="editar-usuario-wrapper">
@@ -173,6 +211,36 @@ export const EditarUsuario = () => {
         )}
 
         <div className="editar-usuario-card">
+          {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
+            <div className="text-center mb-4">
+              <img
+                src={
+                  fotoPerfilTemp
+                    ? URL.createObjectURL(fotoPerfilTemp)
+                    : fotoPerfil
+                      ? URL.createObjectURL(fotoPerfil)
+                      : usuarioToUpdate.fotoPerfil
+                        ? bufferToBase64(usuarioToUpdate.fotoPerfil)
+                        : ''
+                }
+                alt="Foto de perfil"
+                className='usuario-foto-grande mb-0'
+              />
+
+              <div className="mt-0">
+                <button
+                  className="btn btn-light btn-sm"
+                  onClick={() => {
+                    setCampoSeleccionado('fotoPerfil');
+                    setFotoPerfil(null);
+                  }}
+                >
+                  Renovar foto
+                </button>
+              </div>
+            </div>
+          )}
+
           {renderCampo(
             'Nombre',
             `${usuarioToUpdate.nombreUsuario} ${usuarioToUpdate.apellidoUsuario}`,
@@ -181,6 +249,18 @@ export const EditarUsuario = () => {
           {renderCampo('Género', usuarioToUpdate.generoUsuario, 'generoUsuario')}
           {renderCampo('Teléfono', usuarioToUpdate.telefono, 'telefono')}
           {renderCampo('Email', usuarioToUpdate.email, 'email')}
+
+          {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
+            <>
+              {renderCampo(
+                'Fecha vencimiento licencia',
+                usuarioToUpdate.vigenciaLicenciaConductorUsuario
+                  ? new Date(usuarioToUpdate.vigenciaLicenciaConductorUsuario).toISOString().split('T')[0]
+                  : '',
+                'vigenciaLicenciaConductorUsuario'
+              )}
+            </>
+          )}
 
           <div className="modificar-pass-container d-flex justify-content-between mt-4">
             {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
@@ -277,6 +357,22 @@ export const EditarUsuario = () => {
                     </div>
                   )}
                 </div>
+              ) : campoSeleccionado === 'fotoPerfil' ? (
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="form-control mb-4 p-2"
+                  onChange={(e) => setFotoPerfilTemp(e.target.files?.[0] || null)}
+                  required
+                />
+              ) : campoSeleccionado === 'vigenciaLicenciaConductorUsuario' ? (
+                <input
+                  type="date"
+                  className="form-control mb-4 p-2"
+                  value={nuevoValor}
+                  onChange={(e) => setNuevoValor(e.target.value)}
+                  required
+                />
               ) : (
                 <input
                   className="form-control mb-4 p-2"
