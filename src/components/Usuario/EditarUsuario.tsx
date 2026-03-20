@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getOne, patch } from '../../api/dataManager';
+import { getOne, put } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
 
 export const EditarUsuario = () => {
@@ -29,11 +29,14 @@ export const EditarUsuario = () => {
         apellidoUsuario: data.apellidoUsuario,
         email: data.email,
         telefono: data.telefono,
-        contrasenaUsuario: data.contrasenaUsuario,
-        contrasenaUsuarioConfirmacion: data.contrasenaUsuarioConfirmacion,
-        contrasenaUsuarioActual: data.contrasenaUsuarioActual,
         generoUsuario: data.generoUsuario,
         tipoUsuario: data.tipoUsuario,
+        tipoDocumento: data.tipoDocumento,
+        nroDocumento: data.nroDocumento,
+
+        contrasenaUsuario: '',
+        contrasenaUsuarioConfirmacion: '',
+        contrasenaUsuarioActual: '',
       });
     }
   }, [data]);
@@ -84,19 +87,23 @@ export const EditarUsuario = () => {
 
     let dataPatch: any;
 
+    const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, ...dataBase } = usuarioToUpdate;
+
     if (campoSeleccionado === 'nombreCompleto') {
       dataPatch = {
+        ...dataBase,
         nombreUsuario: nuevoValor,
         apellidoUsuario: nuevoApellido,
       };
     } else {
       dataPatch = {
+        ...dataBase,
         [campoSeleccionado]: nuevoValor,
       };
     }
 
     try {
-      await patch(`usuario/${usuarioToUpdate.idUsuario}`, dataPatch);
+      await put(`usuario/${usuarioToUpdate.idUsuario}`, dataPatch);
 
       setUsuarioToUpdate({
         ...usuarioToUpdate,
@@ -118,7 +125,10 @@ export const EditarUsuario = () => {
     }
 
     try {
-      await patch(`usuario/${usuarioToUpdate.idUsuario}`, {
+      const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, ...dataBase } = usuarioToUpdate;
+
+      await put(`usuario/${usuarioToUpdate.idUsuario}`, {
+        ...dataBase,
         contrasenaUsuarioActual: passActual,
         contrasenaUsuario: passNueva,
         contrasenaUsuarioConfirmacion: passConfirmacion,
