@@ -6,7 +6,7 @@ import {
   Outlet,
 } from 'react-router-dom';
 import { RootLayout } from './layout/RootLayout.tsx';
-import { AdminLayout } from './layout/AdminLayout.tsx'; 
+import { AdminLayout } from './layout/AdminLayout.tsx';
 
 import { Inicio } from './components/Home/Inicio.tsx';
 import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.tsx';
@@ -27,6 +27,8 @@ import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
 import { VerSolicitudesConductor } from './components/Usuario/Admin/VerSolicitudesConductor.tsx';
+import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
+import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
 
 const AuthLayout = () => <Outlet />;
 
@@ -34,7 +36,6 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/">
-        
         {/*  RUTAS EN BLANCO (Sin Navbar, Sin Footer) */}
         <Route element={<AuthLayout />}>
           <Route index element={<PantallaInicioUsuario />} />
@@ -45,7 +46,10 @@ function App() {
         {/* RUTAS DEL ADMINISTRADOR (NavBar) */}
         <Route element={<AdminLayout />}>
           <Route path="admin-home" element={<InicioAdmin />} />
-          <Route path="aprobar-conductores" element={<VerSolicitudesConductor />} />
+          <Route
+            path="aprobar-conductores"
+            element={<VerSolicitudesConductor />}
+          />
           {/* Rutas de Localidad */}
           <Route path="crear-localidad" element={<CrearLocalidad />} />
           <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
@@ -55,11 +59,12 @@ function App() {
         {/*RUTAS DEL USUARIO (Footer) */}
         <Route element={<RootLayout />}>
           <Route path="home" element={<Inicio />} />
-          
+
           <Route path="publicar-viaje" element={<PublicarViaje />} />
           <Route path="solicitar-conductor" element={<SolicitarConductor />} />
+          <Route path="buscar-viaje" element={<BuscarViaje />} />
+          <Route path="mostrar-viaje" element={<MostrarViaje />} />
 
-          
           {/* Rutas de Vehiculo */}
           <Route path="mostrar-vehiculo/:id" element={<MostrarVehiculo />} />
           <Route path="crear-vehiculo" element={<CrearVehiculo />} />
@@ -67,7 +72,6 @@ function App() {
 
           <Route path="editar-usuario/:id" element={<EditarUsuario />} />
         </Route>
-
       </Route>,
     ),
   );
