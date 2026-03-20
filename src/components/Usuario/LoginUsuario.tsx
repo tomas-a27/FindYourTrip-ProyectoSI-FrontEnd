@@ -85,7 +85,7 @@ export const LoginUsuario = () => {
               )}
             </div>
             
-            <div className="mb-4">
+            <div className="mb-2">
               <label className="form-label text-muted fw-bold">Contraseña</label>
               <input 
                 type="password" 
@@ -96,7 +96,14 @@ export const LoginUsuario = () => {
               />
             </div>
             
-            <div className="d-grid gap-2 mt-4">
+            {/* NUEVO: Enlace de recuperar contraseña */}
+            <div className="d-flex justify-content-end mb-4">
+              <Link to="/recuperar-contrasena" className="text-decoration-none small" style={{ color: '#6fb86f', fontWeight: 'bold' }}>
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
+            
+            <div className="d-grid gap-2">
               <button 
                 type="submit" 
                 className="btn btn-pastel-green py-2 fw-bold fs-5 shadow-sm"

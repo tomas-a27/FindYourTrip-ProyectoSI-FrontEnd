@@ -23,6 +23,7 @@ import { EditarVehiculo } from './components/Vehiculo/EditarVehiculo.tsx';
 import { CrearUsuario } from './components/Usuario/CrearUsuario.tsx';
 import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
 import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
+import { RecuperarContrasena } from './components/Usuario/RecuperarContrasena.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
@@ -40,6 +41,7 @@ function App() {
           <Route index element={<PantallaInicioUsuario />} />
           <Route path="login" element={<LoginUsuario />} />
           <Route path="crear-usuario" element={<CrearUsuario />} />
+          <Route path="recuperar-contrasena" element={<RecuperarContrasena />} />
         </Route>
 
         {/* RUTAS DEL ADMINISTRADOR (NavBar) */}
