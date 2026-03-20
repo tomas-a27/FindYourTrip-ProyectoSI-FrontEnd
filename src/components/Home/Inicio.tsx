@@ -26,7 +26,7 @@ export const Inicio = () => {
       navigate('/publicar-viaje');
     } else if (isPendiente) {
       // Si está pendiente de aprobacion, le mostramos el mensaje y NO lo dejamos pasar
-      alert('Usted podrá publicar un viaje una vez que su solicitud sea aprobada.');
+      alert('Usted podrá publicar un viaje una vez que su solicitud para ser conductor esté aprobada.');
     } else {
       // Si es pasajero, lo mandamos al formulario
       navigate('/solicitar-conductor');

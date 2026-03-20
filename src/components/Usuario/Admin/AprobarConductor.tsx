@@ -200,7 +200,7 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                     type="button"
                     className="btn btn-success py-1 fw-bold"
                     style={{ borderRadius: '10px' }}
-                    onClick={handleCerrarExito} // Este ya llama a onSuccess y cierra todo
+                    onClick={handleCerrarExito} 
                   >
                     Volver al listado
                   </button>
