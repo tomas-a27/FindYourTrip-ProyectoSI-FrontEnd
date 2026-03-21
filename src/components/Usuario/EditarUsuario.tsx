@@ -195,6 +195,17 @@ export const EditarUsuario = () => {
   return (
     <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
       <div className="editar-usuario-wrapper">
+
+        <div className="mb-4 d-flex align-items-center"
+          onClick={() => navigate(`/mi-cuenta/${usuarioToUpdate.idUsuario}`)}
+          style={{ cursor: 'pointer' }}>
+          <div className="bg-success rounded-circle d-flex align-items-center justify-content-center me-2"
+            style={{ width: '24px', height: '24px' }}>
+            <i className="bi bi-arrow-left text-white fs-9"></i>
+          </div>
+          <span className="fw-bold text-success fs-7">Volver a Mi Cuenta</span>
+        </div>
+        
         <h2 className="text-center mb-3">Editar datos de cuenta</h2>
 
         {error && <div className="alert alert-danger">{error}</div>}

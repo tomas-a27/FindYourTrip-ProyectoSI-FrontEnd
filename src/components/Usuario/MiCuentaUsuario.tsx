@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { getOne } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
 
 export const MiCuenta = () => {
+  const [mostrarConfirmarLogout, setMostrarConfirmarLogout] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -65,17 +67,17 @@ export const MiCuenta = () => {
               </div>
             </div>
 
-            {/* LÓGICA CONDICIONAL: Foto o Botón */}
+            {/* condicional: muestra foto si es conductor, boton si es pasajero */}
             <div className="ms-3 text-end" style={{ minWidth: esConductor ? '90px' : '120px' }}>
               {esConductor ? (
-                /* Muestra la FOTO si es conductor */
+                /* Muestra foto */
                 <img
                   src={usuario.fotoPerfil ? bufferToBase64(usuario.fotoPerfil) : 'https://via.placeholder.com/150'}
                   className="usuario-foto-grande shadow-sm border border-2 border-white"
-                  style={{ width: '85px', height: '85px', objectFit: 'cover' }}
+                  style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                 />
               ) : (
-                /* Muestra el BOTÓN si es pasajero */
+                /* Muestra botón */
                 <button
                   className="btn btn-pastel-green btn-sm rounded-pill px-3 shadow-sm text-wrap"
                   style={{ maxWidth: '190px', fontSize: '16px' }}
@@ -161,7 +163,7 @@ export const MiCuenta = () => {
 
             {/* BOTÓN CERRAR SESIÓN */}
             <button
-              onClick={handleLogout}
+              onClick={() => setMostrarConfirmarLogout(true)}
               className="btn btn-light-cancel w-100 mt-4 py-3 fw-bold rounded-4 shadow-sm"
             >
               Cerrar Sesión
@@ -169,6 +171,43 @@ export const MiCuenta = () => {
           </div>
         </div>
       </div>
+
+      {/* MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN */}
+      {mostrarConfirmarLogout && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            {/* Botón X */}
+            <button
+              onClick={() => setMostrarConfirmarLogout(false)}
+              className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted"
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
+
+            <div className="mb-1">
+              <i className="bi bi-box-arrow-right text-danger" style={{ fontSize: '3rem' }}></i>
+            </div>
+
+            <h5 className="fw-bold mb-3">¿Está seguro que desea cerrar sesión?</h5>
+
+            <div className="d-grid gap-2">
+              <button
+                onClick={handleLogout}
+                className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm"
+              >
+                Sí, cerrar sesión
+              </button>
+              <button
+                onClick={() => setMostrarConfirmarLogout(false)}
+                className="btn btn-light py-2 fw-bold rounded-3 border"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
