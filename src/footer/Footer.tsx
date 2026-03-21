@@ -32,7 +32,7 @@ export function Footer() {
           <span className="footer-text fw-semibold">Mis viajes</span>
         </Link>
 
-        <Link to={`/editar-usuario/${usuario.idUsuario}`} className="footer-item">
+        <Link to={`/mi-cuenta/${usuario.idUsuario}`} className="footer-item">
           <i className="bi bi-person-circle footer-icon"></i>
           <span className="footer-text fw-semibold">Mi cuenta</span>
         </Link>

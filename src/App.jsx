@@ -23,6 +23,7 @@ import { EditarVehiculo } from './components/Vehiculo/EditarVehiculo.tsx';
 import { CrearUsuario } from './components/Usuario/CrearUsuario.tsx';
 import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
 import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
+import { MiCuenta } from './components/Usuario/MiCuentaUsuario.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
@@ -55,7 +56,7 @@ function App() {
         {/*RUTAS DEL USUARIO (Footer) */}
         <Route element={<RootLayout />}>
           <Route path="home" element={<Inicio />} />
-          
+          <Route path="mi-cuenta/:id" element={<MiCuenta />} />
           <Route path="publicar-viaje" element={<PublicarViaje />} />
           <Route path="solicitar-conductor" element={<SolicitarConductor />} />
 
