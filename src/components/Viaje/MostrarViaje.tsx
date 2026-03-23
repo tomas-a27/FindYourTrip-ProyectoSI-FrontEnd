@@ -1,7 +1,7 @@
 import { useState, useEffect, use } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ViajeDTO } from '../../entities/entities.ts';
-import { get } from '../../api/dataManager.ts';
+import { get, post } from '../../api/dataManager.ts';
 
 export const MostrarViaje = () => {
   const userJson = localStorage.getItem('usuario');
@@ -18,28 +18,44 @@ export const MostrarViaje = () => {
   const location = useLocation();
 
   const query = location.state || 'viaje/mostrar-viaje';
-  console.log('Query en MostrarViaje:', query);
 
   const {
     data: viajes,
     loading: loadingViajes,
     error: errorViajes,
-  } = get<ViajeDTO>('viaje/mostrar-viaje');
+  } = get<ViajeDTO>(query);
+
+  const [solicitudViaje, setSolicitudViaje] = useState({
+    viaje: 0,
+    usuario: userLocal?.idUsuario,
+  });
+
+  const handleSubmit = async (viajeId: number) => {
+    setSolicitudViaje({
+      viaje: viajeId,
+      usuario: userLocal?.idUsuario,
+    });
+
+    post('viaje/solicitar-viaje', solicitudViaje);
+  };
   return (
     <div>
-      <div>
+      <div className=" mb-2">
         <div className="container mt-5 row">
-          <h2 className="">Viajes Publicados</h2>
-          <Link to="/buscar-viaje" className="btn btn-secondary mb-4">
+          <h2 className="col-9">Viajes Publicados</h2>
+          <Link
+            to="/buscar-viaje"
+            className="btn btn-secondary mb-4  col-3 text-white fw-bold"
+          >
             Volver
           </Link>
         </div>
-        <div className="row">
-          <div className="">
-            <label>Origen</label>
+        <div className="row container mt-2 items-align-center">
+          <div className="col-6">
+            <label className="fw-bold">Origen:</label>
           </div>
-          <div className="col-md-6">
-            <label>Destino</label>
+          <div className="col-6">
+            <label className="fw-bold">Destino:</label>
           </div>
         </div>
       </div>
@@ -51,10 +67,7 @@ export const MostrarViaje = () => {
           <div className="row">
             {viajes.map((viaje) => (
               <div key={viaje.viajeId} className="col-md-6 mb-4">
-                <div
-                  className="card border-1 shadow-sm p-3"
-                  style={{ borderRadius: '20px', backgroundColor: '#fff' }}
-                >
+                <div className="card border-2 shadow-sm p-3 rounded-4">
                   <div className="card-body p-2">
                     {/* Sección Superior: Perfil y Datos Principales */}
                     <div className="d-flex justify-content-between align-items-start mb-3">
@@ -177,12 +190,13 @@ export const MostrarViaje = () => {
 
                     {/* Botón de Acción */}
                     <button
-                      type="submit"
+                      type="button"
                       className="btn btn-success w-100 py-3 fw-bold border-0"
                       style={{
                         backgroundColor: '#2d4a2d',
                         borderRadius: '15px',
                       }}
+                      onClick={() => handleSubmit(viaje.viajeId)}
                     >
                       Enviar solicitud
                     </button>
