@@ -5,10 +5,8 @@ import { get } from '../../api/dataManager.ts';
 
 export const BuscarViaje = () => {
   const navegate = useNavigate();
-  /*
   const userJson = localStorage.getItem('usuario');
   const userLocal = userJson ? JSON.parse(userJson) : null;
-*/
 
   const {
     data: localidades,
@@ -49,9 +47,19 @@ export const BuscarViaje = () => {
     params.append('viajeFecha', formData.viajeFecha);
     params.append('generoConductor', formData.generoConductor);
     params.append('mascota', String(formData.mascota));
+    params.append('usuarioId', userLocal?.idUsuario); // Reemplazar con userLocal?.idUsuario cuando se implemente autenticación
+
+    console.log(viajeOrigen);
+    console.log(viajeDestino);
 
     const query = `viaje/mostrar-viaje?${params.toString()}`;
-    navegate('/mostrar-viaje', { state: query });
+    navegate('/mostrar-viaje', {
+      state: {
+        query,
+        localidadOrigen: viajeOrigen,
+        localidadDestino: viajeDestino,
+      },
+    });
   };
   return (
     <div className="container mt-5 mb-5">

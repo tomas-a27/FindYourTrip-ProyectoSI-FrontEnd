@@ -2,6 +2,7 @@ import { useState, useEffect, use } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ViajeDTO } from '../../entities/entities.ts';
 import { get, post } from '../../api/dataManager.ts';
+import { useNavigate } from 'react-router-dom';
 
 export const MostrarViaje = () => {
   const userJson = localStorage.getItem('usuario');
@@ -17,7 +18,9 @@ export const MostrarViaje = () => {
   };
   const location = useLocation();
 
-  const query = location.state || 'viaje/mostrar-viaje';
+  const navigate = useNavigate();
+  const query = location.state?.query || 'viaje/mostrar-viaje';
+  console.log('Query en MostrarViaje:', query);
 
   const {
     data: viajes,
@@ -37,6 +40,7 @@ export const MostrarViaje = () => {
     });
 
     post('viaje/solicitar-viaje', solicitudViaje);
+    //navigate('/home');
   };
   return (
     <div>
@@ -52,10 +56,12 @@ export const MostrarViaje = () => {
         </div>
         <div className="row container mt-2 items-align-center">
           <div className="col-6">
-            <label className="fw-bold">Origen:</label>
+            <label className="fw-bold">Origen: </label>
+            <span> {location.state?.localidadOrigen}</span>
           </div>
           <div className="col-6">
-            <label className="fw-bold">Destino:</label>
+            <label className="fw-bold">Destino: </label>
+            <span> {location.state?.localidadDestino}</span>
           </div>
         </div>
       </div>
@@ -67,7 +73,10 @@ export const MostrarViaje = () => {
           <div className="row">
             {viajes.map((viaje) => (
               <div key={viaje.viajeId} className="col-md-6 mb-4">
-                <div className="card border-2 shadow-sm p-3 rounded-4">
+                <div
+                  className="card border-1 shadow-sm p-3"
+                  style={{ borderRadius: '20px', backgroundColor: '#fff' }}
+                >
                   <div className="card-body p-2">
                     {/* Sección Superior: Perfil y Datos Principales */}
                     <div className="d-flex justify-content-between align-items-start mb-3">
