@@ -8,6 +8,9 @@ import {
 import { RootLayout } from './layout/RootLayout.tsx';
 import { AdminLayout } from './layout/AdminLayout.tsx';
 
+import PrivateRoute from './components/PrivateRoute'
+import ProtectedRoute from './auth/ProtectedRoute'
+
 import { Inicio } from './components/Home/Inicio.tsx';
 import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.tsx';
 import { InicioAdmin } from './components/Home/InicioAdmin.tsx';
@@ -44,34 +47,149 @@ function App() {
           <Route path="crear-usuario" element={<CrearUsuario />} />
         </Route>
 
-        {/* RUTAS DEL ADMINISTRADOR (NavBar) */}
-        <Route element={<AdminLayout />}>
-          <Route path="admin-home" element={<InicioAdmin />} />
-          <Route
-            path="aprobar-conductores"
-            element={<VerSolicitudesConductor />}
-          />
-          {/* Rutas de Localidad */}
-          <Route path="crear-localidad" element={<CrearLocalidad />} />
-          <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
-          <Route path="editar-localidad/:id" element={<EditarLocalidad />} />
-        </Route>
+        <Route element={<PrivateRoute />}>
+          {/* RUTAS DEL ADMINISTRADOR (NavBar) */}
+          <Route element={<AdminLayout />}>
+            <Route
+              path="admin-home"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <InicioAdmin />
+                </ProtectedRoute>
+              }
+            />
 
-        {/*RUTAS DEL USUARIO (Footer) */}
-        <Route element={<RootLayout />}>
-          <Route path="home" element={<Inicio />} />
-          <Route path="mi-cuenta/:id" element={<MiCuenta />} />
-          <Route path="publicar-viaje" element={<PublicarViaje />} />
-          <Route path="solicitar-conductor" element={<SolicitarConductor />} />
-          <Route path="buscar-viaje" element={<BuscarViaje />} />
-          <Route path="mostrar-viaje" element={<MostrarViaje />} />
+            <Route
+              path="aprobar-conductores"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <VerSolicitudesConductor />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Rutas de Vehiculo */}
-          <Route path="mostrar-vehiculo/:id" element={<MostrarVehiculo />} />
-          <Route path="crear-vehiculo" element={<CrearVehiculo />} />
-          <Route path="editar-vehiculo/:id" element={<EditarVehiculo />} />
+            {/* Rutas de Localidad */}
+            <Route
+              path="crear-localidad"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <CrearLocalidad />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route path="editar-usuario/:id" element={<EditarUsuario />} />
+            <Route
+              path="mostrar-localidad"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <MostrarLocalidad />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="editar-localidad/:id"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <EditarLocalidad />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
+          {/*RUTAS DEL USUARIO (Footer) */}
+          <Route element={<RootLayout />}>
+            <Route
+              path="home"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <Inicio />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="mi-cuenta/:id"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <MiCuenta />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="editar-usuario/:id"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <EditarUsuario />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="publicar-viaje"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <PublicarViaje />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="solicitar-conductor"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <SolicitarConductor />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="buscar-viaje"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <BuscarViaje />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="mostrar-viaje"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <MostrarViaje />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas de Vehiculo */}
+            <Route
+              path="mostrar-vehiculo/:id"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <MostrarVehiculo />
+                </ProtectedRoute>
+               }
+            />
+
+            <Route
+              path="crear-vehiculo"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <CrearVehiculo />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="editar-vehiculo/:id"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <EditarVehiculo />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
         </Route>
       </Route>,
     ),

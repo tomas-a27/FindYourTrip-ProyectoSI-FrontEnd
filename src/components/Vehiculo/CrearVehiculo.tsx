@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { post } from '../../api/dataManager';
-import { UsuarioDTO } from '../../entities/entities';
+import { useAuth } from '../../auth/AuthContext';
 
 export const CrearVehiculo = () => {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState<UsuarioDTO | null>(null);
+  const { userId } = useAuth();
+
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modelo, setModelo] = useState('');
@@ -14,19 +15,9 @@ export const CrearVehiculo = () => {
   const [patente, setPatente] = useState('');
   const [cantLugares, setCantLugares] = useState(1);
 
-  useEffect(() => {
-    const usuarioGuardado = localStorage.getItem('usuario');
-
-    if (usuarioGuardado) {
-      setUsuario(JSON.parse(usuarioGuardado));
-    } else {
-      navigate('/login');
-    }
-  }, [navigate]);
-
   const handleVolver = () => {
-    if (usuario) {
-      navigate(`/mostrar-vehiculo/${usuario.idUsuario}`);
+    if (userId) {
+      navigate(`/mostrar-vehiculo/${userId}`);
     }
   };
 
@@ -34,7 +25,7 @@ export const CrearVehiculo = () => {
     e.preventDefault();
     setError('');
 
-    if (!usuario) return;
+    if (!userId) return;
 
     const vehiculoData = {
       modelo: modelo.trim(),
@@ -45,7 +36,7 @@ export const CrearVehiculo = () => {
     };
 
     try {
-      const response = await post(`vehiculo/${usuario.idUsuario}`, vehiculoData);
+      const response = await post(`vehiculo/${userId}`, vehiculoData);
       
       if (!response) {
         setError("No hubo respuesta del servidor");
@@ -206,7 +197,7 @@ export const CrearVehiculo = () => {
 
             <button
               className="btn btn-pastel-green"
-              onClick={() => navigate(`/mostrar-vehiculo/${usuario?.idUsuario}`)}
+              onClick={() => navigate(`/mostrar-vehiculo/${userId}`)}
             >
               Volver
             </button>

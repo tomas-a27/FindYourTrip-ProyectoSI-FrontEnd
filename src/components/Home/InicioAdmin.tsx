@@ -1,26 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UsuarioDTO } from '../../entities/entities';
+import { useAuth } from '../../auth/AuthContext.tsx';
 
 export const InicioAdmin = () => {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState<UsuarioDTO | null>(null);
+  const { userTipo } = useAuth();
 
   useEffect(() => {
-    const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado) {
-      const user = JSON.parse(usuarioGuardado);
-      if (user.tipoUsuario !== 'Administrador' && user.tipoUsuario !== 'administrador') {
-        navigate('/home');
-      } else {
-        setUsuario(user);
-      }
-    } else {
+    if (!userTipo) {
       navigate('/login');
+    } else if (userTipo.toLowerCase() !== 'administrador') {
+      navigate('/home');
     }
-  }, [navigate]);
+  }, [userTipo, navigate]);
 
-  if (!usuario) return null;
+  if (!userTipo) return null;
 
   const opciones = [
     { titulo: 'Solicitudes para ser conductor', descripcion: 'Permite revisar a los usuarios que han pedido permiso para manejar en la plataforma.', ruta: '/aprobar-conductores' },

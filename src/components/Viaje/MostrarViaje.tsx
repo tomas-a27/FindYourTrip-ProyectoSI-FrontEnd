@@ -1,12 +1,12 @@
-import { useState, useEffect, use } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ViajeDTO } from '../../entities/entities.ts';
 import { get, post } from '../../api/dataManager.ts';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
 
 export const MostrarViaje = () => {
-  const userJson = localStorage.getItem('usuario');
-  const userLocal = userJson ? JSON.parse(userJson) : null;
+  const { userId } = useAuth();
+  
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
 
@@ -30,13 +30,13 @@ export const MostrarViaje = () => {
 
   const [solicitudViaje, setSolicitudViaje] = useState({
     viaje: 0,
-    usuario: userLocal?.idUsuario,
+    usuario: userId,
   });
 
   const handleSubmit = async (viajeId: number) => {
     setSolicitudViaje({
       viaje: viajeId,
-      usuario: userLocal?.idUsuario,
+      usuario: userId,
     });
 
     post('viaje/solicitar-viaje', solicitudViaje);

@@ -2,10 +2,17 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOne, put } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
+import { useAuth } from '../../auth/AuthContext.tsx';
 
 export const EditarUsuario = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { userId } = useAuth();
+
+  if (userId !== Number(id)) {
+    return <p className="text-center mt-5">No autorizado</p>;
+  }
+  
   const { data } = getOne<UsuarioDTO>('usuario/' + id);
 
   const [usuarioToUpdate, setUsuarioToUpdate] = useState<UsuarioDTO>({

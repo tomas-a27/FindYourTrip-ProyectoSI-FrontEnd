@@ -1,11 +1,18 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../../api/dataManager';
+import { useAuth } from '../../auth/AuthContext';
 import DeleteEntityButton from '../DeleteEntityBotton.tsx';
 
 export const MostrarVehiculo = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: vehiculos = [], loading, error } = get<any>(`vehiculo/usuario/${id}`);
+  const { userId } = useAuth();
+
+  if (userId !== Number(id)) {
+    return <p className="text-center mt-5">No autorizado</p>;
+  }
+
+  const { data: vehiculos = [], loading, error } = get<any>(`vehiculo/usuario/${userId}`);
 
   return (
     <div className="container mt-5 mb-5 pb-5">

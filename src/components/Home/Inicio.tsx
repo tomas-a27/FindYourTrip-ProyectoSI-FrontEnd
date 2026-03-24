@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UsuarioDTO } from '../../entities/entities';
+import { getOne } from '../../api/dataManager';
+import { useAuth } from '../../auth/AuthContext';
 
 export const Inicio = () => {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState<UsuarioDTO | null>(null);
-
-  useEffect(() => {
-    const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado) {
-      setUsuario(JSON.parse(usuarioGuardado));
-    } else {
-      navigate('/login');
-    }
-  }, [navigate]);
-
-  if (!usuario) return null;
+  const { userId, userTipo } = useAuth();
+  const { data: usuario } = getOne<UsuarioDTO>('usuario/' + userId);
 
   // Chequeamos si la solicitud para ser conductor está pendiente
   const isPendiente = usuario?.estadoConductor?.toLowerCase() === 'pendiente';
 
   const handlePublicarViaje = () => {
-    if (usuario?.tipoUsuario?.toLowerCase() === 'conductor') {
+    if (userTipo?.toLowerCase() === 'conductor') {
       // Si es conductor , pasa directo
       navigate('/publicar-viaje');
     } else if (isPendiente) {

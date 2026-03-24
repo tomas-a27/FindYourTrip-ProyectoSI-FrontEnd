@@ -1,12 +1,12 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LocalidadDTO } from '../../entities/entities.ts';
 import { get } from '../../api/dataManager.ts';
+import { useAuth } from '../../auth/AuthContext';
 
 export const BuscarViaje = () => {
-  const navegate = useNavigate();
-  const userJson = localStorage.getItem('usuario');
-  const userLocal = userJson ? JSON.parse(userJson) : null;
+  const navigate = useNavigate();
+  const { userId } = useAuth();
 
   const {
     data: localidades,
@@ -47,13 +47,16 @@ export const BuscarViaje = () => {
     params.append('viajeFecha', formData.viajeFecha);
     params.append('generoConductor', formData.generoConductor);
     params.append('mascota', String(formData.mascota));
-    params.append('usuarioId', userLocal?.idUsuario); // Reemplazar con userLocal?.idUsuario cuando se implemente autenticación
+
+    if (userId) {
+      params.append('usuarioId', userId.toString());
+    }
 
     console.log(viajeOrigen);
     console.log(viajeDestino);
 
     const query = `viaje/mostrar-viaje?${params.toString()}`;
-    navegate('/mostrar-viaje', {
+    navigate('/mostrar-viaje', {
       state: {
         query,
         localidadOrigen: viajeOrigen,

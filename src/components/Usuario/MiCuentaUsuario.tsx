@@ -2,14 +2,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { getOne } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
+import { useAuth } from '../../auth/AuthContext.tsx';
 
 export const MiCuenta = () => {
   const [mostrarConfirmarLogout, setMostrarConfirmarLogout] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { userId, logout } = useAuth();
+
+  if (userId !== Number(id)) {
+    return <p className="text-center mt-5">No autorizado</p>;
+  }
 
   // Traemos la data del usuario
-  const { data: usuario } = getOne<UsuarioDTO>('usuario/' + id);
+  const { data: usuario } = getOne<UsuarioDTO>('usuario/' + userId);
 
   // Validaciones de carga (Unificadas con EditarUsuario)
   if (!usuario) {
@@ -31,7 +37,7 @@ export const MiCuenta = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    logout();
     navigate('/login');
   };
 
@@ -122,7 +128,7 @@ export const MiCuenta = () => {
               <div className="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
                 <button
                   className="btn btn-custom-outline btn-sm px-4 rounded-pill"
-                  onClick={() => navigate(`/editar-usuario/${id}`)}
+                  onClick={() => navigate(`/editar-usuario/${userId}`)}
                 >
                   Editar datos personales
                 </button>
@@ -140,7 +146,7 @@ export const MiCuenta = () => {
               {esConductor && (
                 <div
                   className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
-                  onClick={() => navigate(`/mostrar-vehiculo/${id}`)}
+                  onClick={() => navigate(`/mostrar-vehiculo/${userId}`)}
                 >
                   <i className="bi bi-car-front fs-4 me-3 text-dark"></i>
                   <span className="fw-bold flex-grow-1">Mis vehículos</span>
