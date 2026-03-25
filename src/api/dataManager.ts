@@ -80,5 +80,13 @@ function getOne<T>(url: string) {
   }
   return { data };
 }
+async function getAsync<T>(url: string, config?: object) {
+  try {
+    return await axios.get(`${BACKEND_URL}/api/${url}`, config);
+  } catch (err: any) {
+    console.error(err.message);
+    throw err;
+  }
+}
 
-export { post, get, remove, patch, put, getOne };
+export { post, get, getAsync, remove, patch, put, getOne };

@@ -28,6 +28,7 @@ import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
 import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
 import { RecuperarContrasena } from './components/Usuario/RecuperarContrasena.tsx';
 import { MiCuenta } from './components/Usuario/MiCuentaUsuario.tsx';
+import { MisViajes } from './components/Usuario/MisViajes.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
@@ -163,6 +164,11 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/mis-viajes" element={ <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+              <MisViajes />
+              </ProtectedRoute>
+            }
+            />
 
             {/* Rutas de Vehiculo */}
             <Route
@@ -171,7 +177,7 @@ function App() {
                 <ProtectedRoute allowedRoles={['conductor','administrador']}>
                   <MostrarVehiculo />
                 </ProtectedRoute>
-               }
+              }
             />
 
             <Route

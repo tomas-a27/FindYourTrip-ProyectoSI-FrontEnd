@@ -14,7 +14,7 @@ export function Footer() {
           <span className="footer-text fw-semibold">Inicio</span>
         </Link>
 
-        <Link to="" className="footer-item">
+        <Link to="/mis-viajes" className="footer-item">
           <i className="bi bi-car-front-fill footer-icon"></i>
           <span className="footer-text fw-semibold">Mis viajes</span>
         </Link>
