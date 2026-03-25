@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { put } from '../../api/dataManager';
-import { UsuarioDTO } from '../../entities/entities';
+import { useAuth } from '../../auth/AuthContext';
 
 export const SolicitarConductor = () => {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState<UsuarioDTO | null>(null);
+  const { userId } = useAuth();
+  
   const [error, setError] = useState('');
 
   const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
@@ -36,15 +37,6 @@ export const SolicitarConductor = () => {
   const formValido = esLicenciaValida && esPatenteValida && esMarcaValida && esColorValido && esModeloValido && lugaresValidos && fotoPerfil && fotoLicencia && vigenciaLicencia;
   // ------------------------------------
 
-  useEffect(() => {
-    const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado) {
-      setUsuario(JSON.parse(usuarioGuardado));
-    } else {
-      navigate('/login');
-    }
-  }, [navigate]);
-
   const handleCancelar = () => {
     alert('Operación cancelada.'); 
     navigate('/home'); 
@@ -54,7 +46,7 @@ export const SolicitarConductor = () => {
     e.preventDefault();
     setError('');
 
-    if (!usuario) return;
+    if (!userId) return;
 
     if (!formValido) {
       setError('Por favor, revise los campos marcados en rojo y adjunte las imágenes.');
@@ -80,18 +72,13 @@ export const SolicitarConductor = () => {
 
     try {
       const response = await put(
-        `usuario/solicitarSerConductor/${usuario.idUsuario}`, 
+        `usuario/solicitarSerConductor/${userId}`,
         formData, 
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
 
       if (response && response.status === 200) {
         alert('Hemos enviado su solicitud para ser conductor. Próximamente se le informará si fue aceptada.');
-        
-        // Postcondición: Actualizar Usuario con estadoConductor “pendiente”
-        const usuarioActualizado = { ...usuario, estadoConductor: 'Pendiente' };
-        localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
-        
         navigate('/home');
       }
     } catch (err: any) {

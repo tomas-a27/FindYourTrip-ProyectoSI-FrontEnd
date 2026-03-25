@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { post } from '../../api/dataManager';
+import { useAuth } from '../../auth/AuthContext';
 
 // Importamos el logo
 import logo from '../../images/logoFYT.png';
 
 export const LoginUsuario = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  
   const [email, setEmail] = useState('');
   const [contrasenaUsuario, setContrasenaUsuario] = useState('');
   const [error, setError] = useState('');
@@ -24,13 +27,13 @@ export const LoginUsuario = () => {
     const response = await post('usuario/login', { email, contrasenaUsuario });
 
     if (response && response.status === 200) {
-      // Guardamos el token y los datos del usuario
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('usuario', JSON.stringify(response.data.data));
-      
+      const token = response.data.token;
       const tipo = response.data.data.tipoUsuario;
+      const id = response.data.data.idUsuario;
+
+      login(token, tipo, id);
       
-      if (tipo === 'Administrador' || tipo === 'administrador') {
+      if (tipo === 'administrador') {
         navigate('/admin-home'); // Redirigir al panel de control de administrador
       } else {
         navigate('/home'); // Redirigir al inicio normal de pasajeros/conductores

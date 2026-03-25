@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 export const AdminLayout = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   const cerrarSesion = () => {
-    localStorage.removeItem('usuario');
-    localStorage.removeItem('token');
+    logout();
     navigate('/login');
   };
 

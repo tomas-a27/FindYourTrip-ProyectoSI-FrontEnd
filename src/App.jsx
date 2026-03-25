@@ -6,7 +6,10 @@ import {
   Outlet,
 } from 'react-router-dom';
 import { RootLayout } from './layout/RootLayout.tsx';
-import { AdminLayout } from './layout/AdminLayout.tsx'; 
+import { AdminLayout } from './layout/AdminLayout.tsx';
+
+import PrivateRoute from './components/PrivateRoute'
+import ProtectedRoute from './auth/ProtectedRoute'
 
 import { Inicio } from './components/Home/Inicio.tsx';
 import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.tsx';
@@ -24,10 +27,13 @@ import { CrearUsuario } from './components/Usuario/CrearUsuario.tsx';
 import { LoginUsuario } from './components/Usuario/LoginUsuario.tsx';
 import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
 import { RecuperarContrasena } from './components/Usuario/RecuperarContrasena.tsx';
+import { MiCuenta } from './components/Usuario/MiCuentaUsuario.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
 import { VerSolicitudesConductor } from './components/Usuario/Admin/VerSolicitudesConductor.tsx';
+import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
+import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
 
 const AuthLayout = () => <Outlet />;
 
@@ -35,7 +41,6 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/">
-        
         {/*  RUTAS EN BLANCO (Sin Navbar, Sin Footer) */}
         <Route element={<AuthLayout />}>
           <Route index element={<PantallaInicioUsuario />} />
@@ -44,32 +49,150 @@ function App() {
           <Route path="recuperar-contrasena" element={<RecuperarContrasena />} />
         </Route>
 
-        {/* RUTAS DEL ADMINISTRADOR (NavBar) */}
-        <Route element={<AdminLayout />}>
-          <Route path="admin-home" element={<InicioAdmin />} />
-          <Route path="aprobar-conductores" element={<VerSolicitudesConductor />} />
-          {/* Rutas de Localidad */}
-          <Route path="crear-localidad" element={<CrearLocalidad />} />
-          <Route path="mostrar-localidad" element={<MostrarLocalidad />} />
-          <Route path="editar-localidad/:id" element={<EditarLocalidad />} />
+        <Route element={<PrivateRoute />}>
+          {/* RUTAS DEL ADMINISTRADOR (NavBar) */}
+          <Route element={<AdminLayout />}>
+            <Route
+              path="admin-home"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <InicioAdmin />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="aprobar-conductores"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <VerSolicitudesConductor />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas de Localidad */}
+            <Route
+              path="crear-localidad"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <CrearLocalidad />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="mostrar-localidad"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <MostrarLocalidad />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="editar-localidad/:id"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <EditarLocalidad />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
+          {/*RUTAS DEL USUARIO (Footer) */}
+          <Route element={<RootLayout />}>
+            <Route
+              path="home"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <Inicio />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="mi-cuenta/:id"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <MiCuenta />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="editar-usuario/:id"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <EditarUsuario />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="publicar-viaje"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <PublicarViaje />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="solicitar-conductor"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <SolicitarConductor />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="buscar-viaje"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <BuscarViaje />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="mostrar-viaje"
+              element={
+                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                  <MostrarViaje />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas de Vehiculo */}
+            <Route
+              path="mostrar-vehiculo/:id"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <MostrarVehiculo />
+                </ProtectedRoute>
+               }
+            />
+
+            <Route
+              path="crear-vehiculo"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <CrearVehiculo />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="editar-vehiculo/:id"
+              element={
+                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                  <EditarVehiculo />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
         </Route>
-
-        {/*RUTAS DEL USUARIO (Footer) */}
-        <Route element={<RootLayout />}>
-          <Route path="home" element={<Inicio />} />
-          
-          <Route path="publicar-viaje" element={<PublicarViaje />} />
-          <Route path="solicitar-conductor" element={<SolicitarConductor />} />
-
-          
-          {/* Rutas de Vehiculo */}
-          <Route path="mostrar-vehiculo/:id" element={<MostrarVehiculo />} />
-          <Route path="crear-vehiculo" element={<CrearVehiculo />} />
-          <Route path="editar-vehiculo/:id" element={<EditarVehiculo />} />
-
-          <Route path="editar-usuario/:id" element={<EditarUsuario />} />
-        </Route>
-
       </Route>,
     ),
   );

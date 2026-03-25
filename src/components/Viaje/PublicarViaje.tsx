@@ -2,16 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { post, get, getOne } from '../../api/dataManager';
 import { UsuarioDTO, LocalidadDTO } from '../../entities/entities';
+import { useAuth } from '../../auth/AuthContext';
 
 export const PublicarViaje = () => {
   const navigate = useNavigate();
-
-  const userJson = localStorage.getItem('usuario');
-  const userLocal = userJson ? JSON.parse(userJson) : null;
+  const { userId } = useAuth();
 
   // CORRECCIÓN: Le sacamos el "loading" porque getOne no lo tiene
   const { data: usuarioCompleto } = getOne<UsuarioDTO>(
-    userLocal?.idUsuario ? `usuario/${userLocal.idUsuario}` : '',
+    userId ? `usuario/${userId}` : '',
   );
 
   const { data: localidades, loading: cargandoLocs } =
@@ -44,7 +43,7 @@ export const PublicarViaje = () => {
   });
 
   useEffect(() => {
-    if (!userLocal) {
+    if (!userId) {
       navigate('/login');
       return;
     }
@@ -86,7 +85,7 @@ export const PublicarViaje = () => {
       alert('Primero debés registrar un vehículo para publicar un viaje.');
       navigate('/crear-vehiculo');
     }
-  }, [navigate, userLocal, usuarioCompleto]);
+  }, [navigate, userId, usuarioCompleto]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
