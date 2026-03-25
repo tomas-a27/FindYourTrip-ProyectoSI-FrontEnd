@@ -14,6 +14,8 @@ export const BuscarViaje = () => {
     error: errorLocalidades,
   } = get<LocalidadDTO>('localidad');
 
+  const today = new Date().toISOString().split('T')[0];
+
   const [viajeOrigen, setLocalidadOrigen] = useState('');
   const [mostrarSugerenciaOrigen, setMostrarSugerenciaOrigen] = useState(false);
   const [viajeDestino, setLocalidadDestino] = useState('');
@@ -177,6 +179,7 @@ export const BuscarViaje = () => {
                 <label className="form-label fw-bold">Fecha</label>
                 <input
                   type="date"
+                  min={today}
                   className="form-control"
                   required
                   onChange={(e) =>

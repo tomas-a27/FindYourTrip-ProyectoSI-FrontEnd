@@ -8,6 +8,8 @@ export const PublicarViaje = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
+  const today = new Date().toISOString().split('T')[0];
+
   // CORRECCIÓN: Le sacamos el "loading" porque getOne no lo tiene
   const { data: usuarioCompleto } = getOne<UsuarioDTO>(
     userId ? `usuario/${userId}` : '',
@@ -241,6 +243,7 @@ export const PublicarViaje = () => {
               <label className="form-label fw-bold">Fecha</label>
               <input
                 type="date"
+                min={today}
                 className="form-control"
                 required
                 onChange={(e) =>

@@ -1,77 +1,26 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ViajeDTO } from '../../entities/entities.ts';
-import { get, post } from '../../api/dataManager.ts';
-import { useAuth } from '../../auth/AuthContext';
-
-export const MostrarViaje = () => {
-  const { userId } = useAuth();
-
-  const bufferToBase64 = (buffer: any) => {
-    if (!buffer?.data) return '';
-
-    const binary = buffer.data
-      .map((byte: number) => String.fromCharCode(byte))
-      .join('');
-
-    return `data:image/jpeg;base64,${btoa(binary)}`;
-  };
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const query = location.state?.query || 'viaje/mostrar-viaje';
-
-  const {
-    data: viajes,
-    loading: loadingViajes,
-    error: errorViajes,
-  } = get<ViajeDTO>(query);
-
-  const handleSubmit = async (viajeId: number) => {
-    const solicitudViaje = {
-      viaje: viajeId,
-      usuario: userId,
-    };
-
-    console.log(solicitudViaje);
-    await post('viaje/solicitar-viaje', solicitudViaje);
-    window.location.reload();
-    //navigate('/mis-viajes');
-  };
-  return (
+return (
     <div>
-      <div>
-        <div className="container mt-4 pb-3 border-bottom">
-          <div className="row align-items-center mb-3">
-            <div className="col">
-              <h2 className="mb-0">Viajes Publicados</h2>
-            </div>
-            <div className="col-auto min-vw-10">
-              <Link to="/buscar-viaje" className="btn btn-outline-secondary">
-                VOLVER
-              </Link>
-            </div>
+      <div className=" mb-2">
+        <div className="container mt-5 row">
+          <h2 className="col-9">Viajes Publicados</h2>
+          <Link
+            to="/buscar-viaje"
+            className="btn btn-secondary mb-4  col-3 text-white fw-bold"
+          >
+            Volver
+          </Link>
+        </div>
+        <div className="row container mt-2 items-align-center">
+          <div className="col-6">
+            <label className="fw-bold">Origen: </label>
+            <span> {location.state?.localidadOrigen}</span>
           </div>
-
-          {/* Información de Origen y Destino */}
-          {location.state && (
-            <div className="row g-3">
-              <div className="col-sm-6">
-                <div className="p-2 bg-light rounded border-start border-4 border-success d-flex align-items-center gap-2">
-                  <span className="fw-bold text-success small">ORIGEN:</span>
-                  <span>{location.state.localidadOrigen}</span>
-                </div>
-              </div>
-              <div className="col-sm-6">
-                <div className="p-2 bg-light rounded border-start border-4 border-success d-flex align-items-center gap-2">
-                  <span className="fw-bold text-success small">DESTINO:</span>
-                  <span>{location.state.localidadDestino}</span>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="col-6">
+            <label className="fw-bold">Destino: </label>
+            <span> {location.state?.localidadDestino}</span>
+          </div>
         </div>
       </div>
-
       {!loadingViajes && !errorViajes && viajes?.length === 0 && (
         <div className="alert alert-info">No hay viajes disponibles.</div>
       )}
@@ -79,13 +28,10 @@ export const MostrarViaje = () => {
         <div className="container mt-4">
           <div className="row">
             {viajes.map((viaje) => (
-              <div key={viaje.viajeId} className="col-12 col-lg-6 mb-4">
+              <div key={viaje.viajeId} className="col-md-6 mb-4">
                 <div
-                  className="card border-1 shadow-sm p-3 h-100"
-                  style={{
-                    borderRadius: '20px',
-                    backgroundColor: '#fff',
-                  }}
+                  className="card border-1 shadow-sm p-3"
+                  style={{ borderRadius: '20px', backgroundColor: '#fff' }}
                 >
                   <div className="card-body p-2">
                     {/* Sección Superior: Perfil y Datos Principales */}
@@ -161,47 +107,31 @@ export const MostrarViaje = () => {
                           }}
                         >
                           <div className="position-relative">
-                            {/* Ícono de Origen (verde, hueco) */}
-                            <i
-                              className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success"
+                            <span
+                              className="position-absolute start-0 top-50 translate-middle border border-secondary rounded-circle bg-white"
                               style={{
-                                fontSize: '1.2rem', // Ajustá el tamaño si lo querés más chico/grande
+                                width: '8px',
+                                height: '8px',
                                 marginLeft: '-20px',
-                                paddingTop: '2px', // Pequeño ajuste visual para tapar bien la línea
-                                paddingBottom: '2px',
                               }}
-                            ></i>
+                            ></span>
                             <h5 className="fw-bold mb-0">
                               {viaje.viajeOrigen.nombre}
                             </h5>
                           </div>
                           <div className="position-relative">
-                            {/* Ícono de Destino (rojo, lleno) */}
-                            <i
-                              className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger"
+                            <span
+                              className="position-absolute start-0 top-50 translate-middle border border-secondary rounded-circle bg-white"
                               style={{
-                                fontSize: '1.2rem',
+                                width: '8px',
+                                height: '8px',
                                 marginLeft: '-20px',
-                                paddingTop: '2px',
-                                paddingBottom: '2px',
                               }}
-                            ></i>
+                            ></span>
                             <h5 className="fw-bold mb-0">
                               {viaje.viajeDestino.nombre}
                             </h5>
                           </div>
-                        </div>
-                      </div>
-
-                      {/* La parte de la derecha (Disponibilidad y Mascotas) la dejo intacta por si acaso */}
-                      <div className="col-5 text-end small">
-                        <div className="text-muted mb-2">
-                          {viaje.viajeAceptaMascotas
-                            ? 'Acepta mascotas'
-                            : 'Sin mascotas'}
-                        </div>
-                        <div className="fw-bold">
-                          Quedan {viaje.viajeCantLugares} lugares disponibles
                         </div>
                       </div>
 
@@ -224,19 +154,17 @@ export const MostrarViaje = () => {
                     </p>
 
                     {/* Botón de Acción */}
-                    <div className="mt-auto">
-                      <button
-                        type="button"
-                        className="btn btn-success w-100 py-3 fw-bold border-0"
-                        style={{
-                          backgroundColor: '#2d4a2d',
-                          borderRadius: '15px',
-                        }}
-                        onClick={() => handleSubmit(viaje.viajeId)}
-                      >
-                        Enviar solicitud
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-success w-100 py-3 fw-bold border-0"
+                      style={{
+                        backgroundColor: '#2d4a2d',
+                        borderRadius: '15px',
+                      }}
+                      onClick={() => handleSubmit(viaje.viajeId)}
+                    >
+                      Enviar solicitud
+                    </button>
                   </div>
                 </div>
               </div>
@@ -254,4 +182,3 @@ export const MostrarViaje = () => {
       )}
     </div>
   );
-};
