@@ -88,13 +88,13 @@ export const BuscarViaje = () => {
           <form className="d-flex flex-column" onSubmit={handleSubmit}>
             {' '}
             <div className="row">
-              <div className="col-md-6 mb-3">
+              <div className="col-md-6 mb-3 position-relative">
                 <label className="form-label fw-bold">Origen</label>
 
                 <input
                   type="text"
                   required
-                  className="form-control"
+                  className="form-control custom-input"
                   placeholder="Ej: Rosario"
                   value={viajeOrigen}
                   onChange={(e) => {
@@ -121,7 +121,8 @@ export const BuscarViaje = () => {
                             setMostrarSugerenciaOrigen(false);
                           }}
                         >
-                          {l.nombre}
+                          <strong>{l.nombre.substring(0, viajeOrigen.length)}</strong>
+                          {l.nombre.substring(viajeOrigen.length)}
                         </li>
                       ))
                     ) : (
@@ -131,12 +132,12 @@ export const BuscarViaje = () => {
                 )}
               </div>
 
-              <div className="col-md-6 mb-3">
+              <div className="col-md-6 mb-3 position-relative">
                 <label className="form-label fw-bold">Destino</label>
                 <input
                   type="text"
                   required
-                  className="form-control"
+                  className="form-control custom-input"
                   placeholder="Ej: Buenos Aires"
                   value={viajeDestino}
                   onChange={(e) => {
@@ -163,7 +164,8 @@ export const BuscarViaje = () => {
                             setMostrarSugerenciaDestino(false);
                           }}
                         >
-                          {l.nombre}
+                          <strong>{l.nombre.substring(0, viajeDestino.length)}</strong>
+                          {l.nombre.substring(viajeDestino.length)}
                         </li>
                       ))
                     ) : (
