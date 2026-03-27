@@ -45,7 +45,7 @@ interface ViajeDTO {
   viajeId: number;
   viajeOrigen: LocalidadDTO;
   viajeDestino: LocalidadDTO;
-  viajeFecha: Date;
+  viajeFecha: string;
   viajeHorario: string;
   viajeCantLugares: number;
   viajeEstado: string;

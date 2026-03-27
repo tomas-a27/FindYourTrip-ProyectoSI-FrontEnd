@@ -49,7 +49,6 @@ export const BuscarViaje = () => {
     params.append('viajeFecha', formData.viajeFecha);
     params.append('generoConductor', formData.generoConductor);
     params.append('mascota', String(formData.mascota));
-
     if (userId) {
       params.append('usuarioId', userId.toString());
     }

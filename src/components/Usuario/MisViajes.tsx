@@ -399,7 +399,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             >
               <i className="bi bi-calendar3 me-2"></i>{' '}
               <span>
-                {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+                {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
               </span>
             </div>
             <div
@@ -536,7 +536,7 @@ const TarjetaPasajeroReciente = ({
               style={{ fontSize: '0.85rem' }}
             >
               <i className="bi bi-calendar3 me-2"></i>{' '}
-              {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+              {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
             </div>
             <div
               className="text-muted d-flex align-items-center mb-2"
@@ -686,7 +686,7 @@ const TarjetaConductorActivo = ({
                 style={{ fontSize: '0.9rem' }}
               >
                 <i className="bi bi-calendar3 me-2"></i>{' '}
-                {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+                {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
               </div>
               <div
                 className="text-muted d-flex align-items-center"
@@ -837,7 +837,7 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
               style={{ fontSize: '0.9rem' }}
             >
               <span>
-                {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+                {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
               </span>{' '}
               <i className="bi bi-calendar3 ms-2"></i>
             </div>

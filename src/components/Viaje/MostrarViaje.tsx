@@ -18,7 +18,7 @@ export const MostrarViaje = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const query = location.state?.query || 'viaje/mostrar-viaje';
+  const query = location.state?.query || `viaje/mostrar-viaje?viajeEstado=pendiente&usuarioId=${userId}`;
 
   const {
     data: viajes,
@@ -32,10 +32,14 @@ export const MostrarViaje = () => {
       usuario: userId,
     };
 
-    console.log(solicitudViaje);
-    await post('viaje/solicitar-viaje', solicitudViaje);
-    window.location.reload();
-    //navigate('/mis-viajes');
+    
+    const res = await post('viaje/solicitar-viaje', solicitudViaje);
+    if (res.status === 201) {
+      alert("¡Solicitud enviada con éxito!");
+      //navigate('/mis-viajes'); // Mejor navegar que recargar
+    } else {
+      alert("Error: " + res.data?.message);
+    }
   };
   return (
     <div>
@@ -137,7 +141,7 @@ export const MostrarViaje = () => {
                       <div className="text-end text-muted small">
                         <div className="mb-1">
                           <i className="bi bi-calendar3 me-1"></i>{' '}
-                          {new Date(viaje.viajeFecha).toLocaleDateString()}
+                          {Array.isArray(viaje.viajeFecha.split('-')) ? viaje.viajeFecha.split('-').reverse().join('/') : viaje.viajeFecha}
                         </div>
                         <div className="mb-1">
                           <i className="fw-bold bi bi-clock me-1"></i>{' '}
@@ -194,17 +198,6 @@ export const MostrarViaje = () => {
                       </div>
 
                       {/* La parte de la derecha (Disponibilidad y Mascotas) la dejo intacta por si acaso */}
-                      <div className="col-5 text-end small">
-                        <div className="text-muted mb-2">
-                          {viaje.viajeAceptaMascotas
-                            ? 'Acepta mascotas'
-                            : 'Sin mascotas'}
-                        </div>
-                        <div className="fw-bold">
-                          Quedan {viaje.viajeCantLugares} lugares disponibles
-                        </div>
-                      </div>
-
                       <div className="col-5 text-end small">
                         <div className="text-muted mb-2">
                           {viaje.viajeAceptaMascotas
