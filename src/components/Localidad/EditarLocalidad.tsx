@@ -87,7 +87,7 @@ export function EditarLocalidad() {
                 <div className="col-12 col-md-5">
                   <Link
                     className="btn btn-light-cancel btn-danger fw-semibold w-100 shadow-sm"
-                    to="/"
+                    to="/mostrar-localidad"
                   >
                     Cancelar
                   </Link>

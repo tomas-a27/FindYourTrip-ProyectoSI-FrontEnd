@@ -46,7 +46,7 @@ export const PublicarViaje = () => {
 
   useEffect(() => {
     if (!userId) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 

@@ -3,7 +3,7 @@ import { useAuth } from "../auth/AuthContext";
 
 const PrivateRoute = () => {
   const { token } = useAuth();
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  return token ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default PrivateRoute;
