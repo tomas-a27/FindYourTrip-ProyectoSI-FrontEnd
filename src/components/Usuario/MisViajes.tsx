@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getAsync, getOne } from '../../api/dataManager'; // Quitamos patch y del
+import { getAsync, getOne, patch } from '../../api/dataManager'; // Quitamos patch y del
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
 
@@ -20,22 +20,23 @@ export const MisViajes = () => {
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
   const [viajesPublicados, setViajesPublicados] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [isConductorAprobado, setIsConductorAprobado] = useState(false);
+  const [viajeACancelar, setViajeACancelar] = useState<any | null>(null);
+  const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
 
   const { data: user } = getOne<UsuarioDTO>('usuario/' + userId);
+
   useEffect(() => {
-    if (user === undefined) return; // Usar 'user' directamente
+    if (user === undefined) return;
     if (user) {
-      // ... (puedes dejar tus comentarios aquí)
       const aprobado =
-        user?.estadoConductor?.toLowerCase() === 'aprobado' || // Usar 'user'
-        user?.tipoUsuario?.toLowerCase() === 'conductor'; // Usar 'user'
+        user?.estadoConductor?.toLowerCase() === 'aprobado' || 
+        user?.tipoUsuario?.toLowerCase() === 'conductor'; 
       setIsConductorAprobado(aprobado);
 
       cargarDatos(Number(userId));
     } else {
-      setLoading(false); // APAGAR EL SPINNER AQUÍ
+      setLoading(false); 
       navigate('/login');
     }
   }, [navigate, userId, user]); // AGREGAR 'user' A LAS DEPENDENCIAS
@@ -61,6 +62,23 @@ export const MisViajes = () => {
     }
   };
 
+  const ejecutarCancelacion = async () => {
+    if (!viajeACancelar) return;
+
+    try {
+      const res = await patch(`viaje/cancelar/${viajeACancelar.viajeId}`, {});
+
+      // El mensaje depende de lo que devuelva el back (si fue < 24hs o no)
+      alert(res.data.message);
+
+      setMostrarModalCancelar(false);
+      setViajeACancelar(null);
+      cargarDatos(Number(userId)); // Recargar lista
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Error al cancelar el viaje');
+    }
+  };
+
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data)
       return 'https://ui-avatars.com/api/?name=User&background=random';
@@ -73,10 +91,6 @@ export const MisViajes = () => {
   // --- ACCIONES TEMPORALES (EN CONSTRUCCIÓN) ---
   const handleCancelarSolicitud = () => {
     alert('En construcción: Cancelar solicitud');
-  };
-
-  const handleEstadoViaje = (nuevoEstado: string) => {
-    alert(`En construcción: Marcar viaje como ${nuevoEstado}`);
   };
   // ---------------------------------------------
 
@@ -104,7 +118,8 @@ export const MisViajes = () => {
   const realizadosConductor = viajesPublicados.filter(
     (v) =>
       v.viajeEstado?.toLowerCase() !== 'disponible' &&
-      v.viajeEstado?.toLowerCase() !== 'pendiente',
+      v.viajeEstado?.toLowerCase() !== 'pendiente' &&
+      v.viajeEstado?.toLowerCase() !== 'cancelado',
   );
 
   if (loading)
@@ -236,8 +251,11 @@ export const MisViajes = () => {
                     key={viaje.viajeId}
                     viaje={viaje}
                     hora={formatearHora(viaje.viajeHorario)}
-                    onCancelar={() => handleEstadoViaje('Cancelado')}
-                    onComenzar={() => handleEstadoViaje('Realizado')}
+                    onCancelar={() => {
+                      setViajeACancelar(viaje);
+                      setMostrarModalCancelar(true);
+                    }}
+                    onComenzar={() => alert('En construcción: Comenzar viaje')}
                   />
                 ))
               )}
@@ -271,6 +289,25 @@ export const MisViajes = () => {
             </div>
           </div>
         </>
+      )}
+      {/* MODAL DE CONFIRMACIÓN DE CANCELACIÓN (CU06)  */}
+      {mostrarModalCancelar && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            <div className="mb-3">
+              <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: '3rem' }}></i>
+            </div>
+            <h5 className="fw-bold mb-3">¿Está seguro que desea cancelar el viaje?</h5>
+            <div className="d-grid gap-2">
+              <button onClick={ejecutarCancelacion} className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm">
+                Confirmar
+              </button>
+              <button onClick={() => setMostrarModalCancelar(false)} className="btn btn-light py-2 fw-bold rounded-3 border">
+                No
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
