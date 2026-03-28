@@ -34,6 +34,7 @@ import { HistorialPasajero } from './components/Usuario/HistorialPasajero.tsx';
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
 import { VerSolicitudesConductor } from './components/Usuario/Admin/VerSolicitudesConductor.tsx';
+import { InformeConductores } from "./components/Usuario/Admin/InformeConductores.tsx";
 import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
 import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
 
@@ -68,6 +69,15 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['administrador']}>
                   <VerSolicitudesConductor />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="informe-conductores"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <InformeConductores/>
                 </ProtectedRoute>
               }
             />
