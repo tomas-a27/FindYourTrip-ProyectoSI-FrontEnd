@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { getAsync, getOne, patch } from '../../api/dataManager'; // Quitamos patch y del
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
+import { Params } from 'react-router-dom';
 
 // --- COLORES BASADOS EN TU DESCRIPCIÓN ---
 const bgVerdeClaro = '#eaf5ea';
@@ -30,13 +31,13 @@ export const MisViajes = () => {
     if (user === undefined) return;
     if (user) {
       const aprobado =
-        user?.estadoConductor?.toLowerCase() === 'aprobado' || 
-        user?.tipoUsuario?.toLowerCase() === 'conductor'; 
+        user?.estadoConductor?.toLowerCase() === 'aprobado' ||
+        user?.tipoUsuario?.toLowerCase() === 'conductor';
       setIsConductorAprobado(aprobado);
 
       cargarDatos(Number(userId));
     } else {
-      setLoading(false); 
+      setLoading(false);
       navigate('/login');
     }
   }, [navigate, userId, user]); // AGREGAR 'user' A LAS DEPENDENCIAS
@@ -121,6 +122,26 @@ export const MisViajes = () => {
       v.viajeEstado?.toLowerCase() !== 'pendiente' &&
       v.viajeEstado?.toLowerCase() !== 'cancelado',
   );
+
+  const handleVerSolicitudes = (
+    viajeId: number,
+    viajeDestino: string,
+    viajeOrigen: string,
+    viajeFecha: Date,
+    solicitudesAprobadas: number,
+    viajeCantLugares: number,
+  ) => {
+    const lugaresDisponibles = viajeCantLugares - solicitudesAprobadas;
+    navigate('/solicitudes-mis-viajes', {
+      state: {
+        viajeId,
+        viajeDestino,
+        viajeOrigen,
+        viajeFecha,
+        lugaresDisponibles,
+      },
+    });
+  };
 
   if (loading)
     return (
@@ -256,6 +277,7 @@ export const MisViajes = () => {
                       setMostrarModalCancelar(true);
                     }}
                     onComenzar={() => alert('En construcción: Comenzar viaje')}
+                    onVerSolicitudes={handleVerSolicitudes}
                   />
                 ))
               )}
@@ -295,14 +317,25 @@ export const MisViajes = () => {
         <div className="modal-overlay">
           <div className="custom-modal p-4 text-center">
             <div className="mb-3">
-              <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: '3rem' }}></i>
+              <i
+                className="bi bi-exclamation-triangle text-danger"
+                style={{ fontSize: '3rem' }}
+              ></i>
             </div>
-            <h5 className="fw-bold mb-3">¿Está seguro que desea cancelar el viaje?</h5>
+            <h5 className="fw-bold mb-3">
+              ¿Está seguro que desea cancelar el viaje?
+            </h5>
             <div className="d-grid gap-2">
-              <button onClick={ejecutarCancelacion} className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm">
+              <button
+                onClick={ejecutarCancelacion}
+                className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm"
+              >
                 Confirmar
               </button>
-              <button onClick={() => setMostrarModalCancelar(false)} className="btn btn-light py-2 fw-bold rounded-3 border">
+              <button
+                onClick={() => setMostrarModalCancelar(false)}
+                className="btn btn-light py-2 fw-bold rounded-3 border"
+              >
                 No
               </button>
             </div>
@@ -399,7 +432,9 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             >
               <i className="bi bi-calendar3 me-2"></i>{' '}
               <span>
-                {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
               </span>
             </div>
             <div
@@ -536,7 +571,9 @@ const TarjetaPasajeroReciente = ({
               style={{ fontSize: '0.85rem' }}
             >
               <i className="bi bi-calendar3 me-2"></i>{' '}
-              {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+              {viaje?.viajeFecha
+                ? viaje.viajeFecha.split('-').reverse().join('/')
+                : ''}
             </div>
             <div
               className="text-muted d-flex align-items-center mb-2"
@@ -620,6 +657,7 @@ const TarjetaConductorActivo = ({
   hora,
   onCancelar,
   onComenzar,
+  onVerSolicitudes,
 }: any) => {
   const isCompleto = viaje.solicitudesAprobadas >= viaje.viajeCantLugares;
 
@@ -686,7 +724,9 @@ const TarjetaConductorActivo = ({
                 style={{ fontSize: '0.9rem' }}
               >
                 <i className="bi bi-calendar3 me-2"></i>{' '}
-                {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
               </div>
               <div
                 className="text-muted d-flex align-items-center"
@@ -735,7 +775,14 @@ const TarjetaConductorActivo = ({
               cursor: 'pointer',
             }}
             onClick={() =>
-              alert('En construcción: Ver pasajeros y solicitudes')
+              onVerSolicitudes(
+                viaje.viajeId,
+                viaje.viajeDestino?.nombre,
+                viaje.viajeOrigen?.nombre,
+                viaje.viajeFecha,
+                viaje.solicitudesAprobadas,
+                viaje.viajeCantLugares,
+              )
             }
           >
             <span
@@ -837,7 +884,9 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
               style={{ fontSize: '0.9rem' }}
             >
               <span>
-                {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
               </span>{' '}
               <i className="bi bi-calendar3 ms-2"></i>
             </div>

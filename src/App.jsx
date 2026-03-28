@@ -8,8 +8,8 @@ import {
 import { RootLayout } from './layout/RootLayout.tsx';
 import { AdminLayout } from './layout/AdminLayout.tsx';
 
-import PrivateRoute from './components/PrivateRoute'
-import ProtectedRoute from './auth/ProtectedRoute'
+import PrivateRoute from './components/PrivateRoute';
+import ProtectedRoute from './auth/ProtectedRoute';
 
 import { Inicio } from './components/Home/Inicio.tsx';
 import { PantallaInicioUsuario } from './components/Home/pantallaInicioUsuario.tsx';
@@ -35,6 +35,7 @@ import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx'
 import { VerSolicitudesConductor } from './components/Usuario/Admin/VerSolicitudesConductor.tsx';
 import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
 import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
+import { AprobarDenegarSolicitud } from './components/Viaje/AprobarDenegarSolicitud.tsx';
 
 const AuthLayout = () => <Outlet />;
 
@@ -47,7 +48,10 @@ function App() {
           <Route index element={<PantallaInicioUsuario />} />
           <Route path="login" element={<LoginUsuario />} />
           <Route path="crear-usuario" element={<CrearUsuario />} />
-          <Route path="recuperar-contrasena" element={<RecuperarContrasena />} />
+          <Route
+            path="recuperar-contrasena"
+            element={<RecuperarContrasena />}
+          />
         </Route>
 
         <Route element={<PrivateRoute />}>
@@ -105,7 +109,9 @@ function App() {
             <Route
               path="home"
               element={
-                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
                   <Inicio />
                 </ProtectedRoute>
               }
@@ -114,7 +120,9 @@ function App() {
             <Route
               path="mi-cuenta/:id"
               element={
-                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
                   <MiCuenta />
                 </ProtectedRoute>
               }
@@ -123,7 +131,9 @@ function App() {
             <Route
               path="editar-usuario/:id"
               element={
-                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
                   <EditarUsuario />
                 </ProtectedRoute>
               }
@@ -132,7 +142,7 @@ function App() {
             <Route
               path="publicar-viaje"
               element={
-                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                <ProtectedRoute allowedRoles={['conductor', 'administrador']}>
                   <PublicarViaje />
                 </ProtectedRoute>
               }
@@ -141,7 +151,9 @@ function App() {
             <Route
               path="solicitar-conductor"
               element={
-                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
                   <SolicitarConductor />
                 </ProtectedRoute>
               }
@@ -150,7 +162,9 @@ function App() {
             <Route
               path="buscar-viaje"
               element={
-                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
                   <BuscarViaje />
                 </ProtectedRoute>
               }
@@ -159,22 +173,38 @@ function App() {
             <Route
               path="mostrar-viaje"
               element={
-                <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
                   <MostrarViaje />
                 </ProtectedRoute>
               }
             />
-            <Route path="/mis-viajes" element={ <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
-              <MisViajes />
-              </ProtectedRoute>
-            }
+
+            <Route
+              path="solicitudes-mis-viajes"
+              element={
+                <ProtectedRoute allowedRoles={['conductor']}>
+                  <AprobarDenegarSolicitud />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mis-viajes"
+              element={
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
+                  <MisViajes />
+                </ProtectedRoute>
+              }
             />
 
             {/* Rutas de Vehiculo */}
             <Route
               path="mostrar-vehiculo/:id"
               element={
-                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                <ProtectedRoute allowedRoles={['conductor', 'administrador']}>
                   <MostrarVehiculo />
                 </ProtectedRoute>
               }
@@ -183,7 +213,7 @@ function App() {
             <Route
               path="crear-vehiculo"
               element={
-                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                <ProtectedRoute allowedRoles={['conductor', 'administrador']}>
                   <CrearVehiculo />
                 </ProtectedRoute>
               }
@@ -192,7 +222,7 @@ function App() {
             <Route
               path="editar-vehiculo/:id"
               element={
-                <ProtectedRoute allowedRoles={['conductor','administrador']}>
+                <ProtectedRoute allowedRoles={['conductor', 'administrador']}>
                   <EditarVehiculo />
                 </ProtectedRoute>
               }
