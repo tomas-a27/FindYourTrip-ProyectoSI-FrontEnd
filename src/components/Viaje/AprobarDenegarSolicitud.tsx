@@ -2,6 +2,7 @@ import { SolicitudViajeDTO } from '../../entities/entities.ts';
 import { get, patch } from '../../api/dataManager.ts';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import ModalConfirmacion from './ModalConfirmacion.tsx';
 
 export const AprobarDenegarSolicitud = () => {
   const location = useLocation();
@@ -21,18 +22,29 @@ export const AprobarDenegarSolicitud = () => {
     'viaje/solicitudes-aprobadas-rechazadas-viaje/' + location.state.viajeId,
   );
 
-  const handleDenegarSolicitud = async (solicitudId: number) => {
-    await patch(
-      'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' + solicitudId,
-    );
-    window.location.reload();
+  const handleDenegarSolicitud = (
+    solicitudId: number,
+    nombre: string,
+    apellido: string,
+  ) => {
+    const query =
+      'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' + solicitudId;
   };
 
-  const handleAprobarSolicitud = async (solicitudId: number) => {
-    await patch(
-      'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' + solicitudId,
-    );
-    window.location.reload();
+  const handleAprobarSolicitud = (
+    solicitudId: number,
+    nombre: string,
+    apellido: string,
+  ) => {
+    const query =
+      'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' + solicitudId;
+
+    ModalConfirmacion({
+      query,
+      nombre,
+      apellido,
+      accion: 'aprobar',
+    });
   };
 
   // 1. Definimos el estado para controlar si está abierto o cerrado
@@ -144,10 +156,35 @@ export const AprobarDenegarSolicitud = () => {
                           </div>
                         </div>
                         <div className="d-flex justify-content-end mt-3 gap-2">
+                          <ModalConfirmacion
+                            query={
+                              'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' +
+                              solicitud.solViajeId
+                            }
+                            nombre={solicitud.usuario?.nombreUsuario}
+                            apellido={solicitud.usuario?.apellidoUsuario}
+                            accion="denegar"
+                          />
+                          <ModalConfirmacion
+                            query={
+                              'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' +
+                              solicitud.solViajeId
+                            }
+                            nombre={solicitud.usuario?.nombreUsuario}
+                            apellido={solicitud.usuario?.apellidoUsuario}
+                            accion="aprobar"
+                          />
+
+                          {/*
                           <div
                             className="btn btn-outline-danger col-6"
                             onClick={() =>
-                              handleDenegarSolicitud(solicitud.solViajeId)
+
+                              handleDenegarSolicitud(
+                                solicitud.solViajeId,
+                                solicitud.usuario?.nombreUsuario,
+                                solicitud.usuario?.apellidoUsuario,
+                              )
                             }
                           >
                             DENEGAR
@@ -155,11 +192,15 @@ export const AprobarDenegarSolicitud = () => {
                           <div
                             className="btn btn-outline-success col-6"
                             onClick={() =>
-                              handleAprobarSolicitud(solicitud.solViajeId)
+                              handleAprobarSolicitud(
+                                solicitud.solViajeId,
+                                solicitud.usuario?.nombreUsuario,
+                                solicitud.usuario?.apellidoUsuario,
+                              )
                             }
                           >
                             APROBAR
-                          </div>
+                          </div>*/}
                         </div>
                       </div>
                     </div>
