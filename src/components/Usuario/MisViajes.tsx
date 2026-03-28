@@ -24,6 +24,10 @@ export const MisViajes = () => {
   const [isConductorAprobado, setIsConductorAprobado] = useState(false);
   const [viajeACancelar, setViajeACancelar] = useState<any | null>(null);
   const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
+  const [solicitudACancelar, setSolicitudACancelar] = useState<any | null>(null);
+  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] = useState(false);
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
 
   const { data: user } = getOne<UsuarioDTO>('usuario/' + userId);
 
@@ -80,6 +84,28 @@ export const MisViajes = () => {
     }
   };
 
+  const ejecutarCancelacionSolicitud = async () => {
+    if (!solicitudACancelar) return;
+
+    try {
+      const res = await patch(`viaje/cancelar-solicitud/${solicitudACancelar.solViajeId}`, {});
+
+      setMostrarModalCancelarSolicitud(false);
+      setSolicitudACancelar(null);
+
+      setMensajeExito(res.data.message);
+      setMostrarModalExito(true);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Error al cancelar la solicitud');
+    }
+  };
+
+  const cerrarModalExito = () => {
+    setMostrarModalExito(false);
+    cargarDatos(Number(userId));
+    navigate('/mis-viajes');
+  };
+
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data)
       return 'https://ui-avatars.com/api/?name=User&background=random';
@@ -89,11 +115,10 @@ export const MisViajes = () => {
     return `data:image/jpeg;base64,${btoa(binary)}`;
   };
 
-  // --- ACCIONES TEMPORALES (EN CONSTRUCCIÓN) ---
-  const handleCancelarSolicitud = () => {
-    alert('En construcción: Cancelar solicitud');
+  const handleCancelarSolicitud = (solicitud: any) => {
+    setSolicitudACancelar(solicitud);
+    setMostrarModalCancelarSolicitud(true);
   };
-  // ---------------------------------------------
 
   const formatearHora = (hora: string) => (hora ? hora.substring(0, 5) : '');
 
@@ -216,17 +241,18 @@ export const MisViajes = () => {
                     foto={bufferToBase64(
                       sol.viaje?.usuarioConductor?.fotoPerfil,
                     )}
-                    onCancelar={handleCancelarSolicitud}
+                    onCancelar={() => handleCancelarSolicitud(sol)}
                   />
                 ))
               )}
               <div className="text-center mt-3">
-                <span
-                  className="text-decoration-underline fw-bold"
-                  style={{ color: '#1f5c2f', cursor: 'pointer' }}
-                >
-                  Ver historial de viajes realizados
-                </span>
+              <Link
+                to="/historial-pasajero"
+                className="text-decoration-underline fw-bold"
+                style={{ color: '#1f5c2f', cursor: 'pointer' }}
+              >
+                Ver historial de viajes realizados
+              </Link>
               </div>
             </div>
           </div>
@@ -249,7 +275,7 @@ export const MisViajes = () => {
                   solicitud={sol}
                   hora={formatearHora(sol.viaje?.viajeHorario)}
                   foto={bufferToBase64(sol.viaje?.usuarioConductor?.fotoPerfil)}
-                  onCancelar={handleCancelarSolicitud}
+                  onCancelar={() => handleCancelarSolicitud(sol)}
                 />
               ))
             )}
@@ -337,6 +363,84 @@ export const MisViajes = () => {
                 className="btn btn-light py-2 fw-bold rounded-3 border"
               >
                 No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CONFIRMACIÓN DE CANCELACIÓN DE SOLICITUD (CU08)*/}
+      {mostrarModalCancelarSolicitud && solicitudACancelar && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            <button
+              className="btn-cerrar"
+              onClick={() => setMostrarModalCancelarSolicitud(false)}
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
+
+            <div className="mb-3">
+              <i
+                className="bi bi-exclamation-triangle text-danger"
+                style={{ fontSize: '3rem' }}
+              ></i>
+            </div>
+
+            <h5 className="fw-bold mb-4">
+              ¿Está seguro de que desea cancelar la solicitud de viaje a{' '}
+              {solicitudACancelar.viaje?.viajeDestino?.nombre} para el{' '}
+              {solicitudACancelar.viaje?.viajeFecha
+                ?.split('-')
+                .reverse()
+                .join('/')}{' '}
+              a las{' '}
+              {formatearHora(solicitudACancelar.viaje?.viajeHorario)}?
+            </h5>
+
+            <div className="d-flex justify-content-center gap-3">
+              <button
+                onClick={() => setMostrarModalCancelarSolicitud(false)}
+                className="btn btn-light px-4 py-2 fw-bold rounded-3 border"
+              >
+                No
+              </button>
+
+              <button
+                onClick={ejecutarCancelacionSolicitud}
+                className="btn btn-danger px-4 py-2 fw-bold rounded-3 shadow-sm"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mostrarModalExito && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            <button className="btn-cerrar" onClick={cerrarModalExito}>
+              <i className="bi bi-x-lg"></i>
+            </button>
+
+            <div className="mb-3">
+              <i
+                className="bi bi-check-circle text-success"
+                style={{ fontSize: '3rem' }}
+              ></i>
+            </div>
+
+            <h5 className="fw-bold mb-4">
+              {mensajeExito || 'La solicitud de viaje ha sido cancelada'}
+            </h5>
+
+            <div className="d-flex justify-content-center">
+              <button
+                onClick={cerrarModalExito}
+                className="btn btn-pastel-green px-4 py-2 fw-bold rounded-3 shadow-sm"
+              >
+                Aceptar
               </button>
             </div>
           </div>

@@ -9,7 +9,7 @@ export const AdminLayout = () => {
 
   const cerrarSesion = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleNavegar = (ruta: string) => {

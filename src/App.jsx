@@ -29,10 +29,12 @@ import { EditarUsuario } from './components/Usuario/EditarUsuario.tsx';
 import { RecuperarContrasena } from './components/Usuario/RecuperarContrasena.tsx';
 import { MiCuenta } from './components/Usuario/MiCuentaUsuario.tsx';
 import { MisViajes } from './components/Usuario/MisViajes.tsx';
+import { HistorialPasajero } from './components/Usuario/HistorialPasajero.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
 import { VerSolicitudesConductor } from './components/Usuario/Admin/VerSolicitudesConductor.tsx';
+import { InformeConductores } from "./components/Usuario/Admin/InformeConductores.tsx";
 import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
 import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
 import { AprobarDenegarSolicitud } from './components/Viaje/AprobarDenegarSolicitud.tsx';
@@ -71,6 +73,15 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['administrador']}>
                   <VerSolicitudesConductor />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="informe-conductores"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <InformeConductores/>
                 </ProtectedRoute>
               }
             />
@@ -198,6 +209,11 @@ function App() {
                   <MisViajes />
                 </ProtectedRoute>
               }
+            />
+            <Route path="/historial-pasajero" element={ <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
+              <HistorialPasajero />
+              </ProtectedRoute>
+            }
             />
 
             {/* Rutas de Vehiculo */}

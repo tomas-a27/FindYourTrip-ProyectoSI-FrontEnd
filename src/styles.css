@@ -121,6 +121,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .custom-modal {
@@ -231,4 +232,40 @@
   color: white !important;
   /* Letras pasan a blanco */
   transform: translateY(-1px);
+}
+
+.lista-sugerencias {
+  position: absolute;
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  margin-top: 5px;
+  padding: 5px 0;
+  list-style: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  border: 1px solid #eee;
+}
+
+/* Cada item */
+.lista-sugerencias li {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+/* Hover como plataforma 10 */
+.lista-sugerencias li:hover {
+  background-color: #f3f8f3;
+  color: #2d4a2d;
+  padding-left: 20px;
+}
+
+/* Texto cuando no hay resultados */
+.lista-sugerencias li.no-results {
+  color: #999;
+  cursor: default;
 }

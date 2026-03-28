@@ -46,7 +46,7 @@ export const PublicarViaje = () => {
 
   useEffect(() => {
     if (!userId) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -153,13 +153,13 @@ export const PublicarViaje = () => {
           </div>
 
           <div className="row">
-            <div className="col-md-6 mb-3">
+            <div className="col-md-6 mb-3 position-relative">
               <label className="form-label fw-bold">Origen</label>
 
               <input
                 type="text"
                 required
-                className="form-control"
+                className="form-control custom-input"
                 placeholder="Ej: Rosario"
                 value={localidadOrigen}
                 onChange={(e) => {
@@ -186,7 +186,8 @@ export const PublicarViaje = () => {
                           setMostrarSugerenciaOrigen(false);
                         }}
                       >
-                        {l.nombre}
+                        <strong>{l.nombre.substring(0, localidadOrigen.length)}</strong>
+                        {l.nombre.substring(localidadOrigen.length)}
                       </li>
                     ))
                   ) : (
@@ -195,12 +196,12 @@ export const PublicarViaje = () => {
                 </ul>
               )}
             </div>
-            <div className="col-md-6 mb-3">
+            <div className="col-md-6 mb-3 position-relative">
               <label className="form-label fw-bold">Destino</label>
               <input
                 type="text"
                 required
-                className="form-control"
+                className="form-control custom-input"
                 placeholder="Ej: Buenos Aires"
                 value={localidadDestino}
                 onChange={(e) => {
@@ -227,7 +228,8 @@ export const PublicarViaje = () => {
                           setMostrarSugerenciaDestino(false);
                         }}
                       >
-                        {l.nombre}
+                        <strong>{l.nombre.substring(0, localidadDestino.length)}</strong>
+                        {l.nombre.substring(localidadDestino.length)}
                       </li>
                     ))
                   ) : (

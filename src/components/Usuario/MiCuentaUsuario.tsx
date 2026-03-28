@@ -38,7 +38,7 @@ export const MiCuenta = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
