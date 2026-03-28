@@ -200,12 +200,13 @@ export const MisViajes = () => {
                 ))
               )}
               <div className="text-center mt-3">
-                <span
-                  className="text-decoration-underline fw-bold"
-                  style={{ color: '#1f5c2f', cursor: 'pointer' }}
-                >
-                  Ver historial de viajes realizados
-                </span>
+              <Link
+                to="/historial-pasajero"
+                className="text-decoration-underline fw-bold"
+                style={{ color: '#1f5c2f', cursor: 'pointer' }}
+              >
+                Ver historial de viajes realizados
+              </Link>
               </div>
             </div>
           </div>
