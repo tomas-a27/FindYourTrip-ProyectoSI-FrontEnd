@@ -4,6 +4,7 @@ import { getAsync, getOne, patch } from '../../api/dataManager'; // Quitamos pat
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
 import { Params } from 'react-router-dom';
+import { ModalCalificacionSecuencial } from '../Viaje/ModalCalificacionSecuencial';
 
 // --- COLORES BASADOS EN TU DESCRIPCIÓN ---
 const bgVerdeClaro = '#eaf5ea';
@@ -28,6 +29,10 @@ export const MisViajes = () => {
   const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] = useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
+  const [pasajerosACalificar, setPasajerosACalificar] = useState<any[]>([]);
+  const [indiceCalificacion, setIndiceCalificacion] = useState(0);
+  const [viajeIdActual, setViajeIdActual] = useState<number | null>(null);
+  
 
   const { data: user } = getOne<UsuarioDTO>('usuario/' + userId);
 
@@ -120,6 +125,38 @@ export const MisViajes = () => {
     setMostrarModalCancelarSolicitud(true);
   };
 
+  const handleFinalizarViaje = async (viajeId: number) => {
+    try {
+      const res = await patch(`viaje/finalizar/${viajeId}`, {});
+      console.log("Datos recibidos del back:", res.data.pasajeros);
+
+      // el back nos devuelve los pasajeros aprobados
+      if (res.data.pasajeros && res.data.pasajeros.length > 0) {
+        setViajeIdActual(viajeId);
+        setPasajerosACalificar(res.data.pasajeros);
+        setIndiceCalificacion(0);
+      } else {
+        alert(res.data.message);
+        cargarDatos(Number(userId));
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Error al finalizar el viaje');
+    }
+  };
+
+  // se dispara cuando termina de calificar a UN pasajero
+  const handleSiguienteCalificacion = () => {
+    if (indiceCalificacion < pasajerosACalificar.length - 1) {
+      setIndiceCalificacion(prev => prev + 1); // Pasa al Pasajero 2/4, etc. 
+    } else {
+      // Terminó con todos
+      setPasajerosACalificar([]);
+      setViajeIdActual(null);
+      cargarDatos(Number(userId));
+      alert("¡Todas las calificaciones han sido registradas!");
+    }
+  };
+
   const formatearHora = (hora: string) => (hora ? hora.substring(0, 5) : '');
 
   // Filtros Pasajero
@@ -138,12 +175,12 @@ export const MisViajes = () => {
   // Filtros Conductor
   const proximosConductor = viajesPublicados.filter(
     (v) =>
-      v.viajeEstado?.toLowerCase() === 'disponible' ||
+      v.viajeEstado?.toLowerCase() === 'en curso' ||
       v.viajeEstado?.toLowerCase() === 'pendiente',
   );
   const realizadosConductor = viajesPublicados.filter(
     (v) =>
-      v.viajeEstado?.toLowerCase() !== 'disponible' &&
+      v.viajeEstado?.toLowerCase() !== 'en curso' &&
       v.viajeEstado?.toLowerCase() !== 'pendiente' &&
       v.viajeEstado?.toLowerCase() !== 'cancelado',
   );
@@ -246,13 +283,13 @@ export const MisViajes = () => {
                 ))
               )}
               <div className="text-center mt-3">
-              <Link
-                to="/historial-pasajero"
-                className="text-decoration-underline fw-bold"
-                style={{ color: '#1f5c2f', cursor: 'pointer' }}
-              >
-                Ver historial de viajes realizados
-              </Link>
+                <Link
+                  to="/historial-pasajero"
+                  className="text-decoration-underline fw-bold"
+                  style={{ color: '#1f5c2f', cursor: 'pointer' }}
+                >
+                  Ver historial de viajes realizados
+                </Link>
               </div>
             </div>
           </div>
@@ -303,6 +340,7 @@ export const MisViajes = () => {
                       setMostrarModalCancelar(true);
                     }}
                     onComenzar={() => alert('En construcción: Comenzar viaje')}
+                    onFinalizar={() => handleFinalizarViaje(viaje.viajeId)}
                     onVerSolicitudes={handleVerSolicitudes}
                   />
                 ))
@@ -446,7 +484,18 @@ export const MisViajes = () => {
           </div>
         </div>
       )}
+      {pasajerosACalificar.length > 0 && (
+        <ModalCalificacionSecuencial
+          pasajero={pasajerosACalificar[indiceCalificacion]}
+          viajeId={viajeIdActual}
+          indice={indiceCalificacion + 1}
+          total={pasajerosACalificar.length}
+          onSuccess={handleSiguienteCalificacion}
+          onClose={() => handleSiguienteCalificacion()} 
+        />
+      )}
     </div>
+    
   );
 };
 
@@ -761,9 +810,11 @@ const TarjetaConductorActivo = ({
   hora,
   onCancelar,
   onComenzar,
+  onFinalizar,
   onVerSolicitudes,
 }: any) => {
   const isCompleto = viaje.solicitudesAprobadas >= viaje.viajeCantLugares;
+  const isEnCurso = viaje.viajeEstado?.toLowerCase() === 'en curso';
 
   return (
     <div className="mb-4">
@@ -909,21 +960,28 @@ const TarjetaConductorActivo = ({
             fontSize: '0.95rem',
             boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
           }}
+          disabled={isEnCurso}
         >
-          Cancelar Viaje
+          Cancelar viaje
         </button>
-        <button
-          onClick={onComenzar}
-          className="btn bg-white w-50 rounded-pill fw-bold py-2"
-          style={{
-            border: '2px solid #0dcaf0',
-            color: '#0d6efd',
-            fontSize: '0.95rem',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-          }}
-        >
-          Comenzar viaje
-        </button>
+
+        {isEnCurso ? (
+          <button
+            onClick={() => onFinalizar(viaje.viajeId)}
+            className="btn btn-success w-50 rounded-pill fw-bold py-2 shadow-sm"
+            style={{ fontSize: '0.95rem', backgroundColor: '#2d4a2d', border: 'none' }}
+          >
+            Finalizar viaje
+          </button>
+        ) : (
+          <button
+            onClick={onComenzar}
+            className="btn bg-white w-50 rounded-pill fw-bold py-2"
+            style={{ border: '2px solid #0dcaf0', color: '#0d6efd', fontSize: '0.95rem' }}
+          >
+            Comenzar viaje
+          </button>
+        )}
       </div>
     </div>
   );
