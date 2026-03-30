@@ -4,15 +4,17 @@ import { patch } from '../../api/dataManager.ts';
 import { useNavigate } from 'react-router-dom';
 
 interface ModalComenzarFinalizarViajeProps {
-  query: string;
+  query?: string;
   accion: string;
-  routeNav: string;
+  routeNav?: string;
+  onConfirm?: () => void;
 }
 
 const ModalComenzarFinalizarViaje = ({
   query,
   accion,
   routeNav,
+  onConfirm,
 }: ModalComenzarFinalizarViajeProps) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -22,13 +24,17 @@ const ModalComenzarFinalizarViaje = ({
   };
   const handleCloseModal = () => {
     setShowModal(false);
-    //navigate(routeNav);
-    location.reload();
   };
 
   async function handleConfirmar() {
-    await patch(query);
-    handleCloseModal();
+    if (onConfirm) {
+      handleCloseModal();
+      onConfirm();
+    } else if (query) {
+      await patch(query);
+      handleCloseModal();
+      location.reload();
+    }
   }
 
   return (
@@ -47,8 +53,13 @@ const ModalComenzarFinalizarViaje = ({
         </button>
       ) : (
         <button
-          className="btn btn-outline-danger col-6"
+          className="btn btn-success w-50 rounded-pill fw-bold py-2 shadow-sm"
           onClick={handleOpenModal}
+          style={{
+            fontSize: '0.95rem',
+            backgroundColor: '#2d4a2d',
+            border: 'none',
+          }}
         >
           FINALIZAR VIAJE
         </button>

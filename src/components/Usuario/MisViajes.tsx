@@ -968,17 +968,10 @@ const TarjetaConductorActivo = ({
         </button>
 
         {isEnCurso ? (
-          <button
-            onClick={() => onFinalizar(viaje.viajeId)}
-            className="btn btn-success w-50 rounded-pill fw-bold py-2 shadow-sm"
-            style={{
-              fontSize: '0.95rem',
-              backgroundColor: '#2d4a2d',
-              border: 'none',
-            }}
-          >
-            Finalizar viaje
-          </button>
+          <ModalComenzarFinalizarViaje
+            accion="FINALIZAR"
+            onConfirm={() => onFinalizar(viaje.viajeId)}
+          />
         ) : (
           <ModalComenzarFinalizarViaje
             query={`viaje/comenzar/${viaje.viajeId}`}
