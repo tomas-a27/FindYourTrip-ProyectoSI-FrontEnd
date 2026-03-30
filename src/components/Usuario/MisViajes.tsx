@@ -181,12 +181,12 @@ export const MisViajes = () => {
   // Filtros Conductor
   const proximosConductor = viajesPublicados.filter(
     (v) =>
-      v.viajeEstado?.toLowerCase() === 'en curso' ||
+      v.viajeEstado?.toLowerCase() === 'encurso' ||
       v.viajeEstado?.toLowerCase() === 'pendiente',
   );
   const realizadosConductor = viajesPublicados.filter(
     (v) =>
-      v.viajeEstado?.toLowerCase() !== 'en curso' &&
+      v.viajeEstado?.toLowerCase() !== 'encurso' &&
       v.viajeEstado?.toLowerCase() !== 'pendiente' &&
       v.viajeEstado?.toLowerCase() !== 'cancelado',
   );
@@ -816,7 +816,7 @@ const TarjetaConductorActivo = ({
   onVerSolicitudes,
 }: any) => {
   const isCompleto = viaje.solicitudesAprobadas >= viaje.viajeCantLugares;
-  const isEnCurso = viaje.viajeEstado?.toLowerCase() === 'en curso';
+  const isEnCurso = viaje.viajeEstado?.toLowerCase() === 'encurso';
 
   return (
     <div className="mb-4">
