@@ -3,20 +3,20 @@ import { Modal } from 'react-bootstrap';
 import { patch } from '../../api/dataManager.ts';
 import { useNavigate } from 'react-router-dom';
 
-interface ModalConfirmacionProps {
+interface ModalConfirmacionDenegarAprobarProps {
   query: string;
   nombre: string;
   apellido: string;
   accion: string;
 }
 
-const ModalConfirmacion = ({
+const ModalConfirmacionDenegarAprobar = ({
   query,
   nombre,
   apellido,
   accion,
-}: ModalConfirmacionProps) => {
-  const navegate = useNavigate();
+}: ModalConfirmacionDenegarAprobarProps) => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
   const handleOpenModal = () => {
@@ -24,14 +24,12 @@ const ModalConfirmacion = ({
   };
   const handleCloseModal = () => {
     setShowModal(false);
+    navigate('/solicitudes-mis-viajes');
   };
 
   async function handleConfirmar() {
-    console.log('Query a ejecutar:', query);
     await patch(query);
-
     handleCloseModal();
-    navegate('/solicitudes-mis-viajes');
   }
 
   return (
@@ -104,4 +102,4 @@ const ModalConfirmacion = ({
   );
 };
 
-export default ModalConfirmacion;
+export default ModalConfirmacionDenegarAprobar;

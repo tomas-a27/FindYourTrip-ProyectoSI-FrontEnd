@@ -2,7 +2,7 @@ import { SolicitudViajeDTO } from '../../entities/entities.ts';
 import { get, patch } from '../../api/dataManager.ts';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import ModalConfirmacion from './ModalConfirmacion.tsx';
+import ModalConfirmacionDenegarAprobar from './ModalConfirmacionDenegarAprobar.tsx';
 
 export const AprobarDenegarSolicitud = () => {
   const location = useLocation();
@@ -29,22 +29,6 @@ export const AprobarDenegarSolicitud = () => {
   ) => {
     const query =
       'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' + solicitudId;
-  };
-
-  const handleAprobarSolicitud = (
-    solicitudId: number,
-    nombre: string,
-    apellido: string,
-  ) => {
-    const query =
-      'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' + solicitudId;
-
-    ModalConfirmacion({
-      query,
-      nombre,
-      apellido,
-      accion: 'aprobar',
-    });
   };
 
   // 1. Definimos el estado para controlar si está abierto o cerrado
@@ -156,7 +140,7 @@ export const AprobarDenegarSolicitud = () => {
                           </div>
                         </div>
                         <div className="d-flex justify-content-end mt-3 gap-2">
-                          <ModalConfirmacion
+                          <ModalConfirmacionDenegarAprobar
                             query={
                               'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' +
                               solicitud.solViajeId
@@ -165,7 +149,7 @@ export const AprobarDenegarSolicitud = () => {
                             apellido={solicitud.usuario?.apellidoUsuario}
                             accion="denegar"
                           />
-                          <ModalConfirmacion
+                          <ModalConfirmacionDenegarAprobar
                             query={
                               'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' +
                               solicitud.solViajeId
