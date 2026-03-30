@@ -5,6 +5,7 @@ import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
 import { Params } from 'react-router-dom';
 import { ModalCalificacionSecuencial } from '../Viaje/ModalCalificacionSecuencial';
+import ModalComenzarFinalizarViaje from '../Viaje/ModalComenzarViaje.tsx';
 
 // --- COLORES BASADOS EN TU DESCRIPCIÓN ---
 const bgVerdeClaro = '#eaf5ea';
@@ -25,14 +26,16 @@ export const MisViajes = () => {
   const [isConductorAprobado, setIsConductorAprobado] = useState(false);
   const [viajeACancelar, setViajeACancelar] = useState<any | null>(null);
   const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
-  const [solicitudACancelar, setSolicitudACancelar] = useState<any | null>(null);
-  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] = useState(false);
+  const [solicitudACancelar, setSolicitudACancelar] = useState<any | null>(
+    null,
+  );
+  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] =
+    useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [pasajerosACalificar, setPasajerosACalificar] = useState<any[]>([]);
   const [indiceCalificacion, setIndiceCalificacion] = useState(0);
   const [viajeIdActual, setViajeIdActual] = useState<number | null>(null);
-  
 
   const { data: user } = getOne<UsuarioDTO>('usuario/' + userId);
 
@@ -93,7 +96,10 @@ export const MisViajes = () => {
     if (!solicitudACancelar) return;
 
     try {
-      const res = await patch(`viaje/cancelar-solicitud/${solicitudACancelar.solViajeId}`, {});
+      const res = await patch(
+        `viaje/cancelar-solicitud/${solicitudACancelar.solViajeId}`,
+        {},
+      );
 
       setMostrarModalCancelarSolicitud(false);
       setSolicitudACancelar(null);
@@ -128,7 +134,7 @@ export const MisViajes = () => {
   const handleFinalizarViaje = async (viajeId: number) => {
     try {
       const res = await patch(`viaje/finalizar/${viajeId}`, {});
-      console.log("Datos recibidos del back:", res.data.pasajeros);
+      console.log('Datos recibidos del back:', res.data.pasajeros);
 
       // el back nos devuelve los pasajeros aprobados
       if (res.data.pasajeros && res.data.pasajeros.length > 0) {
@@ -147,13 +153,13 @@ export const MisViajes = () => {
   // se dispara cuando termina de calificar a UN pasajero
   const handleSiguienteCalificacion = () => {
     if (indiceCalificacion < pasajerosACalificar.length - 1) {
-      setIndiceCalificacion(prev => prev + 1); // Pasa al Pasajero 2/4, etc. 
+      setIndiceCalificacion((prev) => prev + 1); // Pasa al Pasajero 2/4, etc.
     } else {
       // Terminó con todos
       setPasajerosACalificar([]);
       setViajeIdActual(null);
       cargarDatos(Number(userId));
-      alert("¡Todas las calificaciones han sido registradas!");
+      alert('¡Todas las calificaciones han sido registradas!');
     }
   };
 
@@ -339,7 +345,6 @@ export const MisViajes = () => {
                       setViajeACancelar(viaje);
                       setMostrarModalCancelar(true);
                     }}
-                    onComenzar={() => alert('En construcción: Comenzar viaje')}
                     onFinalizar={() => handleFinalizarViaje(viaje.viajeId)}
                     onVerSolicitudes={handleVerSolicitudes}
                   />
@@ -432,8 +437,7 @@ export const MisViajes = () => {
                 ?.split('-')
                 .reverse()
                 .join('/')}{' '}
-              a las{' '}
-              {formatearHora(solicitudACancelar.viaje?.viajeHorario)}?
+              a las {formatearHora(solicitudACancelar.viaje?.viajeHorario)}?
             </h5>
 
             <div className="d-flex justify-content-center gap-3">
@@ -491,11 +495,10 @@ export const MisViajes = () => {
           indice={indiceCalificacion + 1}
           total={pasajerosACalificar.length}
           onSuccess={handleSiguienteCalificacion}
-          onClose={() => handleSiguienteCalificacion()} 
+          onClose={() => handleSiguienteCalificacion()}
         />
       )}
     </div>
-    
   );
 };
 
@@ -809,7 +812,6 @@ const TarjetaConductorActivo = ({
   viaje,
   hora,
   onCancelar,
-  onComenzar,
   onFinalizar,
   onVerSolicitudes,
 }: any) => {
@@ -969,18 +971,20 @@ const TarjetaConductorActivo = ({
           <button
             onClick={() => onFinalizar(viaje.viajeId)}
             className="btn btn-success w-50 rounded-pill fw-bold py-2 shadow-sm"
-            style={{ fontSize: '0.95rem', backgroundColor: '#2d4a2d', border: 'none' }}
+            style={{
+              fontSize: '0.95rem',
+              backgroundColor: '#2d4a2d',
+              border: 'none',
+            }}
           >
             Finalizar viaje
           </button>
         ) : (
-          <button
-            onClick={onComenzar}
-            className="btn bg-white w-50 rounded-pill fw-bold py-2"
-            style={{ border: '2px solid #0dcaf0', color: '#0d6efd', fontSize: '0.95rem' }}
-          >
-            Comenzar viaje
-          </button>
+          <ModalComenzarFinalizarViaje
+            query={`viaje/comenzar/${viaje.viajeId}`}
+            accion="COMENZAR"
+            routeNav="/mis-viajes"
+          />
         )}
       </div>
     </div>

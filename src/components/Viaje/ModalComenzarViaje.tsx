@@ -22,7 +22,8 @@ const ModalComenzarFinalizarViaje = ({
   };
   const handleCloseModal = () => {
     setShowModal(false);
-    navigate(routeNav);
+    //navigate(routeNav);
+    location.reload();
   };
 
   async function handleConfirmar() {
@@ -34,8 +35,13 @@ const ModalComenzarFinalizarViaje = ({
     <>
       {accion.toUpperCase() === 'COMENZAR' ? (
         <button
-          className="btn btn-outline-success col-6"
+          className="btn bg-white w-50 rounded-pill fw-bold py-2 "
           onClick={handleOpenModal}
+          style={{
+            border: '2px solid #0dcaf0',
+            color: '#0d6efd',
+            fontSize: '0.95rem',
+          }}
         >
           COMENZAR VIAJE
         </button>
