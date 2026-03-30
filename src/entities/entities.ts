@@ -112,6 +112,11 @@ interface InformeRutasDTO {
   cantidadTotalViajes: number;
   precioPromedioGeneral: number;
 }
+
+interface ApiResponse<T> {
+  message: string;
+  data: T;
+}
 export type {
   LocalidadDTO,
   UsuarioDTO,
@@ -125,4 +130,5 @@ export type {
   PoliticaSancionDTO,
   InformeRutaDTO,
   InformeRutasDTO,
+  ApiResponse
 };
