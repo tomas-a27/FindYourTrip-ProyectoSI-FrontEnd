@@ -7,7 +7,6 @@ interface LocalidadDTO extends BaseDTO {
   nombre: string;
 }
 
-
 interface VehiculoDTO {
   patente: string;
   modelo: string;
@@ -100,4 +99,30 @@ interface PoliticaSancionDTO {
   cantCriticaInfracciones: number;
 }
 
-export type { LocalidadDTO, UsuarioDTO, ViajeDTO, VehiculoDTO, SolicitudViajeDTO, CalificacionDTO, InfraccionDTO, SancionDTO, SancionInfraccionDTO, PoliticaSancionDTO };
+interface InformeRutaDTO {
+  indice?: number;
+  nombreOrigen: string;
+  nombreDestino: string;
+  cantidadDeViajes: number;
+  viajePrecioPromedio: number;
+}
+
+interface InformeRutasDTO {
+  rutas: InformeRutaDTO[];
+  cantidadTotalViajes: number;
+  precioPromedioGeneral: number;
+}
+export type {
+  LocalidadDTO,
+  UsuarioDTO,
+  ViajeDTO,
+  VehiculoDTO,
+  SolicitudViajeDTO,
+  CalificacionDTO,
+  InfraccionDTO,
+  SancionDTO,
+  SancionInfraccionDTO,
+  PoliticaSancionDTO,
+  InformeRutaDTO,
+  InformeRutasDTO,
+};
