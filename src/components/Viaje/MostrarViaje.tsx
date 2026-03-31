@@ -18,7 +18,9 @@ export const MostrarViaje = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const query = location.state?.query || 'viaje/mostrar-viaje';
+  const query =
+    location.state?.query ||
+    `viaje/mostrar-viaje?viajeEstado=pendiente&usuarioId=${userId}`;
 
   const {
     data: viajes,
@@ -32,10 +34,13 @@ export const MostrarViaje = () => {
       usuario: userId,
     };
 
-    console.log(solicitudViaje);
-    await post('viaje/solicitar-viaje', solicitudViaje);
-    window.location.reload();
-    //navigate('/mis-viajes');
+    const res = await post('viaje/solicitar-viaje', solicitudViaje);
+    if (res.status === 201) {
+      alert('¡Solicitud enviada con éxito!');
+      navigate('/mis-viajes'); // Mejor navegar que recargar
+    } else {
+      alert('Error: ' + res.data?.message);
+    }
   };
   return (
     <div>
@@ -137,7 +142,9 @@ export const MostrarViaje = () => {
                       <div className="text-end text-muted small">
                         <div className="mb-1">
                           <i className="bi bi-calendar3 me-1"></i>{' '}
-                          {new Date(viaje.viajeFecha).toLocaleDateString()}
+                          {Array.isArray(viaje.viajeFecha.split('-'))
+                            ? viaje.viajeFecha.split('-').reverse().join('/')
+                            : viaje.viajeFecha}
                         </div>
                         <div className="mb-1">
                           <i className="fw-bold bi bi-clock me-1"></i>{' '}

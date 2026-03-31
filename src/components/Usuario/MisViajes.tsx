@@ -3,6 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { getAsync, getOne, patch } from '../../api/dataManager'; // Quitamos patch y del
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
+import { Params } from 'react-router-dom';
+import { ModalCalificacionSecuencial } from '../Viaje/ModalCalificacionSecuencial';
+import ModalComenzarFinalizarViaje from '../Viaje/ModalComenzarViaje.tsx';
 
 // --- COLORES BASADOS EN TU DESCRIPCIÓN ---
 const bgVerdeClaro = '#eaf5ea';
@@ -23,6 +26,16 @@ export const MisViajes = () => {
   const [isConductorAprobado, setIsConductorAprobado] = useState(false);
   const [viajeACancelar, setViajeACancelar] = useState<any | null>(null);
   const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
+  const [solicitudACancelar, setSolicitudACancelar] = useState<any | null>(
+    null,
+  );
+  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] =
+    useState(false);
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
+  const [pasajerosACalificar, setPasajerosACalificar] = useState<any[]>([]);
+  const [indiceCalificacion, setIndiceCalificacion] = useState(0);
+  const [viajeIdActual, setViajeIdActual] = useState<number | null>(null);
 
   const { data: user } = getOne<UsuarioDTO>('usuario/' + userId);
 
@@ -30,13 +43,13 @@ export const MisViajes = () => {
     if (user === undefined) return;
     if (user) {
       const aprobado =
-        user?.estadoConductor?.toLowerCase() === 'aprobado' || 
-        user?.tipoUsuario?.toLowerCase() === 'conductor'; 
+        user?.estadoConductor?.toLowerCase() === 'aprobado' ||
+        user?.tipoUsuario?.toLowerCase() === 'conductor';
       setIsConductorAprobado(aprobado);
 
       cargarDatos(Number(userId));
     } else {
-      setLoading(false); 
+      setLoading(false);
       navigate('/login');
     }
   }, [navigate, userId, user]); // AGREGAR 'user' A LAS DEPENDENCIAS
@@ -79,6 +92,31 @@ export const MisViajes = () => {
     }
   };
 
+  const ejecutarCancelacionSolicitud = async () => {
+    if (!solicitudACancelar) return;
+
+    try {
+      const res = await patch(
+        `viaje/cancelar-solicitud/${solicitudACancelar.solViajeId}`,
+        {},
+      );
+
+      setMostrarModalCancelarSolicitud(false);
+      setSolicitudACancelar(null);
+
+      setMensajeExito(res.data.message);
+      setMostrarModalExito(true);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Error al cancelar la solicitud');
+    }
+  };
+
+  const cerrarModalExito = () => {
+    setMostrarModalExito(false);
+    cargarDatos(Number(userId));
+    navigate('/mis-viajes');
+  };
+
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data)
       return 'https://ui-avatars.com/api/?name=User&background=random';
@@ -88,11 +126,42 @@ export const MisViajes = () => {
     return `data:image/jpeg;base64,${btoa(binary)}`;
   };
 
-  // --- ACCIONES TEMPORALES (EN CONSTRUCCIÓN) ---
-  const handleCancelarSolicitud = () => {
-    alert('En construcción: Cancelar solicitud');
+  const handleCancelarSolicitud = (solicitud: any) => {
+    setSolicitudACancelar(solicitud);
+    setMostrarModalCancelarSolicitud(true);
   };
-  // ---------------------------------------------
+
+  const handleFinalizarViaje = async (viajeId: number) => {
+    try {
+      const res = await patch(`viaje/finalizar/${viajeId}`, {});
+      console.log('Datos recibidos del back:', res.data.pasajeros);
+
+      // el back nos devuelve los pasajeros aprobados
+      if (res.data.pasajeros && res.data.pasajeros.length > 0) {
+        setViajeIdActual(viajeId);
+        setPasajerosACalificar(res.data.pasajeros);
+        setIndiceCalificacion(0);
+      } else {
+        alert(res.data.message);
+        cargarDatos(Number(userId));
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Error al finalizar el viaje');
+    }
+  };
+
+  // se dispara cuando termina de calificar a UN pasajero
+  const handleSiguienteCalificacion = () => {
+    if (indiceCalificacion < pasajerosACalificar.length - 1) {
+      setIndiceCalificacion((prev) => prev + 1); // Pasa al Pasajero 2/4, etc.
+    } else {
+      // Terminó con todos
+      setPasajerosACalificar([]);
+      setViajeIdActual(null);
+      cargarDatos(Number(userId));
+      alert('¡Todas las calificaciones han sido registradas!');
+    }
+  };
 
   const formatearHora = (hora: string) => (hora ? hora.substring(0, 5) : '');
 
@@ -112,15 +181,35 @@ export const MisViajes = () => {
   // Filtros Conductor
   const proximosConductor = viajesPublicados.filter(
     (v) =>
-      v.viajeEstado?.toLowerCase() === 'disponible' ||
+      v.viajeEstado?.toLowerCase() === 'encurso' ||
       v.viajeEstado?.toLowerCase() === 'pendiente',
   );
   const realizadosConductor = viajesPublicados.filter(
     (v) =>
-      v.viajeEstado?.toLowerCase() !== 'disponible' &&
+      v.viajeEstado?.toLowerCase() !== 'encurso' &&
       v.viajeEstado?.toLowerCase() !== 'pendiente' &&
       v.viajeEstado?.toLowerCase() !== 'cancelado',
   );
+
+  const handleVerSolicitudes = (
+    viajeId: number,
+    viajeDestino: string,
+    viajeOrigen: string,
+    viajeFecha: Date,
+    solicitudesAprobadas: number,
+    viajeCantLugares: number,
+  ) => {
+    const lugaresDisponibles = viajeCantLugares - solicitudesAprobadas;
+    navigate('/solicitudes-mis-viajes', {
+      state: {
+        viajeId,
+        viajeDestino,
+        viajeOrigen,
+        viajeFecha,
+        lugaresDisponibles,
+      },
+    });
+  };
 
   if (loading)
     return (
@@ -195,17 +284,18 @@ export const MisViajes = () => {
                     foto={bufferToBase64(
                       sol.viaje?.usuarioConductor?.fotoPerfil,
                     )}
-                    onCancelar={handleCancelarSolicitud}
+                    onCancelar={() => handleCancelarSolicitud(sol)}
                   />
                 ))
               )}
               <div className="text-center mt-3">
-                <span
+                <Link
+                  to="/historial-pasajero"
                   className="text-decoration-underline fw-bold"
                   style={{ color: '#1f5c2f', cursor: 'pointer' }}
                 >
                   Ver historial de viajes realizados
-                </span>
+                </Link>
               </div>
             </div>
           </div>
@@ -228,7 +318,7 @@ export const MisViajes = () => {
                   solicitud={sol}
                   hora={formatearHora(sol.viaje?.viajeHorario)}
                   foto={bufferToBase64(sol.viaje?.usuarioConductor?.fotoPerfil)}
-                  onCancelar={handleCancelarSolicitud}
+                  onCancelar={() => handleCancelarSolicitud(sol)}
                 />
               ))
             )}
@@ -255,7 +345,8 @@ export const MisViajes = () => {
                       setViajeACancelar(viaje);
                       setMostrarModalCancelar(true);
                     }}
-                    onComenzar={() => alert('En construcción: Comenzar viaje')}
+                    onFinalizar={() => handleFinalizarViaje(viaje.viajeId)}
+                    onVerSolicitudes={handleVerSolicitudes}
                   />
                 ))
               )}
@@ -295,19 +386,117 @@ export const MisViajes = () => {
         <div className="modal-overlay">
           <div className="custom-modal p-4 text-center">
             <div className="mb-3">
-              <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: '3rem' }}></i>
+              <i
+                className="bi bi-exclamation-triangle text-danger"
+                style={{ fontSize: '3rem' }}
+              ></i>
             </div>
-            <h5 className="fw-bold mb-3">¿Está seguro que desea cancelar el viaje?</h5>
+            <h5 className="fw-bold mb-3">
+              ¿Está seguro que desea cancelar el viaje?
+            </h5>
             <div className="d-grid gap-2">
-              <button onClick={ejecutarCancelacion} className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm">
+              <button
+                onClick={ejecutarCancelacion}
+                className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm"
+              >
                 Confirmar
               </button>
-              <button onClick={() => setMostrarModalCancelar(false)} className="btn btn-light py-2 fw-bold rounded-3 border">
+              <button
+                onClick={() => setMostrarModalCancelar(false)}
+                className="btn btn-light py-2 fw-bold rounded-3 border"
+              >
                 No
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* MODAL DE CONFIRMACIÓN DE CANCELACIÓN DE SOLICITUD (CU08)*/}
+      {mostrarModalCancelarSolicitud && solicitudACancelar && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            <button
+              className="btn-cerrar"
+              onClick={() => setMostrarModalCancelarSolicitud(false)}
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
+
+            <div className="mb-3">
+              <i
+                className="bi bi-exclamation-triangle text-danger"
+                style={{ fontSize: '3rem' }}
+              ></i>
+            </div>
+
+            <h5 className="fw-bold mb-4">
+              ¿Está seguro de que desea cancelar la solicitud de viaje a{' '}
+              {solicitudACancelar.viaje?.viajeDestino?.nombre} para el{' '}
+              {solicitudACancelar.viaje?.viajeFecha
+                ?.split('-')
+                .reverse()
+                .join('/')}{' '}
+              a las {formatearHora(solicitudACancelar.viaje?.viajeHorario)}?
+            </h5>
+
+            <div className="d-flex justify-content-center gap-3">
+              <button
+                onClick={() => setMostrarModalCancelarSolicitud(false)}
+                className="btn btn-light px-4 py-2 fw-bold rounded-3 border"
+              >
+                No
+              </button>
+
+              <button
+                onClick={ejecutarCancelacionSolicitud}
+                className="btn btn-danger px-4 py-2 fw-bold rounded-3 shadow-sm"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mostrarModalExito && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            <button className="btn-cerrar" onClick={cerrarModalExito}>
+              <i className="bi bi-x-lg"></i>
+            </button>
+
+            <div className="mb-3">
+              <i
+                className="bi bi-check-circle text-success"
+                style={{ fontSize: '3rem' }}
+              ></i>
+            </div>
+
+            <h5 className="fw-bold mb-4">
+              {mensajeExito || 'La solicitud de viaje ha sido cancelada'}
+            </h5>
+
+            <div className="d-flex justify-content-center">
+              <button
+                onClick={cerrarModalExito}
+                className="btn btn-pastel-green px-4 py-2 fw-bold rounded-3 shadow-sm"
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {pasajerosACalificar.length > 0 && (
+        <ModalCalificacionSecuencial
+          pasajero={pasajerosACalificar[indiceCalificacion]}
+          viajeId={viajeIdActual}
+          indice={indiceCalificacion + 1}
+          total={pasajerosACalificar.length}
+          onSuccess={handleSiguienteCalificacion}
+          onClose={() => handleSiguienteCalificacion()}
+        />
       )}
     </div>
   );
@@ -399,7 +588,9 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             >
               <i className="bi bi-calendar3 me-2"></i>{' '}
               <span>
-                {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
               </span>
             </div>
             <div
@@ -536,7 +727,9 @@ const TarjetaPasajeroReciente = ({
               style={{ fontSize: '0.85rem' }}
             >
               <i className="bi bi-calendar3 me-2"></i>{' '}
-              {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+              {viaje?.viajeFecha
+                ? viaje.viajeFecha.split('-').reverse().join('/')
+                : ''}
             </div>
             <div
               className="text-muted d-flex align-items-center mb-2"
@@ -619,9 +812,11 @@ const TarjetaConductorActivo = ({
   viaje,
   hora,
   onCancelar,
-  onComenzar,
+  onFinalizar,
+  onVerSolicitudes,
 }: any) => {
   const isCompleto = viaje.solicitudesAprobadas >= viaje.viajeCantLugares;
+  const isEnCurso = viaje.viajeEstado?.toLowerCase() === 'encurso';
 
   return (
     <div className="mb-4">
@@ -686,7 +881,9 @@ const TarjetaConductorActivo = ({
                 style={{ fontSize: '0.9rem' }}
               >
                 <i className="bi bi-calendar3 me-2"></i>{' '}
-                {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
               </div>
               <div
                 className="text-muted d-flex align-items-center"
@@ -735,7 +932,14 @@ const TarjetaConductorActivo = ({
               cursor: 'pointer',
             }}
             onClick={() =>
-              alert('En construcción: Ver pasajeros y solicitudes')
+              onVerSolicitudes(
+                viaje.viajeId,
+                viaje.viajeDestino?.nombre,
+                viaje.viajeOrigen?.nombre,
+                viaje.viajeFecha,
+                viaje.solicitudesAprobadas,
+                viaje.viajeCantLugares,
+              )
             }
           >
             <span
@@ -758,21 +962,23 @@ const TarjetaConductorActivo = ({
             fontSize: '0.95rem',
             boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
           }}
+          disabled={isEnCurso}
         >
-          Cancelar Viaje
+          Cancelar viaje
         </button>
-        <button
-          onClick={onComenzar}
-          className="btn bg-white w-50 rounded-pill fw-bold py-2"
-          style={{
-            border: '2px solid #0dcaf0',
-            color: '#0d6efd',
-            fontSize: '0.95rem',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-          }}
-        >
-          Comenzar viaje
-        </button>
+
+        {isEnCurso ? (
+          <ModalComenzarFinalizarViaje
+            accion="FINALIZAR"
+            onConfirm={() => onFinalizar(viaje.viajeId)}
+          />
+        ) : (
+          <ModalComenzarFinalizarViaje
+            query={`viaje/comenzar/${viaje.viajeId}`}
+            accion="COMENZAR"
+            routeNav="/mis-viajes"
+          />
+        )}
       </div>
     </div>
   );
@@ -837,7 +1043,9 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
               style={{ fontSize: '0.9rem' }}
             >
               <span>
-                {new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
               </span>{' '}
               <i className="bi bi-calendar3 ms-2"></i>
             </div>

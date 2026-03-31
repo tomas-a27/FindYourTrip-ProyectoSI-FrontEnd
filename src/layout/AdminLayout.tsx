@@ -6,10 +6,11 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const [mostrarConfirmarLogout, setMostrarConfirmarLogout] = useState(false);
 
-  const cerrarSesion = () => {
+  const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleNavegar = (ruta: string) => {
@@ -60,7 +61,12 @@ export const AdminLayout = () => {
             </ul>
             
             <div className="d-flex justify-content-center mt-2 mt-lg-0">
-              <button className="btn btn-outline-light btn-sm px-3" onClick={cerrarSesion}>Cerrar Sesión</button>
+              <button
+                onClick={() => setMostrarConfirmarLogout(true)}
+                className="btn btn-outline-light btn-sm px-3"
+              >
+                Cerrar Sesión
+              </button>
             </div>
           </div>
         </div>
@@ -69,7 +75,41 @@ export const AdminLayout = () => {
       <main style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Outlet /> 
       </main>
+      {/* MODAL DE CONFIRMACIÓN DE CIERRE DE SESIÓN */}
+      {mostrarConfirmarLogout && (
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            {/* Botón X */}
+            <button
+              onClick={() => setMostrarConfirmarLogout(false)}
+              className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted"
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
 
+            <div className="mb-1">
+              <i className="bi bi-box-arrow-right text-danger" style={{ fontSize: '3rem' }}></i>
+            </div>
+
+            <h5 className="fw-bold mb-3">¿Está seguro que desea cerrar sesión?</h5>
+
+            <div className="d-grid gap-2">
+              <button
+                onClick={handleLogout}
+                className="btn btn-danger py-2 fw-bold rounded-3 shadow-sm"
+              >
+                Sí, cerrar sesión
+              </button>
+              <button
+                onClick={() => setMostrarConfirmarLogout(false)}
+                className="btn btn-light py-2 fw-bold rounded-3 border"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
