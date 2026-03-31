@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { post } from '../../api/dataManager'; // Ajustá la ruta según tu proyecto
+import { post } from '../../api/dataManager'; 
+import { useAuth } from '../../auth/AuthContext';
 
 interface Props {
-  pasajero: { idUsuario: number; nombre: string; apellido: string };
+  usuarioACalificar: { idUsuario: number; nombre: string; apellido: string };
   viajeId: number | null;
   indice: number;
   total: number;
   onSuccess: () => void;
   onClose: () => void;
+  tipo?: 'Pasajero' | 'Conductor';
 }
+
+const MOTIVOS_CONDUCTOR = [
+  "No se presentó al viaje",
+  "Conducción imprudente o peligrosa",
+  "Incumplimiento del horario pactado",
+  "Falta de higiene en el vehículo",
+  "Vehículo dañado",
+  "Comportamiento grosero o inapropiado",
+  "Otro"
+];
 
 const MOTIVOS_PASAJERO = [
   "No se presentó al viaje",
@@ -20,7 +32,9 @@ const MOTIVOS_PASAJERO = [
   "Otro"
 ];
 
-export const ModalCalificacionSecuencial = ({ pasajero, viajeId, indice, total, onSuccess, onClose }: Props) => {
+export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice, total, onSuccess, onClose, tipo = 'Pasajero' }: Props) => {
+  const { userId } = useAuth();
+  const motivosAMostrar = tipo === 'Conductor' ? MOTIVOS_CONDUCTOR : MOTIVOS_PASAJERO;
   const [paso, setPaso] = useState<'estrellas' | 'comentario' | 'reporte'>('estrellas');
   const [puntos, setPuntos] = useState(0);
   const [comentario, setComentario] = useState('');
@@ -42,16 +56,17 @@ export const ModalCalificacionSecuencial = ({ pasajero, viajeId, indice, total, 
     try {
       const data = {
         viajeId,
-        usuarioCalificadoId: pasajero.idUsuario,
+        usuarioCalificadoId: usuarioACalificar.idUsuario,
+        usuarioCalificadorId: userId, 
         puntos,
-        tipo: 'Pasajero', // El conductor califica al pasajero
+        tipo: tipo || 'Pasajero', 
         comentario: comentario || undefined,
         reporte: motivoReporte
           ? { motivo: motivoReporte, comentarioInfraccion: comentario || undefined }
           : undefined
       };
-
-      const res = await post('calificacion', data);
+      const url = tipo === 'Conductor' ? 'viaje/calificar-conductor' : 'calificacion';
+      const res = await post(url, data);
 
       if (res.status === 201 || res.status === 200) {
         setMostrandoExito(true);
@@ -81,7 +96,7 @@ export const ModalCalificacionSecuencial = ({ pasajero, viajeId, indice, total, 
   return (
     <div className="modal-overlay" style={styles.overlay}>
       <div className="custom-modal" style={styles.modal}>
-        {/* Cabecera con Botón X [cite: 106, 111] */}
+       
         <div className="d-flex justify-content-between align-items-center mb-3">
           <span style={styles.badge}>Pasajero {indice} de {total}</span>
           <button
@@ -94,7 +109,7 @@ export const ModalCalificacionSecuencial = ({ pasajero, viajeId, indice, total, 
         {paso === 'estrellas' && (
           <div className="animate__animated animate__fadeIn">
             <h5 className="fw-bold mb-1" style={styles.titulo}>¿Cómo calificas al pasajero?</h5>
-            <h4 className="fw-bold text-success mb-4">{pasajero.nombre} {pasajero.apellido}</h4>
+            <h4 className="fw-bold text-success mb-4">{usuarioACalificar.nombre} {usuarioACalificar.apellido}</h4>
 
             <div className="my-4 d-flex justify-content-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -127,7 +142,6 @@ export const ModalCalificacionSecuencial = ({ pasajero, viajeId, indice, total, 
           </div>
         )}
 
-        {/* --- Pantallas de Comentario y Reporte se mantienen igual --- */}
         {paso === 'comentario' && (
           <div className="animate__animated animate__fadeIn">
             <h5 className="fw-bold mb-3">Dejar un comentario</h5>
@@ -150,7 +164,7 @@ export const ModalCalificacionSecuencial = ({ pasajero, viajeId, indice, total, 
           <div className="animate__animated animate__fadeIn text-start">
             <h5 className="fw-bold mb-3 text-center">Motivo de Reporte</h5>
             <div className="list-group list-group-flush mb-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-              {MOTIVOS_PASAJERO.map((m) => (
+              {motivosAMostrar.map((m) => (
                 <label key={m} className="list-group-item border-0 d-flex align-items-center gap-2 py-2">
                   <input
                     type="radio"

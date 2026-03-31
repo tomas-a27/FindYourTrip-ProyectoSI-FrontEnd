@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getAsync, getOne, patch } from '../../api/dataManager'; // Quitamos patch y del
+import { getAsync, getOne, patch } from '../../api/dataManager'; 
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
 import { Params } from 'react-router-dom';
 import { ModalCalificacionSecuencial } from '../Viaje/ModalCalificacionSecuencial';
 import ModalComenzarFinalizarViaje from '../Viaje/ModalComenzarViaje.tsx';
 
-// --- COLORES BASADOS EN TU DESCRIPCIÓN ---
 const bgVerdeClaro = '#eaf5ea';
 const colorTextoGrisOscuro = '#333333';
 const colorNaranja = '#fd7e14';
@@ -153,9 +152,9 @@ export const MisViajes = () => {
   // se dispara cuando termina de calificar a UN pasajero
   const handleSiguienteCalificacion = () => {
     if (indiceCalificacion < pasajerosACalificar.length - 1) {
-      setIndiceCalificacion((prev) => prev + 1); // Pasa al Pasajero 2/4, etc.
+      setIndiceCalificacion((prev) => prev + 1); 
     } else {
-      // Terminó con todos
+      // cuando terminó con todos
       setPasajerosACalificar([]);
       setViajeIdActual(null);
       cargarDatos(Number(userId));
@@ -490,7 +489,7 @@ export const MisViajes = () => {
       )}
       {pasajerosACalificar.length > 0 && (
         <ModalCalificacionSecuencial
-          pasajero={pasajerosACalificar[indiceCalificacion]}
+          usuarioACalificar={pasajerosACalificar[indiceCalificacion]}
           viajeId={viajeIdActual}
           indice={indiceCalificacion + 1}
           total={pasajerosACalificar.length}
