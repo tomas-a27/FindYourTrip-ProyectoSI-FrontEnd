@@ -17,8 +17,12 @@ export const MisViajes = () => {
   const { userId } = useAuth();
 
   const [vistaActiva, setVistaActiva] = useState<'pasajero' | 'conductor'>(
-    'pasajero',
-  );
+    () => localStorage.getItem('vistaActiva') as 'pasajero' | 'conductor' || 'pasajero'
+    );
+
+  useEffect(() => {
+      localStorage.setItem('vistaActiva', vistaActiva);
+    }, [vistaActiva]);
 
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
   const [viajesPublicados, setViajesPublicados] = useState<any[]>([]);
