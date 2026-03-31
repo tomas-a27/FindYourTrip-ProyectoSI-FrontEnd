@@ -204,17 +204,6 @@ export const MostrarViaje = () => {
                           Quedan {viaje.viajeCantLugares} lugares disponibles
                         </div>
                       </div>
-
-                      <div className="col-5 text-end small">
-                        <div className="text-muted mb-2">
-                          {viaje.viajeAceptaMascotas
-                            ? 'Acepta mascotas'
-                            : 'Sin mascotas'}
-                        </div>
-                        <div className="fw-bold">
-                          Quedan {viaje.viajeCantLugares} lugares disponibles
-                        </div>
-                      </div>
                     </div>
 
                     {/* Comentario Adicional */}
