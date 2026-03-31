@@ -106,7 +106,7 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
           ></button>
         </div>
 
-        {paso === 'estrellas' && (
+        {(paso === 'estrellas' || paso === 'comentario' || paso === 'reporte') && (
           <div className="animate__animated animate__fadeIn">
             <h5 className="fw-bold mb-1" style={styles.titulo}>¿Cómo calificas al pasajero?</h5>
             <h4 className="fw-bold text-success mb-4">{usuarioACalificar.nombre} {usuarioACalificar.apellido}</h4>
@@ -121,24 +121,27 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
                 ></i>
               ))}
             </div>
-
-            <button
-              className="btn w-100 mb-3 py-2 fw-bold"
-              style={puntos > 0 ? styles.btnPrimary : styles.btnDisabled}
-              onClick={handleEnviar} 
-              disabled={puntos === 0}
-            >
-              ENVIAR
-            </button>
-
-            <div className="d-flex gap-2">
-              <button className="btn btn-light w-50 border" onClick={() => setPaso('comentario')}>
-                DEJAR COMENTARIO
+          {(paso === 'estrellas') && (
+            <>  
+              <button
+                className="btn w-100 mb-3 py-2 fw-bold"
+                style={puntos > 0 ? styles.btnPrimary : styles.btnDisabled}
+                onClick={handleEnviar} 
+                disabled={puntos === 0}
+              >
+                ENVIAR
               </button>
-              <button className="btn btn-light w-50 border text-danger" onClick={() => setPaso('reporte')}>
-                REPORTAR PASAJERO
-              </button>
-            </div>
+
+              <div className="d-flex gap-2">
+                <button className="btn btn-light w-50 border" onClick={() => setPaso('comentario')}>
+                  DEJAR COMENTARIO
+                </button>
+                <button className="btn btn-light w-50 border text-danger" onClick={() => setPaso('reporte')}>
+                  REPORTAR PASAJERO
+                </button>
+              </div>
+            </>
+          )}
           </div>
         )}
 

@@ -21,7 +21,7 @@ export const InicioAdmin = () => {
     { titulo: 'Informe de conductores ordenados por calificación', descripcion: 'Muestra un listado basado en el puntaje o reseñas de los conductores.', ruta: '/informe-conductores' },
     { titulo: 'Usuarios a sancionar (o en condición)', descripcion: 'Sección para gestionar a usuarios que han cometido faltas.', ruta: '#' },
     { titulo: 'Listado de localidades', descripcion: 'Acceso a la base de datos de las ciudades o puntos cubiertos por el servicio.', ruta: '/mostrar-localidad' },
-    { titulo: 'Informe de rutas frecuentes', descripcion: 'Ver informe de rutas más frecuentes y su precio promedio, en el último mes.', ruta: '#' },
+    { titulo: 'Informe de rutas frecuentes', descripcion: 'Ver informe de rutas más frecuentes y su precio promedio, en el último mes.', ruta: '/informe-rutas-mas-frecuentes' },
   ];
 
   const handleNavegar = (ruta: string) => {

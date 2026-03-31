@@ -41,6 +41,11 @@ export const MiCuenta = () => {
     navigate('/');
   };
 
+  const irAMisViajesConductor = () => {
+    localStorage.setItem('vistaActiva', 'conductor');
+    navigate('/mis-viajes');
+  };
+
   return (
     <div className="container mt-0 mt-md-5 pb-5">
       <div className="row justify-content-center">
@@ -137,7 +142,7 @@ export const MiCuenta = () => {
 
             {/* MENÚ DE OPCIONES (Botones Blancos) */}
             <div className="menu-navegacion d-grid gap-2">
-              <div className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3" onClick={() => navigate('/mis-viajes')}>
+              <div className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3" onClick={irAMisViajesConductor}>
                 <i className="bi bi-car-front-fill fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">{esConductor ? 'Viajes como conductor' : 'Mis viajes'}</span>
                 <i className="bi bi-chevron-right usuario-flecha"></i>

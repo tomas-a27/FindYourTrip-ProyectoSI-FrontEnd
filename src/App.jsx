@@ -38,6 +38,7 @@ import { InformeConductores } from "./components/Usuario/Admin/InformeConductore
 import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
 import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
 import { AprobarDenegarSolicitud } from './components/Viaje/AprobarDenegarSolicitud.tsx';
+import { InformeRutas } from './components/Usuario/Admin/InformeRutas.tsx';
 
 const AuthLayout = () => <Outlet />;
 
@@ -82,6 +83,15 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['administrador']}>
                   <InformeConductores/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="informe-rutas-mas-frecuentes"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <InformeRutas/>
                 </ProtectedRoute>
               }
             />
