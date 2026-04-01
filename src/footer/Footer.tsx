@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { getAsync } from '../api/dataManager';
@@ -14,19 +14,25 @@ export function Footer() {
     const chequearPendientes = async () => {
       if (!userId) return;
       try {
-        const res = await getAsync<any[]>(`viaje/viajes-sin-calificar/${userId}`);
+        const res = await getAsync<any[]>(
+          `viaje/viajes-sin-calificar/${userId}`,
+        );
 
         if (res.data && res.data.length > 0) {
-          const ignorados = JSON.parse(localStorage.getItem('calificaciones_ignoradas') || '[]');
+          const ignorados = JSON.parse(
+            localStorage.getItem('calificaciones_ignoradas') || '[]',
+          );
 
-          const viajeParaMostrar = res.data.find((v: any) => !ignorados.includes(v.viajeId));
+          const viajeParaMostrar = res.data.find(
+            (v: any) => !ignorados.includes(v.viajeId),
+          );
 
           if (viajeParaMostrar) {
             setPendiente(viajeParaMostrar);
           }
         }
       } catch (e) {
-        console.error("Error al buscar calificaciones pendientes", e);
+        console.error('Error al buscar calificaciones pendientes', e);
       }
     };
 
@@ -35,14 +41,19 @@ export function Footer() {
 
   // función para cuando el usuario cierra con la X
   const handleIgnorarCalificacion = (viajeId: number) => {
-    const ignorados = JSON.parse(localStorage.getItem('calificaciones_ignoradas') || '[]');
+    const ignorados = JSON.parse(
+      localStorage.getItem('calificaciones_ignoradas') || '[]',
+    );
 
     if (!ignorados.includes(viajeId)) {
       ignorados.push(viajeId);
-      localStorage.setItem('calificaciones_ignoradas', JSON.stringify(ignorados));
+      localStorage.setItem(
+        'calificaciones_ignoradas',
+        JSON.stringify(ignorados),
+      );
     }
 
-    setPendiente(null); 
+    setPendiente(null);
   };
 
   return (
