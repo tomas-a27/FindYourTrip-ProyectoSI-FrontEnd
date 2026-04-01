@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { put } from '../../api/dataManager';
 import { useAuth } from '../../auth/AuthContext';
 
 export const SolicitarConductor = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
+  
+  const location = useLocation();
+  const mensajeAviso = location.state?.mensajeAviso;
   
   const [error, setError] = useState('');
 
@@ -20,7 +23,6 @@ export const SolicitarConductor = () => {
   const [modelo, setModelo] = useState('');
   const [color, setColor] = useState('');
   const [cantLugares, setCantLugares] = useState(1);
-
 
   const esLicenciaValida = nroLicencia.length >= 5 && /^[a-zA-Z0-9]+$/.test(nroLicencia);
   
@@ -87,7 +89,23 @@ export const SolicitarConductor = () => {
   };
 
   return (
-    <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
+    <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center flex-column align-items-center">
+      
+      {/* MENSAJE DE AVISO (Solo se muestra si vino desde el botón de publicar viaje) */}
+      {mensajeAviso && (
+        <div 
+          className="alert shadow-sm w-100 mb-4 d-flex align-items-center" 
+          role="alert" 
+          style={{ maxWidth: '700px', borderRadius: '15px', border: 'none', borderLeft: '6px solid #0d6efd', backgroundColor: '#e9f2ff' }}
+        >
+          <i className="bi bi-info-circle-fill fs-3 me-3 text-primary"></i>
+          <div>
+            <h6 className="fw-bold mb-1 text-primary">¡Estás a un paso de publicar tu viaje!</h6>
+            <span className="text-dark" style={{ fontSize: '0.95rem' }}>{mensajeAviso}</span>
+          </div>
+        </div>
+      )}
+
       <div className="card custom-card shadow-sm w-100 border-0" style={{ maxWidth: '700px', borderRadius: '15px' }}>
         <div className="card-body p-4 p-md-5">
           <h2 className="text-center mb-2 fw-bold" style={{ color: '#2d4a2d' }}>Convertite en Conductor </h2>
@@ -245,7 +263,7 @@ export const SolicitarConductor = () => {
                 className="btn btn-pastel-green px-5"
                 disabled={!formValido} 
               >
-                Aceptar
+                Solicitar
               </button>
             </div>
 

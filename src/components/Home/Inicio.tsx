@@ -13,14 +13,18 @@ export const Inicio = () => {
 
   const handlePublicarViaje = () => {
     if (userTipo?.toLowerCase() === 'conductor') {
-      // Si es conductor , pasa directo
+      // Si es conductor, pasa directo
       navigate('/publicar-viaje');
     } else if (isPendiente) {
       // Si está pendiente de aprobacion, le mostramos el mensaje y NO lo dejamos pasar
       alert('Usted podrá publicar un viaje una vez que su solicitud para ser conductor esté aprobada.');
     } else {
-      // Si es pasajero, lo mandamos al formulario
-      navigate('/solicitar-conductor');
+      // Si es pasajero, lo mandamos al formulario con el mensaje de aviso
+      navigate('/solicitar-conductor', {
+        state: {
+          mensajeAviso: 'Para poder publicar viajes debes convertirte en conductor y esperar tu aprobación. Aquí podés registrar la información necesaria. Serás notificado una vez que tu solicitud haya sido revisada.',
+        },
+      });
     }
   };
 
