@@ -99,24 +99,20 @@ interface PoliticaSancionDTO {
   cantCriticaInfracciones: number;
 }
 
-interface InformeRutaDTO {
+interface InformeRutasDTO {
   indice?: number;
   nombreOrigen: string;
   nombreDestino: string;
   cantidadDeViajes: number;
   viajePrecioPromedio: number;
 }
-
+/*
 interface InformeRutasDTO {
   rutas: InformeRutaDTO[];
   cantidadTotalViajes: number;
   precioPromedioGeneral: number;
 }
-
-interface ApiResponse<T> {
-  message: string;
-  data: T;
-}
+*/
 export type {
   LocalidadDTO,
   UsuarioDTO,
@@ -128,7 +124,5 @@ export type {
   SancionDTO,
   SancionInfraccionDTO,
   PoliticaSancionDTO,
-  InformeRutaDTO,
   InformeRutasDTO,
-  ApiResponse
 };
