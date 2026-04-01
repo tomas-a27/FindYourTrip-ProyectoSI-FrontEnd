@@ -98,7 +98,9 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
       <div className="custom-modal" style={styles.modal}>
        
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <span style={styles.badge}>Pasajero {indice} de {total}</span>
+          {(tipo === 'Pasajero') && (
+            <span style={styles.badge}>Pasajero {indice} de {total}</span>
+          )}
           <button
             className="btn-close"
             style={{ cursor: 'pointer' }}
@@ -108,7 +110,7 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
 
         {(paso === 'estrellas' || paso === 'comentario' || paso === 'reporte') && (
           <div className="animate__animated animate__fadeIn">
-            <h5 className="fw-bold mb-1" style={styles.titulo}>¿Cómo calificas al pasajero?</h5>
+            <h5 className="fw-bold mb-1" style={styles.titulo}>¿Cómo calificas al {tipo === 'Conductor' ? 'conductor' : 'pasajero'}?</h5>
             <h4 className="fw-bold text-success mb-4">{usuarioACalificar.nombre} {usuarioACalificar.apellido}</h4>
 
             <div className="my-4 d-flex justify-content-center gap-2">
@@ -137,7 +139,7 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
                   DEJAR COMENTARIO
                 </button>
                 <button className="btn btn-light w-50 border text-danger" onClick={() => setPaso('reporte')}>
-                  REPORTAR PASAJERO
+                  REPORTAR {tipo === 'Conductor' ? 'CONDUCTOR' : 'PASAJERO'}
                 </button>
               </div>
             </>
