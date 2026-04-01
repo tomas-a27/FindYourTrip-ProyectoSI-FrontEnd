@@ -269,3 +269,7 @@
   color: #999;
   cursor: default;
 }
+
+body {
+  padding-bottom: 110px;
+}
