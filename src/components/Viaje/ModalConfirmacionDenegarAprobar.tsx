@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { patch } from '../../api/dataManager.ts';
-import { useNavigate } from 'react-router-dom';
 
 interface ModalConfirmacionDenegarAprobarProps {
   query: string;
   nombre: string;
   apellido: string;
   accion: string;
+  onSuccess: () => void;
 }
 
 const ModalConfirmacionDenegarAprobar = ({
@@ -15,22 +15,39 @@ const ModalConfirmacionDenegarAprobar = ({
   nombre,
   apellido,
   accion,
+  onSuccess,
 }: ModalConfirmacionDenegarAprobarProps) => {
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [debeActualizar, setDebeActualizar] = useState(false);
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
+  const handleOpenModal = () => setShowModal(true);
+  
   const handleCloseModal = () => {
-    setShowModal(false);
-    navigate('/solicitudes-mis-viajes');
+    if (!isProcessing) setShowModal(false);
   };
 
   async function handleConfirmar() {
-    await patch(query);
-    handleCloseModal();
+    setIsProcessing(true);
+    try {
+      await patch(query, {}); 
+      
+      setDebeActualizar(true);
+      setShowModal(false); 
+    } catch (error) {
+      console.error("Error al procesar la solicitud", error);
+      alert("Hubo un error. Por favor, intente nuevamente.");
+      setIsProcessing(false);
+    }
   }
+
+  const handleExited = () => {
+    if (debeActualizar) {
+      onSuccess();
+      setDebeActualizar(false);
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <>
@@ -38,6 +55,7 @@ const ModalConfirmacionDenegarAprobar = ({
         <button
           className="btn btn-outline-danger col-6"
           onClick={handleOpenModal}
+          disabled={isProcessing}
         >
           DENEGAR
         </button>
@@ -45,54 +63,38 @@ const ModalConfirmacionDenegarAprobar = ({
         <button
           className="btn btn-outline-success col-6"
           onClick={handleOpenModal}
+          disabled={isProcessing}
         >
           APROBAR
         </button>
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal} onExited={handleExited}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {accion.toUpperCase() === 'DENEGAR'
-              ? 'Denegar Solicitud'
-              : 'Aprobar Solicitud'}
+            {accion.toUpperCase() === 'DENEGAR' ? 'Denegar Solicitud' : 'Aprobar Solicitud'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            ¿Estás seguro de que deseas <strong>{accion}</strong> la solicitud
-            de
-            <strong>
-              {' '}
-              {nombre} {apellido}{' '}
-            </strong>
-            ?
+            ¿Estás seguro de que deseas <strong>{accion}</strong> la solicitud de
+            <strong> {nombre} {apellido} </strong>?
           </p>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
           <div className="row w-100 m-0">
-            {/* Columna Izquierda (50%) */}
             <div className="col-6 px-1">
-              <button
-                className="btn btn-outline-secondary w-100"
-                onClick={handleCloseModal}
-              >
+              <button className="btn btn-outline-secondary w-100" onClick={handleCloseModal} disabled={isProcessing}>
                 Cancelar
               </button>
             </div>
-
-            {/* Columna Derecha (50%) */}
             <div className="col-6 px-1">
               <button
-                // Tip: Podés hacer que el botón sea rojo si la acción es DENEGAR
-                className={`btn w-100 ${
-                  accion.toUpperCase() === 'DENEGAR'
-                    ? 'btn-outline-danger'
-                    : 'btn-outline-success'
-                }`}
+                className={`btn w-100 ${accion.toUpperCase() === 'DENEGAR' ? 'btn-outline-danger' : 'btn-outline-success'}`}
                 onClick={handleConfirmar}
+                disabled={isProcessing}
               >
-                Confirmar
+                {isProcessing ? 'Procesando...' : 'Confirmar'}
               </button>
             </div>
           </div>

@@ -1,215 +1,162 @@
 import { SolicitudViajeDTO } from '../../entities/entities.ts';
-import { get, patch } from '../../api/dataManager.ts';
-import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { getAsync } from '../../api/dataManager.ts';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import ModalConfirmacionDenegarAprobar from './ModalConfirmacionDenegarAprobar.tsx';
 
 export const AprobarDenegarSolicitud = () => {
   const location = useLocation();
-  const {
-    data: solicitudPendiente,
-    loading: solicitudPendienteLoading,
-    error: solicitudPendienteError,
-  } = get<SolicitudViajeDTO>(
-    'viaje/solicitudes-pendientes-viaje/' + location.state.viajeId,
-  );
+  const navigate = useNavigate();
 
-  const {
-    data: solicitudAprobadaRechazada,
-    loading: solicitudAprobadaRechazadaLoading,
-    error: solicitudAprobadaRechazadaError,
-  } = get<SolicitudViajeDTO>(
-    'viaje/solicitudes-aprobadas-rechazadas-viaje/' + location.state.viajeId,
-  );
+  const [solicitudPendiente, setSolicitudPendiente] = useState<SolicitudViajeDTO[]>([]);
+  const [solicitudPendienteLoading, setSolicitudPendienteLoading] = useState(true);
+  const [solicitudPendienteError, setSolicitudPendienteError] = useState(false);
 
-  const handleDenegarSolicitud = (
-    solicitudId: number,
-    nombre: string,
-    apellido: string,
-  ) => {
-    const query =
-      'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' + solicitudId;
-  };
+  const [solicitudAprobadaRechazada, setSolicitudAprobadaRechazada] = useState<SolicitudViajeDTO[]>([]);
+  const [solicitudAprobadaRechazadaLoading, setSolicitudAprobadaRechazadaLoading] = useState(true);
+  const [solicitudAprobadaRechazadaError, setSolicitudAprobadaRechazadaError] = useState(false);
 
-  // 1. Definimos el estado para controlar si está abierto o cerrado
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
-  // Función para alternar el estado
+  useEffect(() => {
+    if (!location.state || !location.state.viajeId) {
+      navigate('/mis-viajes');
+      return;
+    }
+    cargarDatos();
+  }, [location, navigate]);
+
+  const cargarDatos = async (esRecargaOculta = false) => {
+    if (!esRecargaOculta) {
+      setSolicitudPendienteLoading(true);
+      setSolicitudAprobadaRechazadaLoading(true);
+    }
+
+    try {
+      const resPendiente = await getAsync<any>('viaje/solicitudes-pendientes-viaje/' + location.state.viajeId);
+      setSolicitudPendiente(resPendiente.data?.data || resPendiente.data || []);
+      setSolicitudPendienteError(false);
+    } catch (e) {
+      setSolicitudPendienteError(true);
+      setSolicitudPendiente([]);
+    } finally {
+      if (!esRecargaOculta) setSolicitudPendienteLoading(false);
+    }
+
+    try {
+      const resAprobadas = await getAsync<any>('viaje/solicitudes-aprobadas-rechazadas-viaje/' + location.state.viajeId);
+      setSolicitudAprobadaRechazada(resAprobadas.data?.data || resAprobadas.data || []);
+      setSolicitudAprobadaRechazadaError(false);
+    } catch (e) {
+      setSolicitudAprobadaRechazadaError(true);
+      setSolicitudAprobadaRechazada([]);
+    } finally {
+      if (!esRecargaOculta) setSolicitudAprobadaRechazadaLoading(false);
+    }
+  };
+
   const toggleHistorial = () => {
     setMostrarHistorial(!mostrarHistorial);
   };
+
+  if (!location.state) return null;
+
   return (
     <div>
       <div className="container mt-4">
-        {/* Título del viaje */}
         <h3 className="fw-bold mb-1" style={{ color: '#2c3e50' }}>
           Viaje a {location.state.viajeOrigen}
         </h3>
 
-        {/* Tarjeta de información */}
-        <div
-          className="p-2 border border-secondary"
-          style={{ backgroundColor: '#A9D1A0', color: '#1a2b3c' }}
-        >
+        <div className="p-2 border border-secondary rounded mb-4" style={{ backgroundColor: '#A9D1A0', color: '#1a2b3c' }}>
           <div className="d-flex justify-content-between mb-1">
             <span>Desde: {location.state.viajeOrigen}</span>
             <span>Fecha: {location.state.viajeFecha}</span>
           </div>
           <div>
-            <span>
+            <span className="fw-bold">
               Quedan: {location.state.lugaresDisponibles} lugares disponibles
             </span>
           </div>
         </div>
       </div>
+
       <div>
-        {/*Solicitudes pendientes */}
-        {!solicitudPendienteLoading &&
-          !solicitudPendienteError &&
-          solicitudPendiente?.length === 0 && (
-            <div className="alert alert-info">
-              No hay solicitudes disponibles.
-            </div>
-          )}
+        {solicitudPendienteLoading && <p className="text-center mt-3 text-muted">Cargando solicitudes...</p>}
 
-        {!solicitudPendienteLoading &&
-          !solicitudPendienteError &&
-          solicitudPendiente?.length > 0 && (
-            <div className="container mt-4">
-              <div className="row">
-                {solicitudPendiente.map((solicitud, index) => (
-                  <div key={index} className="col-12 col-lg-6 mb-4">
-                    <div
-                      className="card border-1 shadow-sm p-3 h-100"
-                      style={{
-                        borderRadius: '20px',
-                        backgroundColor: '#fff',
-                      }}
-                    >
-                      <div className="card-body p-2">
+        {!solicitudPendienteLoading && !solicitudPendienteError && solicitudPendiente.length === 0 && (
+          <div className="container"><div className="alert alert-info">No hay solicitudes pendientes.</div></div>
+        )}
+
+        {!solicitudPendienteLoading && !solicitudPendienteError && solicitudPendiente.length > 0 && (
+          <div className="container mt-4">
+            <div className="row">
+              {solicitudPendiente.map((solicitud, index) => (
+                <div key={index} className="col-12 col-lg-6 mb-4">
+                  <div className="card border-1 shadow-sm p-3 h-100" style={{ borderRadius: '20px', backgroundColor: '#fff' }}>
+                    <div className="card-body p-2">
+                      <div className="d-flex justify-content-between align-items-start">
                         <div className="d-flex justify-content-between align-items-start">
-                          <div className="d-flex justify-content-between align-items-start">
-                            {/* Datos del usuario */}
-                            <div>
-                              {/* Contenedor Flex para el Nombre y la Calificación en la misma línea */}
-                              <div className="d-flex align-items-center mb-1">
-                                <h6
-                                  className="fw-bold mb-0 me-2"
-                                  style={{ fontSize: '1.1rem' }}
-                                >
-                                  {solicitud.usuario?.nombreUsuario}{' '}
-                                  {solicitud.usuario?.apellidoUsuario}
-                                </h6>
-
-                                {/* Calificación movida a la derecha del nombre */}
-                                <span
-                                  className="badge rounded-pill bg-light text-dark border shadow-sm"
-                                  style={{
-                                    fontSize: '0.8rem',
-                                    padding: '4px 10px',
-                                  }}
-                                >
-                                  <i className="bi bi-star me-1"></i>
-                                  {solicitud.usuario?.calificacionPas}
-                                </span>
-                              </div>
-
-                              <p className="text-muted mb-0 small">
-                                <strong>Documento: </strong>
-                                {solicitud.usuario?.tipoDocumento}{' '}
-                                {solicitud.usuario?.nroDocumento}
-                              </p>
-                              <p className="text-muted mb-0 small">
-                                <strong>Género: </strong>
-                                {solicitud.usuario?.generoUsuario}
-                              </p>
+                          <div>
+                            <div className="d-flex align-items-center mb-1">
+                              <h6 className="fw-bold mb-0 me-2" style={{ fontSize: '1.1rem' }}>
+                                {solicitud.usuario?.nombreUsuario} {solicitud.usuario?.apellidoUsuario}
+                              </h6>
+                              <span className="badge rounded-pill bg-light text-dark border shadow-sm" style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
+                                <i className="bi bi-star text-warning me-1"></i>
+                                {solicitud.usuario?.calificacionPas || 'S/C'}
+                              </span>
                             </div>
+                            <p className="text-muted mb-0 small">
+                              <strong>Documento: </strong> {solicitud.usuario?.tipoDocumento} {solicitud.usuario?.nroDocumento}
+                            </p>
+                            <p className="text-muted mb-0 small">
+                              <strong>Género: </strong> {solicitud.usuario?.generoUsuario}
+                            </p>
                           </div>
+                        </div>
 
-                          {/* Estado de la solicitud (Alineado a la derecha como el precio/fecha) */}
-                          <div className="text-end text-muted small">
-                            <div className="d-flex flex-column align-items-center">
-                              <i
-                                className="bi bi-clock-fill text-warning mb-1"
-                                style={{ fontSize: '1.8rem' }}
-                              ></i>
-                              <div className="fw-bold text-dark fs-6">
-                                {solicitud.estadoSolicitud?.toUpperCase()}
-                              </div>
+                        <div className="text-end text-muted small">
+                          <div className="d-flex flex-column align-items-center">
+                            <i className="bi bi-clock-fill text-warning mb-1" style={{ fontSize: '1.8rem' }}></i>
+                            <div className="fw-bold text-dark fs-6">
+                              {solicitud.estadoSolicitud?.toUpperCase()}
                             </div>
                           </div>
                         </div>
-                        <div className="d-flex justify-content-end mt-3 gap-2">
-                          <ModalConfirmacionDenegarAprobar
-                            query={
-                              'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' +
-                              solicitud.solViajeId
-                            }
-                            nombre={solicitud.usuario?.nombreUsuario}
-                            apellido={solicitud.usuario?.apellidoUsuario}
-                            accion="denegar"
-                          />
-                          <ModalConfirmacionDenegarAprobar
-                            query={
-                              'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' +
-                              solicitud.solViajeId
-                            }
-                            nombre={solicitud.usuario?.nombreUsuario}
-                            apellido={solicitud.usuario?.apellidoUsuario}
-                            accion="aprobar"
-                          />
-
-                          {/*
-                          <div
-                            className="btn btn-outline-danger col-6"
-                            onClick={() =>
-
-                              handleDenegarSolicitud(
-                                solicitud.solViajeId,
-                                solicitud.usuario?.nombreUsuario,
-                                solicitud.usuario?.apellidoUsuario,
-                              )
-                            }
-                          >
-                            DENEGAR
-                          </div>
-                          <div
-                            className="btn btn-outline-success col-6"
-                            onClick={() =>
-                              handleAprobarSolicitud(
-                                solicitud.solViajeId,
-                                solicitud.usuario?.nombreUsuario,
-                                solicitud.usuario?.apellidoUsuario,
-                              )
-                            }
-                          >
-                            APROBAR
-                          </div>*/}
-                        </div>
+                      </div>
+                      
+                      <div className="d-flex justify-content-end mt-3 gap-2">
+                        <ModalConfirmacionDenegarAprobar
+                          query={'viaje/solicitudes-aprobadas-rechazadas-viaje-denegar/' + solicitud.solViajeId}
+                          nombre={solicitud.usuario?.nombreUsuario}
+                          apellido={solicitud.usuario?.apellidoUsuario}
+                          accion="denegar"
+                          onSuccess={() => cargarDatos(true)} 
+                        />
+                        <ModalConfirmacionDenegarAprobar
+                          query={'viaje/solicitudes-aprobadas-rechazadas-viaje-aprobar/' + solicitud.solViajeId}
+                          nombre={solicitud.usuario?.nombreUsuario}
+                          apellido={solicitud.usuario?.apellidoUsuario}
+                          accion="aprobar"
+                          onSuccess={() => cargarDatos(true)} 
+                        />
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+        )}
       </div>
+
       <div>
-        <div className="container mt-5 text-center">
-          {/* 2. El texto y el botón que actúan como disparador */}
-          <div
-            onClick={toggleHistorial}
-            style={{ cursor: 'pointer' }}
-            className="d-inline-block"
-          >
-            <p
-              className="text-info fw-bold mb-1"
-              style={{ textDecoration: 'underline' }}
-            >
+        <div className="container mt-5 text-center mb-5 pb-5">
+          <div onClick={toggleHistorial} style={{ cursor: 'pointer' }} className="d-inline-block">
+            <p className="text-info fw-bold mb-1" style={{ textDecoration: 'underline' }}>
               Ver las solicitudes ya aprobadas o denegadas
             </p>
-
-            {/* Ícono de flecha con animación de rotación */}
             <i
               className="bi bi-arrow-down-circle text-secondary"
               style={{
@@ -223,98 +170,58 @@ export const AprobarDenegarSolicitud = () => {
 
           {mostrarHistorial && (
             <div className="mt-4 text-start">
-              {/*Solicitudes Aprobadas o Denegadas */}
-              {!solicitudAprobadaRechazadaLoading &&
-                !solicitudAprobadaRechazadaError &&
-                solicitudAprobadaRechazada?.length === 0 && (
-                  <div className="alert alert-info">
-                    No hay solicitudes disponibles.
-                  </div>
-                )}
+              {!solicitudAprobadaRechazadaLoading && !solicitudAprobadaRechazadaError && solicitudAprobadaRechazada.length === 0 && (
+                <div className="alert alert-info">No hay solicitudes en el historial.</div>
+              )}
 
-              {!solicitudAprobadaRechazadaLoading &&
-                !solicitudAprobadaRechazadaError &&
-                solicitudAprobadaRechazada?.length > 0 && (
-                  <div className="container mt-4">
-                    <div className="row">
-                      {solicitudAprobadaRechazada.map((solicitud, index) => (
-                        <div key={index} className="col-12 col-lg-6 mb-4">
-                          <div
-                            className="card border-1 shadow-sm p-3 h-100"
-                            style={{
-                              borderRadius: '20px',
-                              backgroundColor: '#fff',
-                            }}
-                          >
-                            <div className="card-body p-2">
+              {!solicitudAprobadaRechazadaLoading && !solicitudAprobadaRechazadaError && solicitudAprobadaRechazada.length > 0 && (
+                <div className="container mt-4">
+                  <div className="row">
+                    {solicitudAprobadaRechazada.map((solicitud, index) => (
+                      <div key={index} className="col-12 col-lg-6 mb-4">
+                        <div className="card border-1 shadow-sm p-3 h-100" style={{ borderRadius: '20px', backgroundColor: '#fff' }}>
+                          <div className="card-body p-2">
+                            <div className="d-flex justify-content-between align-items-start">
                               <div className="d-flex justify-content-between align-items-start">
-                                <div className="d-flex justify-content-between align-items-start">
-                                  {/* Datos del usuario */}
-                                  <div>
-                                    {/* Contenedor Flex para el Nombre y la Calificación en la misma línea */}
-                                    <div className="d-flex align-items-center mb-1">
-                                      <h6
-                                        className="fw-bold mb-0 me-2"
-                                        style={{ fontSize: '1.1rem' }}
-                                      >
-                                        {solicitud.usuario?.nombreUsuario}{' '}
-                                        {solicitud.usuario?.apellidoUsuario}
-                                      </h6>
-
-                                      {/* Calificación movida a la derecha del nombre */}
-                                      <span
-                                        className="badge rounded-pill bg-light text-dark border shadow-sm"
-                                        style={{
-                                          fontSize: '0.8rem',
-                                          padding: '4px 10px',
-                                        }}
-                                      >
-                                        <i className="bi bi-star me-1"></i>
-                                        {solicitud.usuario?.calificacionPas}
-                                      </span>
-                                    </div>
-
-                                    <p className="text-muted mb-0 small">
-                                      <strong>Documento: </strong>
-                                      {solicitud.usuario?.tipoDocumento}{' '}
-                                      {solicitud.usuario?.nroDocumento}
-                                    </p>
-                                    <p className="text-muted mb-0 small">
-                                      <strong>Género: </strong>
-                                      {solicitud.usuario?.generoUsuario}
-                                    </p>
+                                <div>
+                                  <div className="d-flex align-items-center mb-1">
+                                    <h6 className="fw-bold mb-0 me-2" style={{ fontSize: '1.1rem' }}>
+                                      {solicitud.usuario?.nombreUsuario} {solicitud.usuario?.apellidoUsuario}
+                                    </h6>
+                                    <span className="badge rounded-pill bg-light text-dark border shadow-sm" style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
+                                      <i className="bi bi-star text-warning me-1"></i>
+                                      {solicitud.usuario?.calificacionPas || 'S/C'}
+                                    </span>
                                   </div>
+                                  <p className="text-muted mb-0 small">
+                                    <strong>Documento: </strong> {solicitud.usuario?.tipoDocumento} {solicitud.usuario?.nroDocumento}
+                                  </p>
+                                  <p className="text-muted mb-0 small">
+                                    <strong>Género: </strong> {solicitud.usuario?.generoUsuario}
+                                  </p>
                                 </div>
+                              </div>
 
-                                {/* Estado de la solicitud (Alineado a la derecha como el precio/fecha) */}
-                                <div className="text-end text-muted small">
-                                  <div className="d-flex flex-column align-items-center">
-                                    {solicitud.estadoSolicitud?.toUpperCase() ===
-                                    'APROBADA' ? (
-                                      <i
-                                        className="bi bi-check-circle text-success mb-1"
-                                        style={{ fontSize: '1.8rem' }}
-                                      ></i>
-                                    ) : (
-                                      <i
-                                        className="bi bi-x-circle text-danger mb-1"
-                                        style={{ fontSize: '1.8rem' }}
-                                      ></i>
-                                    )}
-
-                                    <div className="fw-bold text-dark fs-6">
-                                      {solicitud.estadoSolicitud?.toUpperCase()}
-                                    </div>
+                              <div className="text-end text-muted small">
+                                <div className="d-flex flex-column align-items-center">
+                                  {solicitud.estadoSolicitud?.toUpperCase() === 'APROBADA' ? (
+                                    <i className="bi bi-check-circle text-success mb-1" style={{ fontSize: '1.8rem' }}></i>
+                                  ) : (
+                                    <i className="bi bi-x-circle text-danger mb-1" style={{ fontSize: '1.8rem' }}></i>
+                                  )}
+                                  <div className="fw-bold text-dark fs-6">
+                                    {solicitud.estadoSolicitud?.toUpperCase()}
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
             </div>
           )}
         </div>
