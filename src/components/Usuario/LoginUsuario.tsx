@@ -9,7 +9,7 @@ import logo from '../../images/logoFYT.png';
 export const LoginUsuario = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  
+
   const [email, setEmail] = useState('');
   const [contrasenaUsuario, setContrasenaUsuario] = useState('');
   const [error, setError] = useState('');
@@ -32,54 +32,57 @@ export const LoginUsuario = () => {
       const id = response.data.data.idUsuario;
 
       login(token, tipo, id);
-      
+
       if (tipo === 'administrador') {
         navigate('/admin-home'); // Redirigir al panel de control de administrador
       } else {
         navigate('/home'); // Redirigir al inicio normal de pasajeros/conductores
       }
-      
     } else {
       setError(response?.data?.message || 'Error al iniciar sesión');
     }
   };
 
   return (
-    <div className="container mt-5 d-flex justify-content-center align-items-center" style={{ minHeight: '75vh' }}>
-      
-      <div className="card custom-card shadow-lg border-0" style={{ width: '100%', maxWidth: '420px', borderRadius: '15px' }}>
+    <div
+      className="container mt-5 d-flex justify-content-center align-items-center"
+      style={{ minHeight: '75vh' }}
+    >
+      <div
+        className="card custom-card shadow-lg border-0"
+        style={{ width: '100%', maxWidth: '420px', borderRadius: '15px' }}
+      >
         <div className="card-body p-5">
-          
           <div className="text-center mb-4">
-            <img 
-              src={logo} 
-              alt="Find Your Trip Logo" 
-              className="mb-3 shadow-sm" 
-              style={{ 
-                width: '90px', 
-                height: '90px', 
-                objectFit: 'cover', 
+            <img
+              src={logo}
+              alt="Find Your Trip Logo"
+              className="mb-3 shadow-sm"
+              style={{
+                width: '90px',
+                height: '90px',
+                objectFit: 'cover',
                 borderRadius: '50%',
-                border: '3px solid #2d4a2d' 
-              }} 
+                border: '3px solid #2d4a2d',
+              }}
             />
             <h2 className="fw-bold mb-1" style={{ color: '#2d4a2d' }}>
               Find Your Trip
             </h2>
             <p className="text-muted fw-semibold fs-5 mt-2">Iniciar Sesión</p>
           </div>
-          
+
           {error && <div className="alert alert-danger fw-bold">{error}</div>}
-          
+
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label text-muted fw-bold">Email</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 className={`form-control custom-input ${email && !esEmailValido ? 'is-invalid' : ''} ${email && esEmailValido ? 'is-valid' : ''}`}
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
               {email && !esEmailValido && (
                 <div className="invalid-feedback fw-semibold mt-1">
@@ -87,28 +90,34 @@ export const LoginUsuario = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="mb-2">
-              <label className="form-label text-muted fw-bold">Contraseña</label>
-              <input 
-                type="password" 
+              <label className="form-label text-muted fw-bold">
+                Contraseña
+              </label>
+              <input
+                type="password"
                 className={`form-control custom-input ${contrasenaUsuario && !esContraValida ? 'is-invalid' : ''} ${contrasenaUsuario && esContraValida ? 'is-valid' : ''}`}
-                value={contrasenaUsuario} 
-                onChange={(e) => setContrasenaUsuario(e.target.value)} 
-                required 
+                value={contrasenaUsuario}
+                onChange={(e) => setContrasenaUsuario(e.target.value)}
+                required
               />
             </div>
-            
+
             {/* NUEVO: Enlace de recuperar contraseña */}
             <div className="d-flex justify-content-end mb-4">
-              <Link to="/recuperar-contrasena" className="text-decoration-none small" style={{ color: '#6fb86f', fontWeight: 'bold' }}>
+              <Link
+                to="/recuperar-contrasena"
+                className="text-decoration-none small"
+                style={{ color: '#6fb86f', fontWeight: 'bold' }}
+              >
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
-            
+
             <div className="d-grid gap-2">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn btn-pastel-green py-2 fw-bold fs-5 shadow-sm"
                 disabled={!esEmailValido || !esContraValida}
               >
@@ -119,7 +128,11 @@ export const LoginUsuario = () => {
 
           <div className="text-center mt-4">
             <span className="text-muted">¿No tenés cuenta? </span>
-            <Link to="/crear-usuario" className="text-decoration-none" style={{ color: '#6fb86f', fontWeight: 'bold' }}>
+            <Link
+              to="/crear-usuario"
+              className="text-decoration-none"
+              style={{ color: '#6fb86f', fontWeight: 'bold' }}
+            >
               Registrate acá
             </Link>
           </div>
