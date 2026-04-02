@@ -186,7 +186,9 @@ export const PublicarViaje = () => {
                           setMostrarSugerenciaOrigen(false);
                         }}
                       >
-                        <strong>{l.nombre.substring(0, localidadOrigen.length)}</strong>
+                        <strong>
+                          {l.nombre.substring(0, localidadOrigen.length)}
+                        </strong>
                         {l.nombre.substring(localidadOrigen.length)}
                       </li>
                     ))
@@ -202,7 +204,7 @@ export const PublicarViaje = () => {
                 type="text"
                 required
                 className="form-control custom-input"
-                placeholder="Ej: Buenos Aires"
+                placeholder="Ej: CABA"
                 value={localidadDestino}
                 onChange={(e) => {
                   setLocalidadDestino(e.target.value);
@@ -228,7 +230,9 @@ export const PublicarViaje = () => {
                           setMostrarSugerenciaDestino(false);
                         }}
                       >
-                        <strong>{l.nombre.substring(0, localidadDestino.length)}</strong>
+                        <strong>
+                          {l.nombre.substring(0, localidadDestino.length)}
+                        </strong>
                         {l.nombre.substring(localidadDestino.length)}
                       </li>
                     ))

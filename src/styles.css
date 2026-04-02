@@ -285,3 +285,7 @@
   background-color: #f7fbf7;
   border-radius: 8px;
 }
+
+body {
+  padding-bottom: 110px;
+}
