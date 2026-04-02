@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getOne, post } from '../../../api/dataManager';
 
 interface Props {
@@ -8,7 +7,6 @@ interface Props {
 }
 
 export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
-  const navigate = useNavigate();
   const { data } = getOne<any>(`sancion/ver-infracciones/${usuarioId}`);
 
   const [mostrarMotivo, setMostrarMotivo] = useState(false);
@@ -29,7 +27,7 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
   const desestimar = async () => {
     await post(`sancion/desestimar/${usuarioId}`, {});
     onClose();
-    navigate('/usuarios-a-sancionar');
+    window.location.reload();
   };
 
   // pedir motivo (paso 1)
@@ -239,7 +237,7 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
               className="btn btn-success mt-3"
               onClick={() => {
                 onClose();
-                navigate('/usuarios-a-sancionar');
+                window.location.reload();
               }}
             >
               Aceptar
