@@ -45,7 +45,9 @@ export const InformeRutas = () => {
         a menor cantidad de viajes realizados.
       </p>
       {!loading && !error && data?.length === 0 && (
-        <div className="alert alert-info">No hay rutas registradas.</div>
+        <div className="alert alert-info">
+          No hay rutas registradas en los últimos 30 días.
+        </div>
       )}
       {!loading && !error && data && data.length > 0 && (
         <div

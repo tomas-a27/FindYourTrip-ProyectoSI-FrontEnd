@@ -13,7 +13,6 @@ export function MostrarLocalidad() {
   }, []);
   return (
     <div className="ShowLocalidades container mt-4 mb-5">
-
       <div className="mb-3">
         <Link
           to="/admin-home"
@@ -41,59 +40,68 @@ export function MostrarLocalidad() {
 
       {!loading && !error && data?.length > 0 && (
         <div
-          style={{
-            borderRadius: '0.5rem',
-            overflow: 'hidden',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-          }}
+          className="card border-0 shadow-sm"
+          style={{ borderRadius: '16px', overflow: 'hidden' }}
         >
-          <Table
-            striped
-            hover
-            bordered
-            responsive
-            className="align-middle mb-0"
-            style={{
-              backgroundColor: '#f8f9fa',
-            }}
-          >
-            <thead
-              className="text-center"
-              style={{
-                backgroundColor: '#dee2e6',
-              }}
-            >
-              <tr>
-                <th>Id</th>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((unaLocalidad) => (
-                <tr key={unaLocalidad.id}>
-                  <td>{unaLocalidad.id}</td>
-                  <td>{unaLocalidad.codPostal}</td>
-                  <td>{unaLocalidad.nombre}</td>
-                  <td className="text-center">
-                    <Link
-                      to={`/editar-localidad/${unaLocalidad.id}`}
-                      className="btn btn-sm btn-outline-secondary me-2"
-                    >
-                      Editar
-                    </Link>
-                    <DeleteEntityButton
-                      idToDelete={String(unaLocalidad.id)}
-                      nameToDelete={unaLocalidad.nombre}
-                      route={'localidad'}
-                      entityToDelete={'localidad'}
-                    />
-                  </td>
+          <div className="table-responsive">
+            <table className="table table-hover align-middle mb-0">
+              <thead style={{ backgroundColor: '#f8f9fa' }}>
+                <tr>
+                  <th
+                    className="py-3 px-4 text-muted border-0"
+                    style={{ width: '80px' }}
+                  >
+                    Id
+                  </th>
+                  <th className="py-3 px-4 text-muted border-0">Código</th>
+                  <th className="py-3 px-4 text-muted border-0">Nombre</th>
+                  <th className="py-3 px-4 text-muted border-0 text-center">
+                    Acción
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {data?.map((unaLocalidad) => (
+                  <tr key={unaLocalidad.id}>
+                    {/* El ID con el mismo estilo destacado */}
+                    <td className="px-4 py-3 fw-bold text-secondary">
+                      {unaLocalidad.id}
+                    </td>
+
+                    {/* Las columnas de datos con el estilo semibold y espaciado */}
+                    <td
+                      className="px-4 py-3 fw-semibold"
+                      style={{ letterSpacing: '1px' }}
+                    >
+                      {unaLocalidad.codPostal}
+                    </td>
+                    <td
+                      className="px-4 py-3 fw-semibold"
+                      style={{ letterSpacing: '1px' }}
+                    >
+                      {unaLocalidad.nombre}
+                    </td>
+
+                    {/* Columna de acciones */}
+                    <td className="px-4 py-3 text-center">
+                      <Link
+                        to={`/editar-localidad/${unaLocalidad.id}`}
+                        className="btn btn-sm btn-outline-secondary me-2"
+                      >
+                        Editar
+                      </Link>
+                      <DeleteEntityButton
+                        idToDelete={String(unaLocalidad.id)}
+                        nameToDelete={unaLocalidad.nombre}
+                        route={'localidad'}
+                        entityToDelete={'localidad'}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -103,7 +111,7 @@ export function MostrarLocalidad() {
         <div className="col-12 col-md-4">
           <Link
             to="/crear-localidad"
-            className="btn btn-lg btn-outline-primary w-100"
+            className="btn btn-lg btn-outline-success w-100"
           >
             + Agregar Localidad
           </Link>
