@@ -13,7 +13,7 @@ export const RootLayout = () => {
       style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
     >
       {!noMainNav && <MainNavBar />}
-      <main style={{ flexGrow: 1, paddingBottom: '80px' }}>
+      <main>
         <Outlet />
       </main>
 
