@@ -9,7 +9,7 @@ export const PoliticasUso = () => {
     "Las solicitudes de viaje están sujetas a aceptación por parte del conductor. Los conductores disponen de hasta 12 horas para responder.",
     "Pasajeros y conductores pueden cancelar viajes sin penalización hasta 12 horas antes del inicio.",
     "Luego del viaje, ambos pueden calificar y reportar al otro usuario. Las infracciones reiteradas serán evaluadas por el administrador.",
-    "El mal uso del sistema, el ingreso de datos falsos o el incumplimiento reiterado de normas podrá derivar en sanciones o suspensión de la cuenta."
+    "El mal uso del sistema, el ingreso de datos falsos o el incumplimiento reiterado de normas podrá derivar en sanciones."
   ];
 
   return (
