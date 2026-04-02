@@ -94,7 +94,7 @@ export const AdminLayout = () => {
               <li className="nav-item mx-2">
                 <button
                   className="nav-link text-white fw-semibold btn btn-link fs-4 link-light link-opacity-75-hover"
-                  onClick={() => handleNavegar('#')}
+                  onClick={() => handleNavegar('/usuarios-a-sancionar')}
                 >
                   Sanciones
                 </button>

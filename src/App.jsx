@@ -39,6 +39,8 @@ import { BuscarViaje } from './components/Viaje/BuscarViaje.tsx';
 import { MostrarViaje } from './components/Viaje/MostrarViaje.tsx';
 import { AprobarDenegarSolicitud } from './components/Viaje/AprobarDenegarSolicitud.tsx';
 import { InformeRutas } from './components/Usuario/Admin/InformeRutas.tsx';
+import { UsuariosASancionar } from './components/Usuario/Admin/UsuariosASancionar.tsx';
+import { VerInfracciones } from './components/Usuario/Admin/VerInfracciones.tsx';
 
 const AuthLayout = () => <Outlet />;
 
@@ -92,6 +94,24 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['administrador']}>
                   <InformeRutas/>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="usuarios-a-sancionar"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <UsuariosASancionar />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="ver-infracciones/:id"
+              element={
+                <ProtectedRoute allowedRoles={['administrador']}>
+                  <VerInfracciones />
                 </ProtectedRoute>
               }
             />

@@ -269,3 +269,19 @@
   color: #999;
   cursor: default;
 }
+
+.usuario-col {
+  font-size: 0.95rem;
+  line-height: 1.2;
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.usuario-foto {
+  margin-right: 30px;
+}
+
+.list-hover:hover {
+  background-color: #f7fbf7;
+  border-radius: 8px;
+}
