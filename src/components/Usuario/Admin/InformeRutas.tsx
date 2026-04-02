@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../../../api/dataManager.ts';
 import { InformeRutasDTO } from '../../../entities/entities.ts';
 
@@ -28,16 +28,18 @@ export const InformeRutas = () => {
 
   return (
     <div className="container py-5" style={{ maxWidth: '1000px' }}>
-      <div className="d-flex align-items-center mb-4 pb-2 border-bottom">
-        <button
-          onClick={() => navigate(-1)}
-          className="btn btn-link text-dark p-0 me-3"
-          style={{ fontSize: '1.5rem', textDecoration: 'none' }}
+      <div className="mb-3">
+        <Link
+          to="/admin-home"
+          className="btn d-flex align-items-center text-success fw-bold p-0 text-decoration-none"
+          style={{ border: 'none', background: 'none' }}
         >
-          <i className="bi bi-arrow-left"></i>
-        </button>
-        <h2 className="fw-bold m-0 text-dark">Informe de rutas</h2>
+          <i className="bi bi-arrow-left-circle-fill fs-4 me-2"></i>
+          Informe de rutas
+        </Link>
       </div>
+
+      <h2 style={{ color: '#2d4a2d' }}>Informe de rutas</h2>
       <p className="text-muted mb-4">
         Listado de las rutas más utilizadas por los usuarios ordenadas de mayor
         a menor cantidad de viajes realizados.
