@@ -165,7 +165,10 @@ export const MiCuenta = () => {
                 <i className="bi bi-chevron-right usuario-flecha"></i>
               </div>
 
-              <div className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3">
+              <div 
+                className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
+                onClick={() => navigate('/politicas-uso')} // <-- Agregá esto
+              >
                 <i className="bi bi-clipboard2-check fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">Políticas de uso</span>
                 <i className="bi bi-chevron-right usuario-flecha"></i>

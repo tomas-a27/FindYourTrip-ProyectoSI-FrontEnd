@@ -31,6 +31,7 @@ import { MiCuenta } from './components/Usuario/MiCuentaUsuario.tsx';
 import { MisViajes } from './components/Usuario/MisViajes.tsx';
 import { HistorialPasajero } from './components/Usuario/HistorialPasajero.tsx';
 import { PasajerosHistorial } from './components/Viaje/PasajerosHistorial.tsx';
+import { PoliticasUso } from './components/Usuario/PoliticasUso.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
@@ -177,6 +178,17 @@ function App() {
                   allowedRoles={['pasajero', 'conductor', 'administrador']}
                 >
                   <EditarUsuario />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="politicas-uso"
+              element={
+                <ProtectedRoute
+                  allowedRoles={['pasajero', 'conductor', 'administrador']}
+                >
+                  <PoliticasUso />
                 </ProtectedRoute>
               }
             />
