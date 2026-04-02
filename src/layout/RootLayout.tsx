@@ -1,19 +1,27 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Footer } from '../footer/Footer';
+import { MainNavBar } from '../navegation/MainNavBar';
 
 export const RootLayout = () => {
+  const location = useLocation();
+
+  const noMainNav =
+    location.pathname === '/login' || location.pathname === '/register';
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      
+    <div
+      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+    >
+      {!noMainNav && <MainNavBar />}
       <main style={{ flexGrow: 1, paddingBottom: '80px' }}>
-        <Outlet /> 
+        <Outlet />
       </main>
 
-      {/* Footer fijo al final */}
-      <div style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 1000 }}>
+      <div
+        style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 1000 }}
+      >
         <Footer />
       </div>
-      
     </div>
   );
 };
