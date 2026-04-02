@@ -988,6 +988,8 @@ const TarjetaConductorActivo = ({
 };
 
 const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
+  const navigate = useNavigate(); 
+
   return (
     <div
       className="card bg-white mb-3"
@@ -1070,7 +1072,7 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
             borderBottomLeftRadius: '16px',
             borderBottomRightRadius: '16px',
           }}
-          onClick={() => alert('En construcción: Ver pasajeros históricos')}
+          onClick={() => navigate('/pasajeros-historial', { state: { viajeId: viaje.viajeId } })}
         >
           <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
             Ver pasajeros
