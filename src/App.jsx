@@ -30,6 +30,7 @@ import { RecuperarContrasena } from './components/Usuario/RecuperarContrasena.ts
 import { MiCuenta } from './components/Usuario/MiCuentaUsuario.tsx';
 import { MisViajes } from './components/Usuario/MisViajes.tsx';
 import { HistorialPasajero } from './components/Usuario/HistorialPasajero.tsx';
+import { PasajerosHistorial } from './components/Viaje/PasajerosHistorial.tsx';
 
 import { PublicarViaje } from './components/Viaje/PublicarViaje.tsx';
 import { SolicitarConductor } from './components/Usuario/SolicitarConductor.tsx';
@@ -242,6 +243,11 @@ function App() {
             />
             <Route path="/historial-pasajero" element={ <ProtectedRoute allowedRoles={['pasajero','conductor','administrador']}>
               <HistorialPasajero />
+              </ProtectedRoute>
+            }
+            />
+            <Route path="/pasajeros-historial" element={ <ProtectedRoute allowedRoles={['conductor','administrador']}>
+              <PasajerosHistorial />
               </ProtectedRoute>
             }
             />
