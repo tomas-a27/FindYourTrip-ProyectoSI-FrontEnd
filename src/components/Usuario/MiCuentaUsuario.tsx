@@ -159,7 +159,10 @@ export const MiCuenta = () => {
                 </div>
               )}
 
-              <div className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3">
+              <div 
+                className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
+                onClick={() => navigate('/centro-ayuda')}
+              >
                 <i className="bi bi-life-preserver fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">Ayuda</span>
                 <i className="bi bi-chevron-right usuario-flecha"></i>
@@ -167,7 +170,7 @@ export const MiCuenta = () => {
 
               <div 
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
-                onClick={() => navigate('/politicas-uso')} // <-- Agregá esto
+                onClick={() => navigate('/politicas-uso')} 
               >
                 <i className="bi bi-clipboard2-check fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">Políticas de uso</span>
