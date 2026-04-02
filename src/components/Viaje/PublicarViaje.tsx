@@ -31,7 +31,7 @@ export const PublicarViaje = () => {
     l.nombre.toLowerCase().startsWith(localidadDestino.toLowerCase()),
   );
 
-  const [cantAsientosDisponibles, setCantAsientosDisponibles] = useState(1);
+  const [cantLugaresDisponibles, setCantLugaresDisponibles] = useState(1);
   const [formData, setFormData] = useState({
     viajeFecha: '',
     viajeHorario: '',
@@ -140,7 +140,7 @@ export const PublicarViaje = () => {
                   (v) => v.patente === e.target.value,
                 );
                 setFormData({ ...formData, vehiculo: e.target.value });
-                setCantAsientosDisponibles(selectedVehiculo?.cantLugares || 1);
+                setCantLugaresDisponibles(selectedVehiculo?.cantLugares || 1);
               }}
             >
               <option value="">Seleccioná tu auto...</option>
@@ -277,7 +277,7 @@ export const PublicarViaje = () => {
                 type="number"
                 className="form-control"
                 min="1"
-                max={cantAsientosDisponibles}
+                max={cantLugaresDisponibles}
                 required
                 onChange={(e) =>
                   setFormData({

@@ -112,13 +112,13 @@ export const EditarVehiculo = () => {
               
               <div className="mb-3 d-flex align-items-center">
                 <label className="form-label text-muted fw-bold me-3 mb-0" style={{width: '150px'}}>
-                  Cantidad de asientos
+                  Cantidad de lugares
                 </label>
                 <input
                   required
                   type="number"
                   min={1}
-                  max={20}
+                  max={50}
                   className="form-control custom-input"
                   value={vehiculoToUpdate.cantLugares}
                   onChange={(e) =>

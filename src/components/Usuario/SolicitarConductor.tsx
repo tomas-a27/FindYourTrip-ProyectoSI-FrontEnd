@@ -34,7 +34,7 @@ export const SolicitarConductor = () => {
   const esColorValido = color.length >= 1 && regexLetras.test(color.trim());
   
   const esModeloValido = modelo.length >= 1;
-  const lugaresValidos = cantLugares > 0;
+  const lugaresValidos = cantLugares > 0 && cantLugares <= 50;
   
   const formValido = esLicenciaValida && esPatenteValida && esMarcaValida && esColorValido && esModeloValido && lugaresValidos && fotoPerfil && fotoLicencia && vigenciaLicencia;
   // ------------------------------------
@@ -240,12 +240,12 @@ export const SolicitarConductor = () => {
                 )}
               </div>
               <div className="col-md-6 mb-4">
-                <label className="form-label text-muted fw-bold">Cantidad de asientos</label>
+                <label className="form-label text-muted fw-bold">Cantidad de lugares</label>
                 <input 
                   type="number" 
                   className={`form-control custom-input ${cantLugares && !lugaresValidos ? 'is-invalid' : ''} ${cantLugares && lugaresValidos ? 'is-valid' : ''}`}
                   min="1" 
-                  max="20"
+                  max="50"
                   value={cantLugares} 
                   onChange={(e) => setCantLugares(Number(e.target.value))} 
                   required 

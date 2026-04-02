@@ -153,13 +153,13 @@ export const CrearVehiculo = () => {
                 className="form-label text-muted fw-bold me-3 mb-0"
                 style={{ width: '150px' }}
               >
-                Cantidad de asientos
+                Cantidad de lugares
               </label>
               <input
                 type="number"
                 className="form-control custom-input"
                 min="1"
-                max="20"
+                max="50"
                 value={cantLugares}
                 onChange={(e) => setCantLugares(Number(e.target.value))}
                 required
