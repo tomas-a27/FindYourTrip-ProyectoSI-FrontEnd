@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { post, get, getOne } from '../../api/dataManager';
 import { UsuarioDTO, LocalidadDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
+import { ModalAlertAviso } from '../ModalAlert';
 
 export const PublicarViaje = () => {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ export const PublicarViaje = () => {
   const [localidadDestino, setLocalidadDestino] = useState('');
   const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] = useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+  const [rutaModal, setRutaModal] = useState<string | undefined>(undefined);
 
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(localidadOrigen.toLowerCase()),
@@ -54,10 +58,9 @@ export const PublicarViaje = () => {
 
     // Validamos que el usuario sea conductor aprobado antes de mostrar el formulario
     if (usuarioCompleto.estadoConductor?.toLowerCase() === 'pendiente') {
-      alert(
-        'Usted podrá publicar un viaje una vez que su solicitud sea aprobada.',
-      );
-      navigate('/home');
+      setMensajeModal('Usted podrá publicar un viaje una vez que su solicitud sea aprobada.');
+      setRutaModal('/home');
+      setMostrarModal(true);
       return;
     }
 
@@ -66,26 +69,26 @@ export const PublicarViaje = () => {
       usuarioCompleto.tipoUsuario?.toLowerCase() !== 'conductor' &&
       usuarioCompleto.estadoConductor?.toLowerCase() !== 'aprobado'
     ) {
-      alert(
-        'Debes registrarte y ser aprobado como conductor para publicar viajes.',
-      );
-      navigate('/home');
+      setMensajeModal('Debes registrarte y ser aprobado como conductor para publicar viajes.');
+      setRutaModal('/home');
+      setMostrarModal(true);
       return;
     }
 
     //Validamos que haya localidades cargadas para mostrar el formulario
     if (!cargandoLocs && (!localidades || localidades.length === 0)) {
-      alert(
-        'No hay localidades disponibles. Por favor, contacta al administrador.',
-      );
-      navigate('/home');
+      setMensajeModal('No hay localidades disponibles. Por favor, contacta al administrador.');
+      setRutaModal('/home');
+      setMostrarModal(true);
       return;
     }
 
     // Verificamos que tenga vehículos registrados
     if (!usuarioCompleto.vehiculos || usuarioCompleto.vehiculos.length === 0) {
-      alert('Primero debés registrar un vehículo para publicar un viaje.');
-      navigate('/crear-vehiculo');
+      setMensajeModal('Primero debés registrar un vehículo para publicar un viaje.');
+      setRutaModal('/crear-vehiculo');
+      setMostrarModal(true);
+      return;
     }
   }, [navigate, userId, usuarioCompleto]);
 
@@ -372,6 +375,13 @@ export const PublicarViaje = () => {
           </div>
         </div>
       )}
+
+      <ModalAlertAviso
+        show={mostrarModal}
+        onClose={() => setMostrarModal(false)}
+        message={mensajeModal}
+        routeNav={rutaModal}
+      />
     </div>
   );
 };

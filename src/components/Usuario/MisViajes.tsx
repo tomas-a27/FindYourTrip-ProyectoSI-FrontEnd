@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { getAsync, getOne, patch } from '../../api/dataManager'; 
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
-import { Params } from 'react-router-dom';
+import { ModalAlertAviso } from '../ModalAlert.tsx';
 import { ModalCalificacionSecuencial } from '../Viaje/ModalCalificacionSecuencial';
 import ModalComenzarFinalizarViaje from '../Viaje/ModalComenzarViaje.tsx';
 
@@ -32,13 +32,14 @@ export const MisViajes = () => {
   const [solicitudACancelar, setSolicitudACancelar] = useState<any | null>(
     null,
   );
-  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] =
-    useState(false);
+  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] = useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [pasajerosACalificar, setPasajerosACalificar] = useState<any[]>([]);
   const [indiceCalificacion, setIndiceCalificacion] = useState(0);
   const [viajeIdActual, setViajeIdActual] = useState<number | null>(null);
+  const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
+  const [mensajeAviso, setMensajeAviso] = useState('');
 
   const { data: user } = getOne<UsuarioDTO>('usuario/' + userId);
 
@@ -85,11 +86,11 @@ export const MisViajes = () => {
       const res = await patch(`viaje/cancelar/${viajeACancelar.viajeId}`, {});
 
       // El mensaje depende de lo que devuelva el back (si fue < 24hs o no)
-      alert(res.data.message);
+      setMensajeAviso(res.data.message);
+      setMostrarModalAviso(true);
 
       setMostrarModalCancelar(false);
       setViajeACancelar(null);
-      cargarDatos(Number(userId)); // Recargar lista
     } catch (error: any) {
       alert(error.response?.data?.message || 'Error al cancelar el viaje');
     }
@@ -145,7 +146,6 @@ export const MisViajes = () => {
         setPasajerosACalificar(res.data.pasajeros);
         setIndiceCalificacion(0);
       } else {
-        alert(res.data.message);
         cargarDatos(Number(userId));
       }
     } catch (error: any) {
@@ -162,7 +162,6 @@ export const MisViajes = () => {
       setPasajerosACalificar([]);
       setViajeIdActual(null);
       cargarDatos(Number(userId));
-      alert('¡Todas las calificaciones han sido registradas!');
     }
   };
 
@@ -501,6 +500,15 @@ export const MisViajes = () => {
           onClose={() => handleSiguienteCalificacion()}
         />
       )}
+
+      <ModalAlertAviso
+        show={mostrarModalAviso}
+        onClose={() => {
+          setMostrarModalAviso(false);
+          cargarDatos(Number(userId));
+        }}
+        message={mensajeAviso}
+      />
     </div>
   );
 };

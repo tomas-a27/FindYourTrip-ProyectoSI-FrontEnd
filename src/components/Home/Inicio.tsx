@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UsuarioDTO } from '../../entities/entities';
 import { getOne } from '../../api/dataManager';
 import { useAuth } from '../../auth/AuthContext';
+import { ModalAlertAviso } from '../ModalAlert';
 
 export const Inicio = () => {
   const navigate = useNavigate();
   const { userId, userTipo } = useAuth();
   const { data: usuario } = getOne<UsuarioDTO>('usuario/' + userId);
+
+  const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
 
   // Chequeamos si la solicitud para ser conductor está pendiente
   const isPendiente = usuario?.estadoConductor?.toLowerCase() === 'pendiente';
@@ -17,9 +21,7 @@ export const Inicio = () => {
       navigate('/publicar-viaje');
     } else if (isPendiente) {
       // Si está pendiente de aprobacion, le mostramos el mensaje y NO lo dejamos pasar
-      alert(
-        'Usted podrá publicar un viaje una vez que su solicitud para ser conductor esté aprobada.',
-      );
+      setMostrarModalAviso(true);
     } else {
       // Si es pasajero, lo mandamos al formulario con el mensaje de aviso
       navigate('/solicitar-conductor', {
@@ -98,6 +100,12 @@ export const Inicio = () => {
           </button>
         </div>
       </div>
+
+      <ModalAlertAviso
+        show={mostrarModalAviso}
+        onClose={() => setMostrarModalAviso(false)}
+        message="Usted podrá publicar un viaje una vez que su solicitud para ser conductor esté aprobada."
+      />
     </div>
   );
 };

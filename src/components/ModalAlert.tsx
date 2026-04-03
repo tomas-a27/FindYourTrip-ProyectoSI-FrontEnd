@@ -25,13 +25,12 @@ export const ModalAlertAviso = ({
 
   return (
     <Modal show={show} onHide={handleCloseModal} centered>
-      <Modal.Header closeButton className="border-0">
-        <Modal.Title className="fw-bold" style={{ color: '#2d4a2d' }}>
-          Aviso
-        </Modal.Title>
-      </Modal.Header>
+      <Modal.Header closeButton className="border-0"></Modal.Header>
+
       <Modal.Body className="text-center pb-4 pt-1">
-        <p className="fs-5 text-muted m-0">{message}</p>
+        <b>
+          <p className="fs-5 text-muted m-0">{message}</p>
+        </b>
       </Modal.Body>
     </Modal>
   );

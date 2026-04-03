@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { post } from '../../api/dataManager';
 import logo from '../../images/logoFYT.png';
+import { ModalAlertAviso } from '../ModalAlert';
 
 export const RecuperarContrasena = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export const RecuperarContrasena = () => {
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
 
   const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const esContraLarga = nuevaContrasena.length >= 8;
@@ -46,8 +49,8 @@ export const RecuperarContrasena = () => {
     try {
       const res = await post('usuario/restablecer-contrasena', { email, codigo, nuevaContrasena });
       if (res && res.status === 200) {
-        alert('¡Contraseña actualizada con éxito!');
-        navigate('/login');
+        setMensajeModal('¡Contraseña actualizada con éxito!');
+        setMostrarModalExito(true);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error al restablecer la contraseña');
@@ -160,6 +163,13 @@ export const RecuperarContrasena = () => {
 
         </div>
       </div>
+
+      <ModalAlertAviso
+        show={mostrarModalExito}
+        onClose={() => setMostrarModalExito(false)}
+        message={mensajeModal}
+        routeNav="/login"
+      />
     </div>
   );
 };
