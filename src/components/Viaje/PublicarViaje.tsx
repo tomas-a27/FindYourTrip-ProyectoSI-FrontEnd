@@ -27,6 +27,7 @@ export const PublicarViaje = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
   const [rutaModal, setRutaModal] = useState<string | undefined>(undefined);
+  const [error, setError] = useState('');
 
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(localidadOrigen.toLowerCase()),
@@ -95,6 +96,26 @@ export const PublicarViaje = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setError('');
+
+    if (!formData.viajeOrigen || !formData.viajeDestino) {
+      setError('Debés seleccionar una localidad válida de la lista.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (formData.viajeOrigen === formData.viajeDestino) {
+      setError('El origen y el destino no pueden ser iguales.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (formData.viajeCantLugares > cantLugaresDisponibles) {
+      setError('La cantidad de lugares debe ser menor o igual que la cantidad de lugares del vehículo.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     const viajeAPublicar = {
       ...formData,
       usuarioConductor: usuarioCompleto?.idUsuario,
@@ -108,7 +129,8 @@ export const PublicarViaje = () => {
       setMostrarModalExito(true);
     } else {
       const errorMsg = response?.data?.message || 'Ocurrió un error inesperado';
-      alert('Error: ' + errorMsg);
+      setMensajeModal(errorMsg);
+      setMostrarModal(true);
     }
   };
 
@@ -130,6 +152,8 @@ export const PublicarViaje = () => {
         className="card shadow-sm border-0 p-4 mx-auto"
         style={{ maxWidth: '600px' }}
       >
+        {error && <div className="alert alert-danger fw-bold">{error}</div>}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label fw-bold">¿En qué vehículo vas?</label>
@@ -167,6 +191,11 @@ export const PublicarViaje = () => {
                 onChange={(e) => {
                   setLocalidadOrigen(e.target.value);
                   setMostrarSugerenciaOrigen(true);
+                  setError('');
+                  setFormData({
+                    ...formData,
+                    viajeOrigen: '',
+                  });
                 }}
                 onBlur={() =>
                   setTimeout(() => setMostrarSugerenciaOrigen(false), 200)
@@ -211,6 +240,11 @@ export const PublicarViaje = () => {
                 onChange={(e) => {
                   setLocalidadDestino(e.target.value);
                   setMostrarSugerenciaDestino(true);
+                  setError('');
+                  setFormData({
+                    ...formData,
+                    viajeDestino: '',
+                  });
                 }}
                 onBlur={() =>
                   setTimeout(() => setMostrarSugerenciaDestino(false), 200)
@@ -279,7 +313,7 @@ export const PublicarViaje = () => {
                 type="number"
                 className="form-control"
                 min="1"
-                max={cantLugaresDisponibles}
+                //max={cantLugaresDisponibles}
                 required
                 onChange={(e) =>
                   setFormData({
