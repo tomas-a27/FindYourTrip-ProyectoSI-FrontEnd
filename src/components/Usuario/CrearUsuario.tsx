@@ -143,7 +143,7 @@ export const CrearUsuario = () => {
                     Nro. Documento
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control custom-input ${formData.nroDocumento && !esDocValido ? 'is-invalid' : ''} ${formData.nroDocumento && esDocValido ? 'is-valid' : ''}`}
                     name="nroDocumento"
                     value={formData.nroDocumento}
@@ -166,7 +166,7 @@ export const CrearUsuario = () => {
                     Teléfono
                   </label>
                   <input
-                    type="text"
+                    type="tel"
                     className={`form-control custom-input ${formData.telefono && !esTelValido ? 'is-invalid' : ''} ${formData.telefono && esTelValido ? 'is-valid' : ''}`}
                     name="telefono"
                     value={formData.telefono}
