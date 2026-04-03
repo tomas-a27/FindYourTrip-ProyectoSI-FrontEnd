@@ -193,6 +193,7 @@ export const CrearUsuario = () => {
                     <option value="Femenino">Femenino</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Otro">Otro</option>
+                    <option value="Prefiero no decirlo">Prefiero no decirlo</option>
                   </select>
                 </div>
               </div>

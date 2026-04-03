@@ -63,7 +63,7 @@ export const MiCuenta = () => {
                 <div className="text-center">
                   <p className="mb-1 fw-bold text-muted" style={{ fontSize: '12px', textTransform: 'uppercase' }}>Pasajero</p>
                   <div className="calificacion-badge">
-                    <i className="bi bi-star-fill text-warning"></i> <span className="fw-bold">5.00</span>
+                    <i className="bi bi-star-fill text-warning"></i> <span className="fw-bold">{usuario.calificacionPas?.toFixed(2) || 'Sin calificar'}</span>
                   </div>
                 </div>
 
@@ -71,7 +71,7 @@ export const MiCuenta = () => {
                   <div className="text-center">
                     <p className="mb-1 fw-bold text-muted" style={{ fontSize: '12px', textTransform: 'uppercase' }}>Conductor</p>
                     <div className="calificacion-badge">
-                      <i className="bi bi-star-fill text-warning"></i> <span className="fw-bold">4.90</span>
+                      <i className="bi bi-star-fill text-warning"></i> <span className="fw-bold">{usuario.calificacionConductor?.toFixed(2) || 'Sin calificar'}</span>
                     </div>
                   </div>
                 )}
@@ -159,7 +159,7 @@ export const MiCuenta = () => {
                 </div>
               )}
 
-              <div 
+              <div
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
                 onClick={() => navigate('/centro-ayuda')}
               >
@@ -168,9 +168,9 @@ export const MiCuenta = () => {
                 <i className="bi bi-chevron-right usuario-flecha"></i>
               </div>
 
-              <div 
+              <div
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
-                onClick={() => navigate('/politicas-uso')} 
+                onClick={() => navigate('/politicas-uso')}
               >
                 <i className="bi bi-clipboard2-check fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">Políticas de uso</span>
