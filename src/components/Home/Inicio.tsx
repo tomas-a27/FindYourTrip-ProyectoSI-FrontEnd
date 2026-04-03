@@ -46,7 +46,7 @@ export const Inicio = () => {
           </span>
         </div>
       )}
-      <div className="text-center mb-4 my-5">
+      <div className="text-center mb-4 ">
         <h1 className="fw-bold mb-2" style={{ fontSize: '2rem' }}>
           Find Your Trip
         </h1>

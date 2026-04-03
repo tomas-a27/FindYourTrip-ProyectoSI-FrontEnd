@@ -10,16 +10,28 @@ export const RootLayout = () => {
 
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height:
+          '100dvh' /* 100dvh toma el alto real de la pantalla en móviles */,
+      }}
     >
       {!noMainNav && <MainNavBar />}
-      <main>
+
+      {/* El main toma todo el espacio restante (flex: 1) y tiene scroll propio */}
+      <main
+        className="pt-3 pb-4"
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+        }}
+      >
         <Outlet />
       </main>
 
-      <div
-        style={{ position: 'fixed', bottom: 0, width: '100%', zIndex: 1000 }}
-      >
+      {/* El footer ya no necesita 'fixed', se queda siempre al final del flexbox */}
+      <div style={{ flexShrink: 0, zIndex: 1000 }}>
         <Footer />
       </div>
     </div>

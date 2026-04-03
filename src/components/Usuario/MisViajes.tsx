@@ -15,13 +15,15 @@ export const MisViajes = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
-  const [vistaActiva, setVistaActiva] = useState<'pasajero' | 'conductor'>(
-    () => localStorage.getItem('vistaActiva') as 'pasajero' | 'conductor' || 'pasajero'
-    );
+  const [vistaActiva, setVistaActiva] = useState<'pasajero' | 'conductor'>('pasajero');
 
   useEffect(() => {
-      localStorage.setItem('vistaActiva', vistaActiva);
-    }, [vistaActiva]);
+    if (!userId) {
+      return;
+    }
+
+    localStorage.setItem(`vistaActiva_${userId}`, vistaActiva);
+  }, [vistaActiva, userId]);
 
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
   const [viajesPublicados, setViajesPublicados] = useState<any[]>([]);
@@ -45,20 +47,30 @@ export const MisViajes = () => {
 
   useEffect(() => {
     if (user === undefined) return;
+
     if (user) {
       const aprobado =
         user?.estadoConductor?.toLowerCase() === 'aprobado' ||
         user?.tipoUsuario?.toLowerCase() === 'conductor';
+      
       setIsConductorAprobado(aprobado);
+
+      if (!aprobado) {
+        setVistaActiva('pasajero');
+      } else {
+        setVistaActiva('conductor');
+      }
 
       cargarDatos(Number(userId));
     } else {
       setLoading(false);
       navigate('/login');
     }
-  }, [navigate, userId, user]); // AGREGAR 'user' A LAS DEPENDENCIAS
+  }, [navigate, userId, user]);
+
   const cargarDatos = async (idUsuario: number) => {
     setLoading(true);
+
     try {
       const resSol = await getAsync<any>(`viaje/mis-solicitudes/${idUsuario}`);
       if (resSol.data && resSol.data.data) setSolicitudes(resSol.data.data);
