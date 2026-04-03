@@ -170,7 +170,7 @@ export const MiCuenta = () => {
                 <div className="mb-2 d-flex justify-content-between align-items-center">
                   <span className="text-muted small fw-bold">Licencia</span>
                   <span className="fw-medium">
-                    {usuario.nroDocumento || '---'}
+                    {usuario.nroLicenciaConductorUsuario || '---'}
                   </span>
                 </div>
               )}
