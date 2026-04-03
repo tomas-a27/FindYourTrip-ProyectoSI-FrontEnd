@@ -6,6 +6,8 @@ import { useAuth } from '../../auth/AuthContext';
 export const SolicitarConductor = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
+
+  const today = new Date().toISOString().split('T')[0];
   
   const location = useLocation();
   const mensajeAviso = location.state?.mensajeAviso;
@@ -162,7 +164,8 @@ export const SolicitarConductor = () => {
               <div className="col-md-6 mb-3">
                 <label className="form-label text-muted fw-bold">Fecha de Vencimiento</label>
                 <input 
-                  type="date" 
+                  type="date"
+                  min={today}
                   className="form-control custom-input" 
                   value={vigenciaLicencia} 
                   onChange={(e) => setVigenciaLicencia(e.target.value)} 
