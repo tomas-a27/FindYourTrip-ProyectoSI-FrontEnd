@@ -11,6 +11,7 @@ export const SolicitarConductor = () => {
   const mensajeAviso = location.state?.mensajeAviso;
   
   const [error, setError] = useState('');
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
   const [fotoLicencia, setFotoLicencia] = useState<File | null>(null);
@@ -40,7 +41,6 @@ export const SolicitarConductor = () => {
   // ------------------------------------
 
   const handleCancelar = () => {
-    alert('Operación cancelada.'); 
     navigate('/home'); 
   };
 
@@ -80,8 +80,7 @@ export const SolicitarConductor = () => {
       );
 
       if (response && response.status === 200) {
-        alert('Hemos enviado su solicitud para ser conductor. Próximamente se le informará si fue aceptada.');
-        navigate('/home');
+        setMostrarModal(true);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || err.response?.data?.detalles || 'Ocurrió un error al enviar la solicitud');
@@ -270,6 +269,27 @@ export const SolicitarConductor = () => {
           </form>
         </div>
       </div>
+
+      {mostrarModal && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <h5 className="fw-bold mb-3">
+              Hemos enviado su solicitud para ser conductor
+            </h5>
+
+            <p className="text-muted mb-4">
+              Próximamente se le informará si fue aceptada
+            </p>
+
+            <button 
+              className="btn btn-pastel-green w-100"
+              onClick={() => navigate('/home')}
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

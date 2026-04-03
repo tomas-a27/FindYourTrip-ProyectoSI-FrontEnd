@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ViajeDTO } from '../../entities/entities.ts';
 import { get, post } from '../../api/dataManager.ts';
@@ -5,6 +6,10 @@ import { useAuth } from '../../auth/AuthContext';
 
 export const MostrarViaje = () => {
   const { userId } = useAuth();
+
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [viajeSeleccionado, setViajeSeleccionado] = useState<ViajeDTO | null>(null);
 
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
@@ -28,20 +33,24 @@ export const MostrarViaje = () => {
     error: errorViajes,
   } = get<ViajeDTO>(query);
 
-  const handleSubmit = async (viajeId: number) => {
+  const handleSubmit = async () => {
+    if (!viajeSeleccionado) return;
+    
     const solicitudViaje = {
-      viaje: viajeId,
+      viaje: viajeSeleccionado.viajeId,
       usuario: userId,
     };
 
     const res = await post('viaje/solicitar-viaje', solicitudViaje);
+
     if (res.status === 201) {
-      alert('¡Solicitud enviada con éxito!');
-      navigate('/mis-viajes'); // Mejor navegar que recargar
+      setMostrarModalConfirmacion(false);
+      setMostrarModalExito(true);
     } else {
       alert('Error: ' + res.data?.message);
     }
   };
+
   return (
     <div>
       <div>
@@ -228,7 +237,10 @@ export const MostrarViaje = () => {
                           backgroundColor: '#2d4a2d',
                           borderRadius: '15px',
                         }}
-                        onClick={() => handleSubmit(viaje.viajeId)}
+                        onClick={() => {
+                          setViajeSeleccionado(viaje);
+                          setMostrarModalConfirmacion(true);
+                        }}
                       >
                         Enviar solicitud
                       </button>
@@ -246,6 +258,60 @@ export const MostrarViaje = () => {
       {errorViajes && (
         <div className="alert alert-danger">
           Error al cargar viajes: {errorViajes}
+        </div>
+      )}
+
+      {mostrarModalConfirmacion && viajeSeleccionado && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+
+            <h5 className="fw-bold mb-3">
+              ¿Desea confirmar envío de solicitud a{' '}
+              {viajeSeleccionado.usuarioConductor.nombreUsuario}{' '}
+              {viajeSeleccionado.usuarioConductor.apellidoUsuario}?
+            </h5>
+
+            <p className="text-muted mb-4">
+              <b>
+                {viajeSeleccionado.viajeFecha.split('-').reverse().join('/')} a las{' '}
+                {viajeSeleccionado.viajeHorario}
+              </b>
+            </p>
+
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-light-cancel w-50"
+                onClick={() => setMostrarModalConfirmacion(false)}
+              >
+                Cancelar
+              </button>
+
+              <button
+                className="btn btn-pastel-green w-50"
+                onClick={handleSubmit}
+              >
+                Enviar
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {mostrarModalExito && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <h5 className="fw-bold mb-4">
+              ¡La solicitud ha sido enviada con éxito!
+            </h5>
+
+            <button 
+              className="btn btn-pastel-green w-100"
+              onClick={() => navigate('/mis-viajes')}
+            >
+              Ver mis viajes
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -21,8 +21,8 @@ export const PublicarViaje = () => {
   const [localidadOrigen, setLocalidadOrigen] = useState('');
   const [mostrarSugerenciaOrigen, setMostrarSugerenciaOrigen] = useState(false);
   const [localidadDestino, setLocalidadDestino] = useState('');
-  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] =
-    useState(false);
+  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] = useState(false);
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
 
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(localidadOrigen.toLowerCase()),
@@ -102,8 +102,7 @@ export const PublicarViaje = () => {
     const response = await post('viaje', viajeAPublicar);
 
     if (response && response.status === 201) {
-      alert('¡Viaje publicado con éxito!');
-      navigate('/home');
+      setMostrarModalExito(true);
     } else {
       const errorMsg = response?.data?.message || 'Ocurrió un error inesperado';
       alert('Error: ' + errorMsg);
@@ -337,15 +336,42 @@ export const PublicarViaje = () => {
             ></textarea>
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-success w-100 py-2 fw-bold"
-            style={{ backgroundColor: '#2d4a2d' }}
-          >
-            Publicar Viaje
-          </button>
+          <div className="d-flex gap-2">
+            <button
+              type="button"
+              className="btn btn-light-cancel w-50"
+              onClick={() => navigate('/home')}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              className="btn btn-success w-50 py-2 fw-bold"
+              style={{ backgroundColor: '#2d4a2d' }}
+            >
+              Publicar Viaje
+            </button>
+          </div>
         </form>
       </div>
+
+      {mostrarModalExito && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <h5 className="fw-bold mb-4">
+              ¡El viaje se ha publicado con éxito!
+            </h5>
+
+            <button
+              className="btn btn-pastel-green w-100"
+              onClick={() => navigate('/home')}
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
