@@ -10,11 +10,13 @@ interface Props {
 
 export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
   const { data: usuario } = getOne<UsuarioDTO>(`usuario/${usuarioId}`);
+  const { data: reportesData } = getOne<any>(`sancion/ver-infracciones/${usuarioId}`);
 
   const [error, setError] = useState('');
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
   const [estadoAccion, setEstadoAccion] = useState<string>("");
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarReportes, setMostrarReportes] = useState(false);
 
   // NUEVO: Estado para controlar si se muestra la licencia en pantalla completa
   const [mostrarLicenciaAmpliada, setMostrarLicenciaAmpliada] = useState(false);
@@ -94,7 +96,14 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                   </span>
                 </p>
 
-                <a href="#" className="text-decoration-none">
+                <a
+                  href="#"
+                  className="text-decoration-none"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMostrarReportes(true);
+                  }}
+                >
                   Historial de reportes
                 </a>
               </div>
@@ -261,6 +270,41 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                     Volver al listado
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mostrarReportes && (
+        <div className="modal show fade modal-overlay d-block">
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content card shadow-sm aprobar-conductor-card">
+              <button className="btn-cerrar" onClick={() => setMostrarReportes(false)}>
+                X
+              </button>
+
+              <div className="card-body p-4">
+                <div className="d-flex align-items-center mt-3 mb-3 gap-5">
+                  <h5 className="m-0">Historial de reportes</h5>
+
+                  <span className="text-muted">
+                    <b>Cantidad:</b> {reportesData?.cantidadInfracciones ?? 0}
+                  </span>
+                </div>
+
+                {!reportesData?.infracciones?.length ? (
+                  <p className="text-muted">No tiene reportes</p>
+                ) : (
+                  reportesData.infracciones.map((i: any, idx: number) => (
+                    <div key={idx} className="border p-2 mb-2 rounded">
+                      <p><b>Fecha:</b> {new Date(i.fecha).toLocaleDateString()}</p>
+                      <p><b>Descripción:</b> {i.descripcion}</p>
+                      <p><b>Comentario:</b> {i.comentario ? i.comentario : '-'}</p>
+                      <p><b>Tipo:</b> {i.tipo}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
