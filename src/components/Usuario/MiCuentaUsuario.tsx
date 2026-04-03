@@ -51,7 +51,7 @@ export const MiCuenta = () => {
   };
 
   return (
-    <div className="container mt-0 mt-md-5 ">
+    <div className="container my-2 md-5 ">
       <div className="row justify-content-center">
         {/* Definimos el ancho: 12 en móvil, 8 en tablet, 5 en escritorio grande */}
         <div className="col-12 col-md-8 col-lg-7">
