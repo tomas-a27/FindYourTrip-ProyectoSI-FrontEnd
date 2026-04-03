@@ -17,6 +17,7 @@ export const AprobarDenegarSolicitud = () => {
   const [solicitudAprobadaRechazadaError, setSolicitudAprobadaRechazadaError] = useState(false);
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [viajeInfo, setViajeInfo] = useState<any>(null);
 
   useEffect(() => {
     if (!location.state || !location.state.viajeId) {
@@ -53,6 +54,13 @@ export const AprobarDenegarSolicitud = () => {
     } finally {
       if (!esRecargaOculta) setSolicitudAprobadaRechazadaLoading(false);
     }
+
+    try {
+      const resViaje = await getAsync<any>('viaje/detalle/' + location.state.viajeId);
+      setViajeInfo(resViaje.data?.data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const toggleHistorial = () => {
@@ -75,7 +83,7 @@ export const AprobarDenegarSolicitud = () => {
           </div>
           <div>
             <span className="fw-bold">
-              Quedan: {location.state.lugaresDisponibles} lugares disponibles
+              Quedan: {viajeInfo?.lugaresDisponibles ?? location.state.lugaresDisponibles} lugares disponibles
             </span>
           </div>
         </div>
