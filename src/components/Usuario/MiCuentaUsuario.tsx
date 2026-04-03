@@ -158,7 +158,9 @@ export const MiCuenta = () => {
               </div>
 
               <div className="mb-2 d-flex justify-content-between align-items-center">
-                <span className="text-muted small fw-bold">DNI</span>
+                <span className="text-muted small fw-bold">
+                  {usuario.tipoDocumento}
+                </span>
                 <span className="fw-medium">
                   {usuario.nroDocumento || '---'}
                 </span>
