@@ -32,7 +32,9 @@ export const MiCuenta = () => {
   // Función para la foto de perfil
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
-    const binary = buffer.data.map((byte: number) => String.fromCharCode(byte)).join('');
+    const binary = buffer.data
+      .map((byte: number) => String.fromCharCode(byte))
+      .join('');
     return `data:image/jpeg;base64,${btoa(binary)}`;
   };
 
@@ -42,36 +44,57 @@ export const MiCuenta = () => {
   };
 
   const irAMisViajesConductor = () => {
-    esConductor? (localStorage.setItem('vistaActiva', 'conductor')) : (localStorage.setItem('vistaActiva', 'pasajero'));
+    esConductor
+      ? localStorage.setItem('vistaActiva', 'conductor')
+      : localStorage.setItem('vistaActiva', 'pasajero');
     navigate('/mis-viajes');
   };
 
   return (
-    <div className="container mt-0 mt-md-5 pb-5">
+    <div className="container mt-0 mt-md-5 ">
       <div className="row justify-content-center">
         {/* Definimos el ancho: 12 en móvil, 8 en tablet, 5 en escritorio grande */}
         <div className="col-12 col-md-8 col-lg-7">
-
           {/* HEADER: Nombre, Estrellas y Foto */}
           <div className="d-flex justify-content-between align-items-center mb-4 px-3 py-3 bg-white rounded-4 shadow-sm border">
             <div className="flex-grow-1">
-              <h2 className="fw-bold mb-2 text-dark" style={{ letterSpacing: '-1px' }}>
+              <h2
+                className="fw-bold mb-2 text-dark"
+                style={{ letterSpacing: '-1px' }}
+              >
                 {usuario.nombreUsuario} {usuario.apellidoUsuario}
               </h2>
 
               <div className="d-flex gap-3">
                 <div className="text-center">
-                  <p className="mb-1 fw-bold text-muted" style={{ fontSize: '12px', textTransform: 'uppercase' }}>Pasajero</p>
+                  <p
+                    className="mb-1 fw-bold text-muted"
+                    style={{ fontSize: '12px', textTransform: 'uppercase' }}
+                  >
+                    Pasajero
+                  </p>
                   <div className="calificacion-badge">
-                    <i className="bi bi-star-fill text-warning"></i> <span className="fw-bold">{usuario.calificacionPas?.toFixed(2) || 'Sin calificar'}</span>
+                    <i className="bi bi-star-fill text-warning"></i>{' '}
+                    <span className="fw-bold">
+                      {usuario.calificacionPas?.toFixed(2) || 'Sin calificar'}
+                    </span>
                   </div>
                 </div>
 
                 {esConductor && (
                   <div className="text-center">
-                    <p className="mb-1 fw-bold text-muted" style={{ fontSize: '12px', textTransform: 'uppercase' }}>Conductor</p>
+                    <p
+                      className="mb-1 fw-bold text-muted"
+                      style={{ fontSize: '12px', textTransform: 'uppercase' }}
+                    >
+                      Conductor
+                    </p>
                     <div className="calificacion-badge">
-                      <i className="bi bi-star-fill text-warning"></i> <span className="fw-bold">{usuario.calificacionConductor?.toFixed(2) || 'Sin calificar'}</span>
+                      <i className="bi bi-star-fill text-warning"></i>{' '}
+                      <span className="fw-bold">
+                        {usuario.calificacionConductor?.toFixed(2) ||
+                          'Sin calificar'}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -79,13 +102,24 @@ export const MiCuenta = () => {
             </div>
 
             {/* condicional: muestra foto si es conductor, boton si es pasajero */}
-            <div className="ms-3 text-end" style={{ minWidth: esConductor ? '90px' : '120px' }}>
+            <div
+              className="ms-3 text-end"
+              style={{ minWidth: esConductor ? '90px' : '120px' }}
+            >
               {esConductor ? (
                 /* Muestra foto */
                 <img
-                  src={usuario.fotoPerfil ? bufferToBase64(usuario.fotoPerfil) : 'https://via.placeholder.com/150'}
+                  src={
+                    usuario.fotoPerfil
+                      ? bufferToBase64(usuario.fotoPerfil)
+                      : 'https://via.placeholder.com/150'
+                  }
                   className="usuario-foto-grande shadow-sm border border-2 border-white"
-                  style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                  style={{
+                    width: '100px',
+                    height: '100px',
+                    objectFit: 'cover',
+                  }}
                 />
               ) : (
                 /* Muestra botón */
@@ -102,10 +136,14 @@ export const MiCuenta = () => {
 
           {/* CONTENEDOR VERDE (Caja de acciones) */}
           <div className="editar-usuario-card shadow-lg p-4">
-
             {/* SECCIÓN: Datos Personales (Blanca) */}
-            <div className="custom-card bg-white p-3 rounded-4 mb-4 shadow-sm" style={{ borderTop: '6px solid #2d4a2d' }}>
-              <h6 className="fw-bold border-bottom pb-2 mb-3 text-dark">Datos personales</h6>
+            <div
+              className="custom-card bg-white p-3 rounded-4 mb-4 shadow-sm"
+              style={{ borderTop: '6px solid #2d4a2d' }}
+            >
+              <h6 className="fw-bold border-bottom pb-2 mb-3 text-dark">
+                Datos personales
+              </h6>
 
               <div className="mb-2 d-flex justify-content-between align-items-center">
                 <span className="text-muted small fw-bold">Teléfono</span>
@@ -114,18 +152,24 @@ export const MiCuenta = () => {
 
               <div className="mb-2 d-flex justify-content-between align-items-center">
                 <span className="text-muted small fw-bold">Email</span>
-                <span className="fw-medium ms-2" style={{ maxWidth: '180px' }}>{usuario.email}</span>
+                <span className="fw-medium ms-2" style={{ maxWidth: '180px' }}>
+                  {usuario.email}
+                </span>
               </div>
 
               <div className="mb-2 d-flex justify-content-between align-items-center">
                 <span className="text-muted small fw-bold">DNI</span>
-                <span className="fw-medium">{usuario.nroDocumento || '---'}</span>
+                <span className="fw-medium">
+                  {usuario.nroDocumento || '---'}
+                </span>
               </div>
 
               {esConductor && (
                 <div className="mb-2 d-flex justify-content-between align-items-center">
                   <span className="text-muted small fw-bold">Licencia</span>
-                  <span className="fw-medium">{usuario.nroDocumento || '---'}</span>
+                  <span className="fw-medium">
+                    {usuario.nroDocumento || '---'}
+                  </span>
                 </div>
               )}
 
@@ -142,9 +186,14 @@ export const MiCuenta = () => {
 
             {/* MENÚ DE OPCIONES (Botones Blancos) */}
             <div className="menu-navegacion d-grid gap-2">
-              <div className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3" onClick={irAMisViajesConductor}>
+              <div
+                className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
+                onClick={irAMisViajesConductor}
+              >
                 <i className="bi bi-car-front-fill fs-4 me-3 text-dark"></i>
-                <span className="fw-bold flex-grow-1">{esConductor ? 'Viajes como conductor' : 'Mis viajes'}</span>
+                <span className="fw-bold flex-grow-1">
+                  {esConductor ? 'Viajes como conductor' : 'Mis viajes'}
+                </span>
                 <i className="bi bi-chevron-right usuario-flecha"></i>
               </div>
 
@@ -202,10 +251,15 @@ export const MiCuenta = () => {
             </button>
 
             <div className="mb-1">
-              <i className="bi bi-box-arrow-right text-danger" style={{ fontSize: '3rem' }}></i>
+              <i
+                className="bi bi-box-arrow-right text-danger"
+                style={{ fontSize: '3rem' }}
+              ></i>
             </div>
 
-            <h5 className="fw-bold mb-3">¿Está seguro que desea cerrar sesión?</h5>
+            <h5 className="fw-bold mb-3">
+              ¿Está seguro que desea cerrar sesión?
+            </h5>
 
             <div className="d-grid gap-2">
               <button
@@ -224,7 +278,6 @@ export const MiCuenta = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
