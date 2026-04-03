@@ -20,6 +20,7 @@ const ModalConfirmacionDenegarAprobar = ({
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [debeActualizar, setDebeActualizar] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleOpenModal = () => setShowModal(true);
   
@@ -33,7 +34,11 @@ const ModalConfirmacionDenegarAprobar = ({
       await patch(query, {}); 
       
       setDebeActualizar(true);
-      setShowModal(false); 
+      setShowModal(false);
+
+      if (accion.toUpperCase() === 'APROBAR') {
+        setShowSuccessModal(true);
+      }
     } catch (error) {
       console.error("Error al procesar la solicitud", error);
       alert("Hubo un error. Por favor, intente nuevamente.");
@@ -43,8 +48,6 @@ const ModalConfirmacionDenegarAprobar = ({
 
   const handleExited = () => {
     if (debeActualizar) {
-      onSuccess();
-      setDebeActualizar(false);
       setIsProcessing(false);
     }
   };
@@ -99,6 +102,27 @@ const ModalConfirmacionDenegarAprobar = ({
             </div>
           </div>
         </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showSuccessModal}
+        onHide={() => setShowSuccessModal(false)}
+        centered
+      >
+        <Modal.Body className="text-center">
+          <h5 className="mb-4">Solicitud aprobada</h5>
+
+          <button
+            className="btn btn-success px-4"
+            onClick={() => {
+              setShowSuccessModal(false);
+              onSuccess();
+              setDebeActualizar(false);
+            }}
+          >
+            Aceptar
+          </button>
+        </Modal.Body>
       </Modal>
     </>
   );
