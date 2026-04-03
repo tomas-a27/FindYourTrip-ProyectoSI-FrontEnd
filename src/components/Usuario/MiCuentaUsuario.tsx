@@ -42,7 +42,7 @@ export const MiCuenta = () => {
   };
 
   const irAMisViajesConductor = () => {
-    localStorage.setItem('vistaActiva', 'conductor');
+    esConductor? (localStorage.setItem('vistaActiva', 'conductor')) : (localStorage.setItem('vistaActiva', 'pasajero'));
     navigate('/mis-viajes');
   };
 
