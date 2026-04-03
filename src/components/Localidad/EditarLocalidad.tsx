@@ -5,10 +5,13 @@ import { LocalidadDTO } from '../../entities/entities.ts';
 import { getOne } from '../../api/dataManager.ts';
 
 export function EditarLocalidad() {
+  const navigate = useNavigate();
+
   const { id } = useParams();
-  const navegate = useNavigate();
   const { data } = getOne<LocalidadDTO>('localidad/' + id);
+
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const [localidadToUpdate, setlocalidadToUpdate] = useState<LocalidadDTO>({
     id: 0,
@@ -28,15 +31,29 @@ export function EditarLocalidad() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await patch(`localidad/${localidadToUpdate.id}`, localidadToUpdate);
-    setShowSuccess(true);
+
+    try {
+      await patch(`localidad/${localidadToUpdate.id}`, localidadToUpdate);
+      setShowSuccess(true);
+    } catch (err: any) {
+      const errorMsg =
+        Object.values(err.response?.data?.errors || {})?.flat()?.[0] ||
+        err.response?.data?.message ||
+        'Error al editar localidad';
+
+      setError(errorMsg);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
+
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
         <div className="col-12 col-md-8 col-lg-5">
           <div className="d-flex flex-column bg-white p-4 rounded-4 shadow-sm custom-card">
-            <h1 className="text-center mb-4">Agregar Localidad</h1>
+            <h1 className="text-center mb-4">Editar Localidad</h1>
+
+            {error && <div className="alert alert-danger fw-bold">{error}</div>}
 
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
               <label
@@ -113,7 +130,7 @@ export function EditarLocalidad() {
               className="btn-cerrar"
               onClick={() => {
                 setShowSuccess(false);
-                navegate('/mostrar-localidad');
+                navigate('/mostrar-localidad');
               }}
             >
               X

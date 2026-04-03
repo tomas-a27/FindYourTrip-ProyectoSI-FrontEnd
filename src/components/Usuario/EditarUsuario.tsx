@@ -180,8 +180,13 @@ export const EditarUsuario = () => {
     }
   };
 
-  if (!usuarioToUpdate.idUsuario)
+  if (!data) {
+    return <p className="text-center mt-5">Cargando...</p>;
+  }
+
+  if (!data.idUsuario) {
     return <p className="text-center mt-5">Usuario no encontrado</p>;
+  }
 
   const botonDeshabilitado = () => {
     if (campoSeleccionado === 'telefono') return !esTelValido;

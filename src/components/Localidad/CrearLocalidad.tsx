@@ -5,6 +5,7 @@ import { post } from '../../api/dataManager.ts';
 export function CrearLocalidad() {
   const navegate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const [newLocalidad, setNewLocalidad] = useState({
     nombre: '',
@@ -13,15 +14,30 @@ export function CrearLocalidad() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await post('localidad', newLocalidad);
-    setShowSuccess(true);
+    
+    const response = await post('localidad', newLocalidad);
+
+    if (response && response.status === 201) {
+      setShowSuccess(true);
+    } else {
+      const errorMsg =
+        Object.values(response?.data?.errors || {})?.flat()?.[0] ||
+        response?.data?.message ||
+        'Error al crear localidad';
+
+      setError(errorMsg);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
+
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
         <div className="col-12 col-md-8 col-lg-5">
           <div className="d-flex flex-column bg-white p-4 rounded-4 shadow-sm custom-card">
             <h1 className="text-center mb-4">Agregar Localidad</h1>
+
+            {error && <div className="alert alert-danger fw-bold">{error}</div>}
 
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
               <label
