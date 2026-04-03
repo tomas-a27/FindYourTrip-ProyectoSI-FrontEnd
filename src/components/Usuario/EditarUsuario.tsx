@@ -352,6 +352,7 @@ export const EditarUsuario = () => {
               ) : campoSeleccionado === 'telefono' ? (
                 <div className="mb-4">
                   <input
+                    type='tel'
                     className={`form-control p-2 ${nuevoValor && !esTelValido ? 'is-invalid' : ''} ${nuevoValor && esTelValido ? 'is-valid' : ''}`}
                     placeholder="Teléfono"
                     value={nuevoValor}
