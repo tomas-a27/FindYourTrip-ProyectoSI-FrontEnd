@@ -73,7 +73,7 @@ export const AprobarDenegarSolicitud = () => {
     <div>
       <div className="container mt-4">
         <h3 className="fw-bold mb-1" style={{ color: '#2c3e50' }}>
-          Viaje a {location.state.viajeOrigen}
+          Viaje a {location.state.viajeDestino}
         </h3>
 
         <div className="p-2 border border-secondary rounded mb-4" style={{ backgroundColor: '#A9D1A0', color: '#1a2b3c' }}>
