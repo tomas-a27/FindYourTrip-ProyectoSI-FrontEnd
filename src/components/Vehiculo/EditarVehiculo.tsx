@@ -17,6 +17,10 @@ export const EditarVehiculo = () => {
     cantLugares: 1,
   });
 
+  const esCantLugaresValida =
+    vehiculoToUpdate.cantLugares >= 1 &&
+    vehiculoToUpdate.cantLugares <= 50;
+
   useEffect(() => {
     if (data) {
       setVehiculoToUpdate({
@@ -51,6 +55,7 @@ export const EditarVehiculo = () => {
                   required
                   type="text"
                   className="form-control custom-input"
+                  placeholder="Ej: Etios"
                   value={vehiculoToUpdate.modelo}
                   onChange={(e) =>
                     setVehiculoToUpdate({
@@ -69,6 +74,7 @@ export const EditarVehiculo = () => {
                   required
                   type="text"
                   className="form-control custom-input"
+                  placeholder="Ej: Toyota"
                   value={vehiculoToUpdate.marca}
                   onChange={(e) =>
                     setVehiculoToUpdate({
@@ -87,6 +93,7 @@ export const EditarVehiculo = () => {
                   required
                   type="text"
                   className="form-control custom-input"
+                  placeholder='Ej: gris'
                   value={vehiculoToUpdate.color}
                   onChange={(e) =>
                     setVehiculoToUpdate({
@@ -110,24 +117,43 @@ export const EditarVehiculo = () => {
                 />
               </div>
               
-              <div className="mb-3 d-flex align-items-center">
-                <label className="form-label text-muted fw-bold me-3 mb-0" style={{width: '150px'}}>
+              <div className="mb-3 d-flex">
+                <label
+                  className="form-label text-muted fw-bold me-3 mb-0"
+                  style={{ width: '150px' }}
+                >
                   Cantidad de lugares
                 </label>
-                <input
-                  required
-                  type="number"
-                  min={1}
-                  max={50}
-                  className="form-control custom-input"
-                  value={vehiculoToUpdate.cantLugares}
-                  onChange={(e) =>
-                    setVehiculoToUpdate({
-                      ...vehiculoToUpdate,
-                      cantLugares: Number(e.target.value),
-                    })
-                  }
-                />
+
+                <div className="w-100">
+                  <input
+                    required
+                    type="number"
+                    min={1}
+                    max={50}
+                    className={`form-control custom-input ${
+                      !esCantLugaresValida ? 'is-invalid' : ''
+                    } ${esCantLugaresValida ? 'is-valid' : ''}`}
+                    value={vehiculoToUpdate.cantLugares}
+                    onChange={(e) => {
+                      const valor = parseInt(e.target.value);
+                      if (isNaN(valor)) return;
+
+                      setVehiculoToUpdate({
+                        ...vehiculoToUpdate,
+                        cantLugares: valor,
+                      });
+                    }}
+                  />
+
+                  {!esCantLugaresValida && (
+                    <div className="invalid-feedback fw-semibold">
+                      {vehiculoToUpdate.cantLugares < 1
+                        ? 'La cantidad no puede ser menor que 1.'
+                        : 'La cantidad no puede ser mayor a 50.'}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="row gy-2 justify-content-between mt-2">
@@ -145,6 +171,7 @@ export const EditarVehiculo = () => {
                   <button
                     type="submit"
                     className="btn btn-pastel-green w-100"
+                    disabled={!esCantLugaresValida}
                   >
                     Confirmar
                   </button>

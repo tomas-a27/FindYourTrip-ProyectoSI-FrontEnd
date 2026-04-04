@@ -15,6 +15,15 @@ export const CrearVehiculo = () => {
   const [patente, setPatente] = useState('');
   const [cantLugares, setCantLugares] = useState(1);
 
+  const patenteLimpia = patente.trim().toUpperCase().replace(/\s/g, '');
+
+  const esPatenteValida =
+    /^[A-Z]{3}\d{3}$/.test(patenteLimpia) || // AAA111
+    /^[A-Z]{2}\d{3}[A-Z]{2}$/.test(patenteLimpia); // AA111AA
+
+  const esCantLugaresValida =
+    cantLugares >= 1 && cantLugares <= 50;
+
   const handleVolver = () => {
     if (userId) {
       navigate(`/mostrar-vehiculo/${userId}`);
@@ -125,45 +134,74 @@ export const CrearVehiculo = () => {
               <input
                 type="text"
                 className="form-control custom-input"
+                placeholder='Ej: gris'
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
                 required
               />
             </div>
 
-            <div className="mb-3 d-flex align-items-center">
+            <div className="mb-3 d-flex">
               <label
                 className="form-label text-muted fw-bold me-3 mb-0"
                 style={{ width: '150px' }}
               >
                 Patente
               </label>
-              <input
-                type="text"
-                className="form-control custom-input"
-                placeholder="Ej: AAA111 o AA111AA"
-                value={patente}
-                onChange={(e) => setPatente(e.target.value)}
-                required
-              />
+
+              <div className="w-100">
+                <input
+                  type="text"
+                  className={`form-control custom-input ${
+                    patente && !esPatenteValida ? 'is-invalid' : ''
+                  } ${patente && esPatenteValida ? 'is-valid' : ''}`}
+                  placeholder="Ej: AAA111 o AA111AA"
+                  value={patente}
+                  onChange={(e) => setPatente(e.target.value.toUpperCase())}
+                  required
+                />
+
+                {patente && !esPatenteValida && (
+                  <div className="invalid-feedback fw-semibold">
+                    Formato inválido. Ej: AAA111 o AA111AA.
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="mb-3 d-flex align-items-center">
+            <div className="mb-3 d-flex">
               <label
                 className="form-label text-muted fw-bold me-3 mb-0"
                 style={{ width: '150px' }}
               >
                 Cantidad de lugares
               </label>
-              <input
-                type="number"
-                className="form-control custom-input"
-                min="1"
-                max="50"
-                value={cantLugares}
-                onChange={(e) => setCantLugares(Number(e.target.value))}
-                required
-              />
+
+              <div className="w-100">
+                <input
+                  type="number"
+                  min="1"
+                  max="50"
+                  className={`form-control custom-input ${
+                    !esCantLugaresValida ? 'is-invalid' : ''
+                  } ${esCantLugaresValida ? 'is-valid' : ''}`}
+                  value={cantLugares}
+                  onChange={(e) => {
+                    const valor = parseInt(e.target.value);
+                    if (isNaN(valor)) return;
+                    setCantLugares(valor);
+                  }}
+                  required
+                />
+
+                {!esCantLugaresValida && (
+                  <div className="invalid-feedback fw-semibold">
+                    {cantLugares < 1
+                      ? 'La cantidad no puede ser menor que 1.'
+                      : 'La cantidad no puede ser mayor a 50.'}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="row gy-2 justify-content-between mt-2">
@@ -181,6 +219,7 @@ export const CrearVehiculo = () => {
                 <button
                   type="submit"
                   className="btn btn-pastel-green w-100"
+                  disabled={!esPatenteValida || !esCantLugaresValida}
                 >
                   Confirmar
                 </button>
