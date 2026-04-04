@@ -11,6 +11,8 @@ export const Inicio = () => {
   const { data: usuario } = getOne<UsuarioDTO>('usuario/' + userId);
 
   const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
+  const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
+  const [mostrarModalRechazo, setMostrarModalRechazo] = useState(false);
 
   // Chequeamos si la solicitud para ser conductor está pendiente
   const isPendiente = usuario?.estadoConductor?.toLowerCase() === 'pendiente';
@@ -24,13 +26,24 @@ export const Inicio = () => {
       setMostrarModalAviso(true);
     } else {
       // Si es pasajero, lo mandamos al formulario con el mensaje de aviso
-      navigate('/solicitar-conductor', {
-        state: {
-          mensajeAviso:
-            'Para poder publicar viajes debes convertirte en conductor y esperar tu aprobación. Aquí podés registrar la información necesaria. Serás notificado una vez que tu solicitud haya sido revisada.',
-        },
-      });
+      setMostrarModalRegistro(true);
     }
+  };
+
+  const handleConfirmarRegistro = () => {
+    setMostrarModalRegistro(false);
+
+    navigate('/solicitar-conductor', {
+      state: {
+        mensajeAviso:
+          'Para poder publicar viajes debes convertirte en conductor y esperar tu aprobación. Aquí podés registrar la información necesaria. Serás notificado una vez que tu solicitud haya sido revisada.',
+      },
+    });
+  };
+
+  const handleRechazarRegistro = () => {
+    setMostrarModalRegistro(false);
+    setMostrarModalRechazo(true);
   };
 
   return (
@@ -98,10 +111,51 @@ export const Inicio = () => {
         </div>
       </div>
 
+      {mostrarModalRegistro && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <button
+              className="btn-cerrar"
+              onClick={() => setMostrarModalRegistro(false)}
+            >
+              X
+            </button>
+
+            <p className="mb-4 mt-2 fw-bold">
+              No estás registrado como conductor.
+              <br />
+              ¿Deseás registrarte como conductor?
+            </p>
+
+            <div className="d-flex justify-content-around">
+              <button
+                className="btn btn-light-cancel px-2"
+                onClick={handleRechazarRegistro}
+              >
+                Rechazar
+              </button>
+              
+              <button
+                className="btn btn-pastel-green px-2"
+                onClick={handleConfirmarRegistro}
+              >
+                Registrarte como conductor
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ModalAlertAviso
         show={mostrarModalAviso}
         onClose={() => setMostrarModalAviso(false)}
         message="Usted podrá publicar un viaje una vez que su solicitud para ser conductor esté aprobada."
+      />
+
+      <ModalAlertAviso
+        show={mostrarModalRechazo}
+        onClose={() => setMostrarModalRechazo(false)}
+        message="Acción rechazada. Podés registrarte como conductor cuando quieras."
       />
     </div>
   );
