@@ -91,6 +91,7 @@ export const AdminLayout = () => {
                   Solicitudes
                 </button>
               </li>
+
               <li className="nav-item mx-2">
                 <button
                   className="nav-link text-white fw-semibold btn btn-link fs-4 link-light link-opacity-75-hover"
@@ -99,6 +100,7 @@ export const AdminLayout = () => {
                   Sanciones
                 </button>
               </li>
+
               <li className="nav-item mx-2">
                 <button
                   className="nav-link text-white fw-semibold btn btn-link fs-4 link-light link-opacity-75-hover"
@@ -107,12 +109,22 @@ export const AdminLayout = () => {
                   Localidades
                 </button>
               </li>
+
               <li className="nav-item mx-2">
                 <button
                   className="nav-link text-white fw-semibold btn btn-link fs-4 link-light link-opacity-75-hover"
-                  onClick={() => handleNavegar('#')}
+                  onClick={() => handleNavegar('/informe-conductores')}
                 >
-                  Informes
+                  Informe conductores
+                </button>
+              </li>
+
+              <li className="nav-item mx-2">
+                <button
+                  className="nav-link text-white fw-semibold btn btn-link fs-4 link-light link-opacity-75-hover"
+                  onClick={() => handleNavegar('/informe-rutas-mas-frecuentes')}
+                >
+                  Informe rutas
                 </button>
               </li>
             </ul>
