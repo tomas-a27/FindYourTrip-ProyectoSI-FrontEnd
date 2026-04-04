@@ -291,9 +291,9 @@ export const MisViajes = () => {
                     key={sol.solViajeId}
                     solicitud={sol}
                     hora={formatearHora(sol.viaje?.viajeHorario)}
-                    foto={bufferToBase64(
+                    ={bufferToBase64(
                       sol.viaje?.usuarioConductor?.fotoPerfil,
-                    )}
+                    )}foto
                     onCancelar={() => handleCancelarSolicitud(sol)}
                   />
                 ))
