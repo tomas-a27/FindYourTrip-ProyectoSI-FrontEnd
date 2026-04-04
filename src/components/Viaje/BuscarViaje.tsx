@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LocalidadDTO } from '../../entities/entities.ts';
-import { get } from '../../api/dataManager.ts';
+import { LocalidadDTO, UsuarioDTO } from '../../entities/entities.ts';
+import { get, getOne } from '../../api/dataManager.ts';
 import { useAuth } from '../../auth/AuthContext';
+import { ModalAlertAviso } from '../ModalAlert';
 
 export const BuscarViaje = () => {
   const navigate = useNavigate();
-  const { userId } = useAuth();
+
+  const { userId, userTipo } = useAuth();
+  const { data: usuario } = getOne<UsuarioDTO>('usuario/' + userId);
+
+  const isPendiente = usuario?.estadoConductor?.toLowerCase() === 'pendiente';
 
   const {
     data: localidades,
@@ -19,8 +24,11 @@ export const BuscarViaje = () => {
   const [viajeOrigen, setLocalidadOrigen] = useState('');
   const [mostrarSugerenciaOrigen, setMostrarSugerenciaOrigen] = useState(false);
   const [viajeDestino, setLocalidadDestino] = useState('');
-  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] =
-    useState(false);
+  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] = useState(false);
+
+  const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
+  const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
+  const [mostrarModalRechazo, setMostrarModalRechazo] = useState(false);
 
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(viajeOrigen.toLowerCase()),
@@ -65,6 +73,33 @@ export const BuscarViaje = () => {
       },
     });
   };
+
+  const handlePublicarViaje = () => {
+    if (userTipo?.toLowerCase() === 'conductor') {
+      navigate('/publicar-viaje');
+    } else if (isPendiente) {
+      setMostrarModalAviso(true);
+    } else {
+      setMostrarModalRegistro(true);
+    }
+  };
+
+  const handleConfirmarRegistro = () => {
+    setMostrarModalRegistro(false);
+
+    navigate('/solicitar-conductor', {
+      state: {
+        mensajeAviso:
+          'Para poder publicar viajes debes convertirte en conductor y esperar tu aprobación. Aquí podés registrar la información necesaria. Serás notificado una vez que tu solicitud haya sido revisada.',
+      },
+    });
+  };
+
+  const handleRechazarRegistro = () => {
+    setMostrarModalRegistro(false);
+    setMostrarModalRechazo(true);
+  };
+
   return (
     <div className="container mt-5 mb-5">
       <h2 className="mb-4 text-center" style={{ color: '#2d4a2d' }}>
@@ -249,14 +284,71 @@ export const BuscarViaje = () => {
           </form>
         </div>
       )}
+
       {loadingLocalidades && <div>Cargando...</div>}
+
       {errorLocalidades && (
         <div className="alert alert-danger">{errorLocalidades}</div>
       )}
+
       <div className="d-flex flex-column align-items-end mt-4">
-        <label className="">¿Eres Conductor?</label>
-        <Link to="/publicar-viaje">Deseo publicar un viaje</Link>
+        <label>¿Eres Conductor?</label>
+
+        <button
+          onClick={handlePublicarViaje}
+          className="btn btn-link p-0"
+          style={{ textDecoration: 'underline' }}
+        >
+          Deseo publicar un viaje
+        </button>
       </div>
+
+      {mostrarModalRegistro && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center">
+            <button
+              className="btn-cerrar"
+              onClick={() => setMostrarModalRegistro(false)}
+            >
+              X
+            </button>
+
+            <p className="mb-4 mt-2 fw-bold">
+              No estás registrado como conductor.
+              <br />
+              ¿Deseás registrarte como conductor?
+            </p>
+
+            <div className="d-flex justify-content-around">
+              <button
+                className="btn btn-light-cancel px-2"
+                onClick={handleRechazarRegistro}
+              >
+                Rechazar
+              </button>
+
+              <button
+                className="btn btn-pastel-green px-2"
+                onClick={handleConfirmarRegistro}
+              >
+                Registrarte como conductor
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ModalAlertAviso
+        show={mostrarModalAviso}
+        onClose={() => setMostrarModalAviso(false)}
+        message="Usted podrá publicar un viaje una vez que su solicitud para ser conductor esté aprobada."
+      />
+
+      <ModalAlertAviso
+        show={mostrarModalRechazo}
+        onClose={() => setMostrarModalRechazo(false)}
+        message="Acción rechazada. Podés registrarte como conductor cuando quieras."
+      />
     </div>
   );
 };
