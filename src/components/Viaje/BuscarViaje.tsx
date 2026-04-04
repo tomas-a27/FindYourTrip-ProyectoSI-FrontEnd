@@ -29,6 +29,7 @@ export const BuscarViaje = () => {
   const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
   const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
   const [mostrarModalRechazo, setMostrarModalRechazo] = useState(false);
+  const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(viajeOrigen.toLowerCase()),
@@ -264,12 +265,13 @@ export const BuscarViaje = () => {
             </div>
             <div className="row gy-2 justify-content-between">
               <div className="col-12 col-md-5">
-                <Link
+                <button
+                  type="button"
                   className="btn btn-light-cancel btn-danger fw-semibold w-100 shadow-sm"
-                  to="/home"
+                  onClick={() => setMostrarModalCancelado(true)}
                 >
                   Cancelar
-                </Link>
+                </button>
               </div>
 
               <div className="col-12 col-md-5">
@@ -348,6 +350,13 @@ export const BuscarViaje = () => {
         show={mostrarModalRechazo}
         onClose={() => setMostrarModalRechazo(false)}
         message="Acción rechazada. Podés registrarte como conductor cuando quieras."
+      />
+
+      <ModalAlertAviso
+        show={mostrarModalCancelado}
+        onClose={() => setMostrarModalCancelado(false)}
+        message="Operación cancelada"
+        routeNav="/home"
       />
     </div>
   );

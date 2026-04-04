@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ViajeDTO } from '../../entities/entities.ts';
 import { get, post, getAsync } from '../../api/dataManager.ts';
 import { useAuth } from '../../auth/AuthContext';
+import { ModalAlertAviso } from '../ModalAlert';
 
 export const MostrarViaje = () => {
   const { userId } = useAuth();
@@ -11,6 +12,7 @@ export const MostrarViaje = () => {
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [viajeSeleccionado, setViajeSeleccionado] = useState<ViajeDTO | null>(null);
   const [disponibilidad, setDisponibilidad] = useState<Record<number, number>>({});
+  const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
@@ -303,7 +305,10 @@ export const MostrarViaje = () => {
             <div className="d-flex gap-2">
               <button
                 className="btn btn-light-cancel w-50"
-                onClick={() => setMostrarModalConfirmacion(false)}
+                onClick={() => {
+                  setMostrarModalConfirmacion(false);
+                  setMostrarModalCancelado(true);
+                }}
               >
                 Cancelar
               </button>
@@ -336,6 +341,12 @@ export const MostrarViaje = () => {
           </div>
         </div>
       )}
+
+      <ModalAlertAviso
+        show={mostrarModalCancelado}
+        onClose={() => setMostrarModalCancelado(false)}
+        message="Operación cancelada"
+      />
     </div>
   );
 };
