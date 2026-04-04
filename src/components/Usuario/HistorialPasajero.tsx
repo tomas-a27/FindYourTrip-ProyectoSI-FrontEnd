@@ -110,10 +110,17 @@ const TarjetaHistorialPasajero = ({ viaje, hora }: any) => {
           {/* Derecha: Fecha y hora */}
           <div className="col-5 d-flex flex-column align-items-end">
             <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
-              <span>{new Date(viaje?.viajeFecha).toLocaleDateString('es-AR')}</span> <i className="bi bi-calendar3 ms-2"></i>
+              <span>
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
+              </span>
             </div>
             <div className="text-muted d-flex align-items-center" style={{ fontSize: '0.9rem' }}>
-              <span>{hora}</span> <i className="bi bi-clock ms-2"></i>
+              <span>
+                {hora}
+              </span>
+              <i className="bi bi-clock ms-2"></i>
             </div>
           </div>
 
