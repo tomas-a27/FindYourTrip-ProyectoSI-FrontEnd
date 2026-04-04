@@ -17,23 +17,38 @@ const ModalComenzarFinalizarViaje = ({
   onConfirm,
 }: ModalComenzarFinalizarViajeProps) => {
   const navigate = useNavigate();
+
   const [showModal, setShowModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleOpenModal = () => {
     setShowModal(true);
   };
   const handleCloseModal = () => {
-    setShowModal(false);
+    if (!isProcessing) {
+      setShowModal(false);
+    }
   };
 
   async function handleConfirmar() {
-    if (onConfirm) {
-      handleCloseModal();
-      onConfirm();
-    } else if (query) {
-      await patch(query);
-      handleCloseModal();
-      location.reload();
+    if (isProcessing) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      if (onConfirm) {
+        handleCloseModal();
+        onConfirm();
+      } else if (query) {
+        await patch(query);
+        handleCloseModal();
+        location.reload();
+      }
+    } catch (error) {
+      console.error('Error al procesar', error);
+      setIsProcessing(false);
     }
   }
 
@@ -94,11 +109,20 @@ const ModalComenzarFinalizarViaje = ({
           ¿Estás seguro de que deseas {accion.toLowerCase()} este viaje?
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleCloseModal}>
+          <button
+            className="btn btn-secondary"
+            onClick={handleCloseModal}
+            disabled={isProcessing}
+          >
             Cancelar
           </button>
-          <button className="btn btn-primary" onClick={handleConfirmar}>
-            Confirmar
+
+          <button
+            className="btn btn-primary"
+            onClick={handleConfirmar}
+            disabled={isProcessing}
+          >
+            {isProcessing ? 'Procesando...' : 'Confirmar'}
           </button>
         </Modal.Footer>
       </Modal>
