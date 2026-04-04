@@ -97,7 +97,6 @@ export const MisViajes = () => {
     try {
       const res = await patch(`viaje/cancelar/${viajeACancelar.viajeId}`, {});
 
-      // El mensaje depende de lo que devuelva el back (si fue < 24hs o no)
       setMensajeAviso(res.data.message);
       setMostrarModalAviso(true);
 
@@ -152,7 +151,6 @@ export const MisViajes = () => {
       const res = await patch(`viaje/finalizar/${viajeId}`, {});
       console.log('Datos recibidos del back:', res.data.pasajeros);
 
-      // el back nos devuelve los pasajeros aprobados
       if (res.data.pasajeros && res.data.pasajeros.length > 0) {
         setViajeIdActual(viajeId);
         setPasajerosACalificar(res.data.pasajeros);
@@ -165,12 +163,10 @@ export const MisViajes = () => {
     }
   };
 
-  // se dispara cuando termina de calificar a UN pasajero
   const handleSiguienteCalificacion = () => {
     if (indiceCalificacion < pasajerosACalificar.length - 1) {
       setIndiceCalificacion((prev) => prev + 1); 
     } else {
-      // cuando terminó con todos
       setPasajerosACalificar([]);
       setViajeIdActual(null);
       cargarDatos(Number(userId));
@@ -179,7 +175,6 @@ export const MisViajes = () => {
 
   const formatearHora = (hora: string) => (hora ? hora.substring(0, 5) : '');
 
-  // Filtros Pasajero
   const proximosPasajero = solicitudes.filter(
     (s) =>
       s.estadoSolicitud?.toLowerCase() === 'aprobada' &&
@@ -192,7 +187,6 @@ export const MisViajes = () => {
       s.estadoSolicitud?.toLowerCase() === 'denegada',
   );
 
-  // Filtros Conductor
   const proximosConductor = viajesPublicados.filter(
     (v) =>
       v.viajeEstado?.toLowerCase() === 'encurso' ||
@@ -237,7 +231,6 @@ export const MisViajes = () => {
       className="pb-5"
       style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}
     >
-      {/* HEADER GLOBAL */}
       <div className="container pt-4 pb-3">
         <div className="d-flex justify-content-between align-items-center">
           <h2
@@ -251,14 +244,18 @@ export const MisViajes = () => {
 
           {isConductorAprobado && (
             <button
-              className="btn bg-white position-relative"
+              className="btn position-relative"
               style={{
+                backgroundColor: '#ffffff',
                 border: '1px solid #ced4da',
                 borderRadius: '8px',
                 padding: '6px 16px',
                 fontWeight: '600',
                 color: colorTextoGrisOscuro,
+                transition: 'all 0.2s ease',
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f1f8f1')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ffffff')}
               onClick={() =>
                 setVistaActiva(
                   vistaActiva === 'pasajero' ? 'conductor' : 'pasajero',
@@ -280,7 +277,6 @@ export const MisViajes = () => {
         </div>
       </div>
 
-      {/* ==================== VISTA PASAJERO ===================== */}
       {vistaActiva === 'pasajero' && (
         <>
           <div style={{ backgroundColor: bgVerdeClaro }} className="py-4">
@@ -306,7 +302,9 @@ export const MisViajes = () => {
                 <Link
                   to="/historial-pasajero"
                   className="text-decoration-underline fw-bold"
-                  style={{ color: '#1f5c2f', cursor: 'pointer' }}
+                  style={{ color: '#1f5c2f', cursor: 'pointer', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#143c1e'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1f5c2f'}
                 >
                   Ver historial de viajes realizados
                 </Link>
@@ -340,7 +338,6 @@ export const MisViajes = () => {
         </>
       )}
 
-      {/* ==================== VISTA CONDUCTOR ==================== */}
       {vistaActiva === 'conductor' && (
         <>
           <div style={{ backgroundColor: bgVerdeClaro }} className="py-4">
@@ -395,7 +392,8 @@ export const MisViajes = () => {
           </div>
         </>
       )}
-      {/* MODAL DE CONFIRMACIÓN DE CANCELACIÓN (CU06)  */}
+
+      {/* MODAL CANCELAR VIAJE */}
       {mostrarModalCancelar && (
         <div className="modal-overlay">
           <div className="custom-modal p-4 text-center">
@@ -426,7 +424,7 @@ export const MisViajes = () => {
         </div>
       )}
 
-      {/* MODAL DE CONFIRMACIÓN DE CANCELACIÓN DE SOLICITUD (CU08)*/}
+      {/* MODAL CANCELAR SOLICITUD */}
       {mostrarModalCancelarSolicitud && solicitudACancelar && (
         <div className="modal-overlay">
           <div className="custom-modal p-4 text-center">
@@ -530,79 +528,49 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
   return (
     <div
       className="card border-0 mb-3"
-      style={{ borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
+      style={{ 
+        borderRadius: '16px', 
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+      }}
     >
       <div className="card-body p-4 position-relative">
         <div className="row">
           <div className="col-8 col-md-7">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '2px',
-                    height: '35px',
-                    backgroundColor: '#555',
-                    margin: '2px 0',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div style={{ width: '2px', height: '35px', backgroundColor: '#555', margin: '2px 0' }}></div>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
               </div>
               <div>
-                <h5
-                  className="fw-bold m-0 text-dark mb-3"
-                  style={{ fontSize: '1.1rem' }}
-                >
+                <h5 className="fw-bold m-0 text-dark mb-3" style={{ fontSize: '1.1rem' }}>
                   {viaje?.viajeOrigen?.nombre}
                 </h5>
-                <h5
-                  className="fw-bold m-0 text-dark"
-                  style={{ fontSize: '1.1rem' }}
-                >
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>
                   {viaje?.viajeDestino?.nombre}
                 </h5>
               </div>
             </div>
 
             <div className="mt-3 d-flex align-items-center mb-1">
-              <img
-                src={foto}
-                alt="Avatar"
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                }}
-                className="me-2"
-              />
-              <span
-                className="fw-bold text-dark"
-                style={{ fontSize: '0.95rem' }}
-              >
-                {viaje?.usuarioConductor?.nombreUsuario}{' '}
-                {viaje?.usuarioConductor?.apellidoUsuario}
+              <img src={foto} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} className="me-2" />
+              <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
+                {viaje?.usuarioConductor?.nombreUsuario} {viaje?.usuarioConductor?.apellidoUsuario}
               </span>
             </div>
             
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.85rem' }}>
               <i className="bi bi-car-front-fill me-2"></i>
-              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} - {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
             </p>
             {viaje?.usuarioConductor?.telefono && (
               <p className="text-muted m-0 mb-1" style={{ fontSize: '0.85rem' }}>
@@ -612,53 +580,38 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
           </div>
 
           <div className="col-4 col-md-5 d-flex flex-column align-items-end justify-content-start">
-            <div
-              className="text-muted d-flex align-items-center mb-1"
-              style={{ fontSize: '0.9rem' }}
-            >
-              <i className="bi bi-calendar3 me-2"></i>{' '}
-              <span>
-                {viaje?.viajeFecha
-                  ? viaje.viajeFecha.split('-').reverse().join('/')
-                  : ''}
-              </span>
+            <div className="text-muted d-flex align-items-center mb-1" style={{ fontSize: '0.9rem' }}>
+              <i className="bi bi-calendar3 me-2"></i> 
+              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span>
             </div>
-            <div
-              className="text-muted d-flex align-items-center mb-2"
-              style={{ fontSize: '0.9rem' }}
-            >
+            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
               <i className="bi bi-clock me-2"></i> <span>{hora}</span>
             </div>
-            <div
-              className="fw-bold text-dark d-flex align-items-center mt-1"
-              style={{ fontSize: '1.3rem' }}
-            >
-              <i
-                className="bi bi-currency-dollar me-1"
-                style={{ fontSize: '1.1rem' }}
-              ></i>{' '}
-              {viaje?.viajePrecio}
+            <div className="fw-bold text-dark d-flex align-items-center mt-1" style={{ fontSize: '1.3rem' }}>
+              <i className="bi bi-currency-dollar me-1" style={{ fontSize: '1.1rem' }}></i> {viaje?.viajePrecio}
             </div>
           </div>
         </div>
       </div>
-      <div
-        className="text-end"
-        style={{
-          marginTop: '-20px',
-          marginRight: '15px',
-          position: 'relative',
-          zIndex: 2,
-        }}
-      >
+      <div className="text-end" style={{ marginTop: '-20px', marginRight: '15px', position: 'relative', zIndex: 2 }}>
         <button
           onClick={onCancelar}
-          className="btn btn-sm bg-white rounded-pill fw-bold px-3 py-1"
+          className="btn btn-sm rounded-pill fw-bold px-3 py-1"
           style={{
+            backgroundColor: '#ffffff',
             border: '1px solid #dc3545',
             color: '#dc3545',
             fontSize: '0.85rem',
             boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#dc3545';
+            e.currentTarget.style.color = '#ffffff';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.color = '#dc3545';
           }}
         >
           Cancelar solicitud
@@ -669,12 +622,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
   );
 };
 
-const TarjetaPasajeroReciente = ({
-  solicitud,
-  hora,
-  foto,
-  onCancelar,
-}: any) => {
+const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => {
   const viaje = solicitud.viaje;
   const isPendiente = solicitud.estadoSolicitud?.toLowerCase() === 'pendiente';
 
@@ -685,6 +633,15 @@ const TarjetaPasajeroReciente = ({
         borderRadius: '16px',
         border: '1px solid #eaeaea',
         boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
       }}
     >
       <div className="card-body p-4 position-relative">
@@ -692,86 +649,34 @@ const TarjetaPasajeroReciente = ({
           <div className="col-6 col-md-5">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div
-                  style={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '2px',
-                    height: '30px',
-                    backgroundColor: '#555',
-                    margin: '2px 0',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div style={{ width: '2px', height: '30px', backgroundColor: '#555', margin: '2px 0' }}></div>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', border: '2px solid #555' }}></div>
               </div>
               <div>
-                <h6 className="fw-bold m-0 text-dark mb-2">
-                  {viaje?.viajeOrigen?.nombre}
-                </h6>
-                <h6 className="fw-bold m-0 text-dark">
-                  {viaje?.viajeDestino?.nombre}
-                </h6>
+                <h6 className="fw-bold m-0 text-dark mb-2">{viaje?.viajeOrigen?.nombre}</h6>
+                <h6 className="fw-bold m-0 text-dark">{viaje?.viajeDestino?.nombre}</h6>
               </div>
             </div>
             <div className="mt-3 d-flex align-items-center">
-              <img
-                src={foto}
-                alt="Avatar"
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                }}
-                className="me-2"
-              />
-              <span
-                className="fw-bold text-dark"
-                style={{ fontSize: '0.9rem' }}
-              >
-                {viaje?.usuarioConductor?.nombreUsuario}{' '}
-                {viaje?.usuarioConductor?.apellidoUsuario}
+              <img src={foto} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} className="me-2" />
+              <span className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>
+                {viaje?.usuarioConductor?.nombreUsuario} {viaje?.usuarioConductor?.apellidoUsuario}
               </span>
             </div>
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.8rem' }}>
-              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} - {viaje?.vehiculo?.patente}
             </p>
           </div>
 
           <div className="col-3 col-md-4 d-flex flex-column justify-content-center">
-            <div
-              className="text-muted d-flex align-items-center mb-1"
-              style={{ fontSize: '0.85rem' }}
-            >
-              <i className="bi bi-calendar3 me-2"></i>{' '}
-              {viaje?.viajeFecha
-                ? viaje.viajeFecha.split('-').reverse().join('/')
-                : ''}
+            <div className="text-muted d-flex align-items-center mb-1" style={{ fontSize: '0.85rem' }}>
+              <i className="bi bi-calendar3 me-2"></i> {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
             </div>
-            <div
-              className="text-muted d-flex align-items-center mb-2"
-              style={{ fontSize: '0.85rem' }}
-            >
+            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.85rem' }}>
               <i className="bi bi-clock me-2"></i> {hora}
             </div>
-            <div
-              className="fw-bold text-dark mt-1"
-              style={{ fontSize: '1.1rem' }}
-            >
+            <div className="fw-bold text-dark mt-1" style={{ fontSize: '1.1rem' }}>
               $ {viaje?.viajePrecio}
             </div>
           </div>
@@ -779,29 +684,13 @@ const TarjetaPasajeroReciente = ({
           <div className="col-3 col-md-3 d-flex flex-column align-items-center justify-content-center text-center border-start">
             {isPendiente ? (
               <>
-                <i
-                  className="bi bi-clock-fill"
-                  style={{ fontSize: '2rem', color: colorNaranja }}
-                ></i>
-                <span
-                  className="fw-bold mt-1"
-                  style={{ color: colorNaranja, fontSize: '0.85rem' }}
-                >
-                  Pendiente
-                </span>
+                <i className="bi bi-clock-fill" style={{ fontSize: '2rem', color: colorNaranja }}></i>
+                <span className="fw-bold mt-1" style={{ color: colorNaranja, fontSize: '0.85rem' }}>Pendiente</span>
               </>
             ) : (
               <>
-                <i
-                  className="bi bi-x-circle-fill text-danger"
-                  style={{ fontSize: '2rem' }}
-                ></i>
-                <span
-                  className="fw-bold text-danger mt-1"
-                  style={{ fontSize: '0.85rem' }}
-                >
-                  Denegada
-                </span>
+                <i className="bi bi-x-circle-fill text-danger" style={{ fontSize: '2rem' }}></i>
+                <span className="fw-bold text-danger mt-1" style={{ fontSize: '0.85rem' }}>Denegada</span>
               </>
             )}
           </div>
@@ -810,23 +699,25 @@ const TarjetaPasajeroReciente = ({
 
       {isPendiente && (
         <>
-          <div
-            className="text-end"
-            style={{
-              marginTop: '-20px',
-              marginRight: '15px',
-              position: 'relative',
-              zIndex: 2,
-            }}
-          >
+          <div className="text-end" style={{ marginTop: '-20px', marginRight: '15px', position: 'relative', zIndex: 2 }}>
             <button
               onClick={onCancelar}
-              className="btn btn-sm bg-white rounded-pill fw-bold px-3 py-1"
+              className="btn btn-sm rounded-pill fw-bold px-3 py-1"
               style={{
+                backgroundColor: '#ffffff',
                 border: '1px solid #dc3545',
                 color: '#dc3545',
                 fontSize: '0.85rem',
                 boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#dc3545';
+                e.currentTarget.style.color = '#ffffff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ffffff';
+                e.currentTarget.style.color = '#dc3545';
               }}
             >
               Cancelar solicitud
@@ -839,161 +730,129 @@ const TarjetaPasajeroReciente = ({
   );
 };
 
-const TarjetaConductorActivo = ({
-  viaje,
-  hora,
-  onCancelar,
-  onFinalizar,
-  onVerSolicitudes,
-}: any) => {
+const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSolicitudes }: any) => {
   const isCompleto = viaje.solicitudesAprobadas >= viaje.viajeCantLugares;
   const isEnCurso = viaje.viajeEstado?.toLowerCase() === 'encurso';
 
   return (
-    <div className="mb-4">
-      <div
-        className="card border-0"
-        style={{
-          borderRadius: '16px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-          overflow: 'hidden',
-        }}
-      >
-        <div className="card-body p-0">
-          <div className="row p-4 align-items-center">
-            <div className="col-5">
-              <div className="d-flex">
-                <div className="d-flex flex-column align-items-center me-3 mt-1">
-                  <div
-                    style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
-                      border: '2px solid #555',
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      width: '2px',
-                      height: '35px',
-                      backgroundColor: '#555',
-                      margin: '2px 0',
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
-                      border: '2px solid #555',
-                    }}
-                  ></div>
-                </div>
-                <div>
-                  <h5
-                    className="fw-bold m-0 text-dark mb-3"
-                    style={{ fontSize: '1.1rem' }}
-                  >
-                    {viaje?.viajeOrigen?.nombre}
-                  </h5>
-                  <h5
-                    className="fw-bold m-0 text-dark"
-                    style={{ fontSize: '1.1rem' }}
-                  >
-                    {viaje?.viajeDestino?.nombre}
-                  </h5>
-                </div>
+    <div 
+      className="mb-4 card border-0"
+      style={{
+        borderRadius: '16px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+      }}
+    >
+      <div className="card-body p-0">
+        <div className="row p-4 align-items-center">
+          <div className="col-5">
+            <div className="d-flex">
+              <div className="d-flex flex-column align-items-center me-3 mt-1">
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div style={{ width: '2px', height: '35px', backgroundColor: '#555', margin: '2px 0' }}></div>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
               </div>
-            </div>
-
-            <div className="col-3 d-flex flex-column justify-content-center">
-              <div
-                className="text-muted d-flex align-items-center mb-2"
-                style={{ fontSize: '0.9rem' }}
-              >
-                <i className="bi bi-calendar3 me-2"></i>{' '}
-                {viaje?.viajeFecha
-                  ? viaje.viajeFecha.split('-').reverse().join('/')
-                  : ''}
+              <div>
+                <h5 className="fw-bold m-0 text-dark mb-3" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
               </div>
-              <div
-                className="text-muted d-flex align-items-center"
-                style={{ fontSize: '0.9rem' }}
-              >
-                <i className="bi bi-clock me-2"></i> {hora} AM
-              </div>
-            </div>
-
-            <div className="col-4 d-flex flex-column align-items-end justify-content-center text-end">
-              {isCompleto ? (
-                <>
-                  <i
-                    className="bi bi-check-circle-fill text-success mb-1"
-                    style={{ fontSize: '1.8rem' }}
-                  ></i>
-                  <span
-                    className="fw-bold text-success"
-                    style={{ fontSize: '0.85rem' }}
-                  >
-                    Completo
-                  </span>
-                </>
-              ) : (
-                <>
-                  <i
-                    className="bi bi-clock-fill mb-1"
-                    style={{ fontSize: '1.8rem', color: colorNaranja }}
-                  ></i>
-                  <span
-                    className="fw-bold"
-                    style={{ color: colorNaranja, fontSize: '0.85rem' }}
-                  >
-                    Aún quedan lugares
-                  </span>
-                </>
-              )}
             </div>
           </div>
 
-          <div
-            className="w-100 text-center py-3"
-            style={{
-              borderTop: '1px solid #eaeaea',
-              backgroundColor: '#ffffff',
-              cursor: 'pointer',
-            }}
-            onClick={() =>
-              onVerSolicitudes(
-                viaje.viajeId,
-                viaje.viajeDestino?.nombre,
-                viaje.viajeOrigen?.nombre,
-                viaje.viajeFecha,
-                viaje.solicitudesAprobadas,
-                viaje.viajeCantLugares,
-              )
-            }
-          >
-            <span
-              className="fw-bold"
-              style={{ color: '#0d6efd', fontSize: '0.95rem' }}
-            >
-              Ver pasajeros y solicitudes
-            </span>
+          <div className="col-3 d-flex flex-column justify-content-center">
+            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
+              <i className="bi bi-calendar3 me-2"></i> 
+              {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+            </div>
+            <div className="text-muted d-flex align-items-center" style={{ fontSize: '0.9rem' }}>
+              <i className="bi bi-clock me-2"></i> {hora} AM
+            </div>
+          </div>
+
+          <div className="col-4 d-flex flex-column align-items-end justify-content-center text-end">
+            {isCompleto ? (
+              <>
+                <i className="bi bi-check-circle-fill text-success mb-1" style={{ fontSize: '1.8rem' }}></i>
+                <span className="fw-bold text-success" style={{ fontSize: '0.85rem' }}>Completo</span>
+              </>
+            ) : (
+              <>
+                <i className="bi bi-clock-fill mb-1" style={{ fontSize: '1.8rem', color: colorNaranja }}></i>
+                <span className="fw-bold" style={{ color: colorNaranja, fontSize: '0.85rem' }}>Aún quedan lugares</span>
+              </>
+            )}
           </div>
         </div>
-      </div>
 
-      <div className="d-flex mt-3 gap-3">
+        <div
+          className="w-100 text-center py-3"
+          style={{
+            borderTop: '1px solid #eaeaea',
+            backgroundColor: '#ffffff',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#f1f5f9';
+            const span = e.currentTarget.querySelector('span');
+            if(span) span.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            const span = e.currentTarget.querySelector('span');
+            if(span) span.style.textDecoration = 'none';
+          }}
+          onClick={() =>
+            onVerSolicitudes(
+              viaje.viajeId,
+              viaje.viajeDestino?.nombre,
+              viaje.viajeOrigen?.nombre,
+              viaje.viajeFecha,
+              viaje.solicitudesAprobadas,
+              viaje.viajeCantLugares,
+            )
+          }
+        >
+          <span className="fw-bold" style={{ color: '#0d6efd', fontSize: '0.95rem' }}>
+            Ver pasajeros y solicitudes
+          </span>
+        </div>
+      </div>
+      
+      <div className="d-flex p-3 pt-0 gap-3">
         <button
           onClick={onCancelar}
-          className="btn bg-white w-50 rounded-pill fw-bold py-2"
+          className="btn w-50 rounded-pill fw-bold py-2"
           style={{
+            backgroundColor: '#ffffff',
             border: '2px solid #dc3545',
             color: '#dc3545',
             fontSize: '0.95rem',
             boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+            transition: 'all 0.2s ease'
           }}
           disabled={isEnCurso}
+          onMouseEnter={(e) => {
+            if (!isEnCurso) {
+              e.currentTarget.style.backgroundColor = '#dc3545';
+              e.currentTarget.style.color = '#ffffff';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isEnCurso) {
+              e.currentTarget.style.backgroundColor = '#ffffff';
+              e.currentTarget.style.color = '#dc3545';
+            }
+          }}
         >
           Cancelar viaje
         </button>
@@ -1021,71 +880,42 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
   return (
     <div
       className="card bg-white mb-3"
-      style={{ borderRadius: '16px', border: '1px solid #eaeaea' }}
+      style={{ 
+        borderRadius: '16px', 
+        border: '1px solid #eaeaea',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
     >
       <div className="card-body p-0">
         <div className="row p-4 align-items-center">
           <div className="col-7">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '2px',
-                    height: '35px',
-                    backgroundColor: '#555',
-                    margin: '2px 0',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div style={{ width: '2px', height: '35px', backgroundColor: '#555', margin: '2px 0' }}></div>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
               </div>
               <div>
-                <h5
-                  className="fw-bold m-0 text-dark mb-3"
-                  style={{ fontSize: '1.1rem' }}
-                >
-                  {viaje?.viajeOrigen?.nombre}
-                </h5>
-                <h5
-                  className="fw-bold m-0 text-dark"
-                  style={{ fontSize: '1.1rem' }}
-                >
-                  {viaje?.viajeDestino?.nombre}
-                </h5>
+                <h5 className="fw-bold m-0 text-dark mb-3" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
               </div>
             </div>
           </div>
 
           <div className="col-5 d-flex flex-column align-items-end">
-            <div
-              className="text-muted d-flex align-items-center mb-2"
-              style={{ fontSize: '0.9rem' }}
-            >
-              <span>
-                {viaje?.viajeFecha
-                  ? viaje.viajeFecha.split('-').reverse().join('/')
-                  : ''}
-              </span>{' '}
+            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
+              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span>{' '}
               <i className="bi bi-calendar3 ms-2"></i>
             </div>
-            <div
-              className="text-muted d-flex align-items-center"
-              style={{ fontSize: '0.9rem' }}
-            >
+            <div className="text-muted d-flex align-items-center" style={{ fontSize: '0.9rem' }}>
               <span>{hora} AM</span> <i className="bi bi-clock ms-2"></i>
             </div>
           </div>
@@ -1099,6 +929,17 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
             cursor: 'pointer',
             borderBottomLeftRadius: '16px',
             borderBottomRightRadius: '16px',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#f1f5f9';
+            const span = e.currentTarget.querySelector('span');
+            if(span) span.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            const span = e.currentTarget.querySelector('span');
+            if(span) span.style.textDecoration = 'none';
           }}
           onClick={() => navigate('/pasajeros-historial', { state: { viajeId: viaje.viajeId } })}
         >

@@ -38,15 +38,21 @@ export const CentroAyuda = () => {
               {/* Botón de Email */}
               <a 
                 href="mailto:findYourTrip@org.ar" 
-                className="btn btn-light bg-white border py-3 shadow-sm rounded-4 d-flex align-items-center justify-content-center text-dark text-decoration-none"
-                style={{ transition: 'all 0.2s ease-in-out' }}
+                className="btn border py-3 shadow-sm rounded-4 d-flex align-items-center justify-content-center text-dark text-decoration-none"
+                style={{ 
+                  backgroundColor: '#ffffff',
+                  borderColor: '#dee2e6',
+                  transition: 'all 0.2s ease-in-out' 
+                }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa';
-                  e.currentTarget.style.borderColor = '#b2d8b2';
+                  e.currentTarget.style.backgroundColor = '#f1f8f1';
+                  e.currentTarget.style.borderColor = '#2d4a2d';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#ffffff';
                   e.currentTarget.style.borderColor = '#dee2e6';
+                  e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
                 <i className="bi bi-envelope-fill fs-4 me-3" style={{ color: '#2d4a2d' }}></i>
@@ -56,15 +62,21 @@ export const CentroAyuda = () => {
               {/* Botón de Teléfono */}
               <a 
                 href="tel:0800999089" 
-                className="btn btn-light bg-white border py-3 shadow-sm rounded-4 d-flex align-items-center justify-content-center text-dark text-decoration-none"
-                style={{ transition: 'all 0.2s ease-in-out' }}
+                className="btn border py-3 shadow-sm rounded-4 d-flex align-items-center justify-content-center text-dark text-decoration-none"
+                style={{ 
+                  backgroundColor: '#ffffff',
+                  borderColor: '#dee2e6',
+                  transition: 'all 0.2s ease-in-out' 
+                }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa';
-                  e.currentTarget.style.borderColor = '#b2d8b2';
+                  e.currentTarget.style.backgroundColor = '#f1f8f1';
+                  e.currentTarget.style.borderColor = '#2d4a2d';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#ffffff';
                   e.currentTarget.style.borderColor = '#dee2e6';
+                  e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
                 <i className="bi bi-telephone-fill fs-4 me-3" style={{ color: '#2d4a2d' }}></i>

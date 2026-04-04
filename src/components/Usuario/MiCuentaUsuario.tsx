@@ -67,9 +67,7 @@ export const MiCuenta = () => {
   return (
     <div className="container my-2 md-5 ">
       <div className="row justify-content-center">
-        {/* Definimos el ancho: 12 en móvil, 8 en tablet, 5 en escritorio grande */}
         <div className="col-12 col-md-8 col-lg-7">
-          {/* HEADER: Nombre, Estrellas y Foto */}
           <div className="d-flex justify-content-between align-items-center mb-4 px-3 py-3 bg-white rounded-4 shadow-sm border">
             <div className="flex-grow-1">
               <h2
@@ -136,7 +134,6 @@ export const MiCuenta = () => {
                   }}
                 />
               ) : (
-                /* Muestra botón */
                 <button
                   className="btn btn-pastel-green btn-sm rounded-pill px-3 shadow-sm text-wrap"
                   style={{ maxWidth: '190px', fontSize: '16px' }}
@@ -148,7 +145,7 @@ export const MiCuenta = () => {
             </div>
           </div>
 
-          {/* CONTENEDOR VERDE (Caja de acciones) */}
+          {/*  (Caja de acciones) */}
           <div className="editar-usuario-card shadow-lg p-4">
             {/* SECCIÓN: Datos Personales (Blanca) */}
             <div
@@ -205,6 +202,21 @@ export const MiCuenta = () => {
               <div
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
                 onClick={irAMisViajesConductor}
+                style={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid transparent',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f1f8f1';
+                  e.currentTarget.style.borderColor = '#b2d8b2';
+                  e.currentTarget.style.transform = 'translateX(4px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                  e.currentTarget.style.borderColor = 'transparent';
+                  e.currentTarget.style.transform = 'translateX(0)';
+                }}
               >
                 <i className="bi bi-car-front-fill fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">
@@ -217,6 +229,21 @@ export const MiCuenta = () => {
                 <div
                   className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
                   onClick={() => navigate(`/mostrar-vehiculo/${userId}`)}
+                  style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid transparent',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f1f8f1';
+                    e.currentTarget.style.borderColor = '#b2d8b2';
+                    e.currentTarget.style.transform = 'translateX(4px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ffffff';
+                    e.currentTarget.style.borderColor = 'transparent';
+                    e.currentTarget.style.transform = 'translateX(0)';
+                  }}
                 >
                   <i className="bi bi-car-front fs-4 me-3 text-dark"></i>
                   <span className="fw-bold flex-grow-1">Mis vehículos</span>
@@ -227,6 +254,21 @@ export const MiCuenta = () => {
               <div
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
                 onClick={() => navigate('/centro-ayuda')}
+                style={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid transparent',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f1f8f1';
+                  e.currentTarget.style.borderColor = '#b2d8b2';
+                  e.currentTarget.style.transform = 'translateX(4px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                  e.currentTarget.style.borderColor = 'transparent';
+                  e.currentTarget.style.transform = 'translateX(0)';
+                }}
               >
                 <i className="bi bi-life-preserver fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">Ayuda</span>
@@ -236,6 +278,21 @@ export const MiCuenta = () => {
               <div
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
                 onClick={() => navigate('/politicas-uso')}
+                style={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid transparent',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f1f8f1';
+                  e.currentTarget.style.borderColor = '#b2d8b2';
+                  e.currentTarget.style.transform = 'translateX(4px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                  e.currentTarget.style.borderColor = 'transparent';
+                  e.currentTarget.style.transform = 'translateX(0)';
+                }}
               >
                 <i className="bi bi-clipboard2-check fs-4 me-3 text-dark"></i>
                 <span className="fw-bold flex-grow-1">Políticas de uso</span>
@@ -247,6 +304,13 @@ export const MiCuenta = () => {
             <button
               onClick={() => setMostrarConfirmarLogout(true)}
               className="btn btn-light-cancel w-100 mt-4 py-3 fw-bold rounded-4 shadow-sm"
+              style={{ transition: 'all 0.2s ease' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#e2e6ea'; // Gris un poco más oscuro
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = ''; // Vuelve a clase original
+              }}
             >
               Cerrar Sesión
             </button>

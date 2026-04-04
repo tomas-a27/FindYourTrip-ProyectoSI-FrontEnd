@@ -84,11 +84,27 @@ export const HistorialPasajero = () => {
 };
 
 // =========================================================================
-// COMPONENTE DE TARJETA (Idéntica a Viajes Realizados de Conductor)
+// COMPONENTE DE TARJETA (Con Hover Feedback)
 // =========================================================================
 const TarjetaHistorialPasajero = ({ viaje, hora }: any) => {
   return (
-    <div className="card bg-white mb-4" style={{ borderRadius: '16px', border: '1px solid #eaeaea', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+    <div 
+      className="card bg-white mb-4" 
+      style={{ 
+        borderRadius: '16px', 
+        border: '1px solid #eaeaea', 
+        boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.02)';
+      }}
+    >
       <div className="card-body p-0">
         <div className="row p-4 align-items-center">
           
@@ -129,7 +145,24 @@ const TarjetaHistorialPasajero = ({ viaje, hora }: any) => {
         {/* Botón inferior ancho completo (Cambia a Ver conductor) */}
         <div 
           className="w-100 text-center py-3" 
-          style={{ borderTop: '1px solid #eaeaea', backgroundColor: '#ffffff', cursor: 'pointer', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px' }}
+          style={{ 
+            borderTop: '1px solid #eaeaea', 
+            backgroundColor: '#ffffff', 
+            cursor: 'pointer', 
+            borderBottomLeftRadius: '16px', 
+            borderBottomRightRadius: '16px',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#f8f9fa';
+            const span = e.currentTarget.querySelector('span');
+            if (span) span.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            const span = e.currentTarget.querySelector('span');
+            if (span) span.style.textDecoration = 'none';
+          }}
           onClick={() => alert("En construcción: Ver datos del conductor")}
         >
           <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>Ver conductor</span>

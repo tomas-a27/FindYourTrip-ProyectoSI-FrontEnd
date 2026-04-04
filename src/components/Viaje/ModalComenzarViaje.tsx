@@ -41,12 +41,22 @@ const ModalComenzarFinalizarViaje = ({
     <>
       {accion.toUpperCase() === 'COMENZAR' ? (
         <button
-          className="btn bg-white w-50 rounded-pill fw-bold py-2 "
+          className="btn w-50 rounded-pill fw-bold py-2 shadow-sm"
           onClick={handleOpenModal}
           style={{
+            backgroundColor: '#ffffff', // Fondo controlado manualmente
             border: '2px solid #0dcaf0',
             color: '#0d6efd',
             fontSize: '0.95rem',
+            transition: 'all 0.2s ease', // Transición fluida
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#0dcaf0';
+            e.currentTarget.style.color = '#ffffff';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.color = '#0d6efd';
           }}
         >
           COMENZAR VIAJE
@@ -59,11 +69,19 @@ const ModalComenzarFinalizarViaje = ({
             fontSize: '0.95rem',
             backgroundColor: '#2d4a2d',
             border: 'none',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#1e331e'; // Hover verde oscuro
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#2d4a2d'; // Vuelve a su color normal
           }}
         >
           FINALIZAR VIAJE
         </button>
       )}
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>
