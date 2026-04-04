@@ -207,6 +207,16 @@ export const AprobarDenegarSolicitud = () => {
                                   <p className="text-muted mb-0 small">
                                     <strong>Género: </strong> {solicitud.usuario?.generoUsuario}
                                   </p>
+                                  {solicitud.estadoSolicitud?.toUpperCase() === 'APROBADA' && (
+                                    <>
+                                      <p className="text-muted mb-0 small">
+                                        <strong>Teléfono: </strong> {solicitud.usuario?.telefono}
+                                      </p>
+                                      <p className="text-muted mb-0 small">
+                                        <strong>Email: </strong> {solicitud.usuario?.email}
+                                      </p>
+                                    </>
+                                  )}
                                 </div>
                               </div>
 

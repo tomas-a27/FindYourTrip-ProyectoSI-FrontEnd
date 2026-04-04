@@ -47,9 +47,6 @@ export const Inicio = () => {
         </div>
       )}
       <div className="text-center mb-4 ">
-        <h1 className="fw-bold mb-2" style={{ fontSize: '2rem' }}>
-          Find Your Trip
-        </h1>
       </div>
       <div className="d-flex justify-content-center mb-4 mt-2">
         <div
@@ -85,7 +82,7 @@ export const Inicio = () => {
             className="btn btn-custom-outline w-100 p-3 shadow-sm border-2 d-flex align-items-center justify-content-center"
             style={{ borderRadius: '15px' }}
           >
-            <span className="fw-bold mt-2">Buscar un Viaje</span>
+            <span className="fw-bold mt-2">Buscar un viaje</span>
           </button>
         </div>
 
@@ -96,7 +93,7 @@ export const Inicio = () => {
             className="btn btn-outline-custom-dark w-100 p-3 shadow-sm border-2 d-flex align-items-center justify-content-center"
             style={{ borderRadius: '15px' }}
           >
-            <span className="fw-bold mt-2">Publicar un Viaje</span>
+            <span className="fw-bold mt-2">Publicar un viaje</span>
           </button>
         </div>
       </div>

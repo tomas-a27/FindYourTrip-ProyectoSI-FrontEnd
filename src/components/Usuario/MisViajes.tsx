@@ -578,7 +578,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
               </div>
             </div>
 
-            <div className="mt-3 d-flex align-items-center">
+            <div className="mt-3 d-flex align-items-center mb-1">
               <img
                 src={foto}
                 alt="Avatar"
@@ -598,10 +598,17 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
                 {viaje?.usuarioConductor?.apellidoUsuario}
               </span>
             </div>
+            
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.85rem' }}>
+              <i className="bi bi-car-front-fill me-2"></i>
               {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.color} - {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
             </p>
+            {viaje?.usuarioConductor?.telefono && (
+              <p className="text-muted m-0 mb-1" style={{ fontSize: '0.85rem' }}>
+                <i className="bi bi-telephone-fill me-1"></i> {viaje?.usuarioConductor?.telefono} | <i className="bi bi-envelope-fill mx-1"></i> {viaje?.usuarioConductor?.email}
+              </p>
+            )}
           </div>
 
           <div className="col-4 col-md-5 d-flex flex-column align-items-end justify-content-start">
