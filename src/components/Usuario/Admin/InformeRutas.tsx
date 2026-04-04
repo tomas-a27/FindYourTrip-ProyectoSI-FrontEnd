@@ -35,7 +35,7 @@ export const InformeRutas = () => {
           style={{ border: 'none', background: 'none' }}
         >
           <i className="bi bi-arrow-left-circle-fill fs-4 me-2"></i>
-          Informe de rutas
+          Volver al Menú
         </Link>
       </div>
 
