@@ -181,7 +181,7 @@ export const MostrarViaje = () => {
                         </div>
                         <div className="mb-1">
                           <i className="fw-bold bi bi-clock me-1"></i>{' '}
-                          {viaje.viajeHorario}
+                          {viaje.viajeHorario.slice(0, 5)}
                         </div>
                         <div className="fw-bold text-dark fs-5">
                           $ {viaje.viajePrecio}
