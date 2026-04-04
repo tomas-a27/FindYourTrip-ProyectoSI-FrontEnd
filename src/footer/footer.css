@@ -16,10 +16,10 @@
 
 .footer-item {
   background-color: #f2f2f2;
-  flex: 1; /* LÍNEA NUEVA: Reemplaza al 'width: 110px'. Hace que se adapte al celu */
-  max-width: 100px; /* LÍNEA NUEVA: Límite de ancho para que no quede gigante en PC */
-  height: 85px; /* Cambiaste de 100px a 85px */
-  margin: 0 5px; /* LÍNEA NUEVA: Separación entre botones */
+  flex: 1;
+  max-width: 100px;
+  height: 85px;
+  margin: 0 5px;
   border-radius: 12px;
   text-decoration: none;
   color: black;
@@ -28,8 +28,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 5px; /* Cambiaste de 10px a 5px */
-  text-align: center; /* LÍNEA NUEVA: Centra el texto */
+  padding: 5px;
+  text-align: center;
+
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .footer-icon {
@@ -38,6 +41,15 @@
   margin-bottom: 6px;
 }
 
+.footer-item:hover {
+  background-color: #f1f8f1;
+  border-color: #b2d8b2;
+  transform: scale(1.1);
+}
+
+.footer-item:active {
+  transform: scale(1.15);
+}
 .footer-text {
   font-size: 19px;
   line-height: 1.2;
