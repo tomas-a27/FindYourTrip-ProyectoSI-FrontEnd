@@ -3,12 +3,16 @@ import { useState } from 'react';
 import { getOne } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext.tsx';
+import { ModalAlertAviso } from '../ModalAlert.tsx';
 
 export const MiCuenta = () => {
-  const [mostrarConfirmarLogout, setMostrarConfirmarLogout] = useState(false);
   const navigate = useNavigate();
+
   const { id } = useParams();
   const { userId, logout } = useAuth();
+
+  const [mostrarConfirmarLogout, setMostrarConfirmarLogout] = useState(false);
+  const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
 
   if (userId !== Number(id)) {
     return <p className="text-center mt-5">No autorizado</p>;
@@ -29,6 +33,8 @@ export const MiCuenta = () => {
   // Chequeamos si es conductor para mostrar la versión extendida
   const esConductor = usuario.tipoUsuario?.toLowerCase() === 'conductor';
 
+  const isPendiente = usuario.estadoConductor?.toLowerCase() === 'pendiente';
+
   // Función para la foto de perfil
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
@@ -48,6 +54,14 @@ export const MiCuenta = () => {
       ? localStorage.setItem('vistaActiva', 'conductor')
       : localStorage.setItem('vistaActiva', 'pasajero');
     navigate('/mis-viajes');
+  };
+
+  const handleQuieroSerConductor = () => {
+    if (isPendiente) {
+      setMostrarModalAviso(true);
+    } else {
+      navigate('/solicitar-conductor');
+    }
   };
 
   return (
@@ -126,7 +140,7 @@ export const MiCuenta = () => {
                 <button
                   className="btn btn-pastel-green btn-sm rounded-pill px-3 shadow-sm text-wrap"
                   style={{ maxWidth: '190px', fontSize: '16px' }}
-                  onClick={() => navigate(`/solicitar-conductor`)}
+                  onClick={handleQuieroSerConductor}
                 >
                   Quiero ser conductor
                 </button>
@@ -280,6 +294,12 @@ export const MiCuenta = () => {
           </div>
         </div>
       )}
+
+      <ModalAlertAviso
+        show={mostrarModalAviso}
+        onClose={() => setMostrarModalAviso(false)}
+        message="Ya tenés una solicitud pendiente para ser conductor."
+      />
     </div>
   );
 };
