@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ViajeDTO } from '../../entities/entities.ts';
-import { get, post } from '../../api/dataManager.ts';
+import { get, post, getAsync } from '../../api/dataManager.ts';
 import { useAuth } from '../../auth/AuthContext';
 
 export const MostrarViaje = () => {
@@ -10,6 +10,7 @@ export const MostrarViaje = () => {
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [viajeSeleccionado, setViajeSeleccionado] = useState<ViajeDTO | null>(null);
+  const [disponibilidad, setDisponibilidad] = useState<Record<number, number>>({});
 
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
@@ -32,6 +33,29 @@ export const MostrarViaje = () => {
     loading: loadingViajes,
     error: errorViajes,
   } = get<ViajeDTO>(query);
+
+  useEffect(() => {
+    const fetchDisponibilidad = async () => {
+      if (!viajes || viajes.length === 0) return;
+
+      const resultados: Record<number, number> = {};
+
+      await Promise.all(
+        viajes.map(async (v) => {
+          try {
+            const res = await getAsync<any>(`viaje/detalle/${v.viajeId}`);
+            resultados[v.viajeId] = res.data?.data?.lugaresDisponibles ?? v.viajeCantLugares;
+          } catch {
+            resultados[v.viajeId] = v.viajeCantLugares;
+          }
+        })
+      );
+
+      setDisponibilidad(resultados);
+    };
+
+    fetchDisponibilidad();
+  }, [viajes]);
 
   const handleSubmit = async () => {
     if (!viajeSeleccionado) return;
@@ -217,7 +241,7 @@ export const MostrarViaje = () => {
                             : 'Sin mascotas'}
                         </div>
                         <div className="fw-bold">
-                          Quedan {viaje.viajeCantLugares} lugares disponibles
+                          Quedan {disponibilidad[viaje.viajeId] ?? viaje.viajeCantLugares} lugares disponibles
                         </div>
                       </div>
                     </div>
