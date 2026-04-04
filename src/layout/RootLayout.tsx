@@ -13,8 +13,10 @@ export const RootLayout = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height:
-          '100dvh' /* 100dvh toma el alto real de la pantalla en móviles */,
+        height: '100dvh',
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden',
       }}
     >
       {!noMainNav && <MainNavBar />}

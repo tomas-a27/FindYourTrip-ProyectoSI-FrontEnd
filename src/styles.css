@@ -285,10 +285,3 @@
   background-color: #f7fbf7;
   border-radius: 8px;
 }
-
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
-}
