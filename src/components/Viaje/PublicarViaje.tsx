@@ -134,6 +134,12 @@ export const PublicarViaje = () => {
     }
   };
 
+  const handleCancelar = () => {
+    setMensajeModal('Operación cancelada');
+    setRutaModal('/home');
+    setMostrarModal(true);
+  };
+
   if (!usuarioCompleto) {
     return (
       <p className="text-center mt-5 text-muted fw-bold">
@@ -294,7 +300,7 @@ export const PublicarViaje = () => {
               />
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label fw-bold">Hora</label>
+              <label className="form-label fw-bold">Hora aproximada</label>
               <input
                 type="time"
                 className="form-control"
@@ -308,7 +314,7 @@ export const PublicarViaje = () => {
 
           <div className="row">
             <div className="col-6 mb-3">
-              <label className="form-label fw-bold">Lugares</label>
+              <label className="form-label fw-bold">Lugares disponibles</label>
               <input
                 type="number"
                 className="form-control"
@@ -324,7 +330,7 @@ export const PublicarViaje = () => {
               />
             </div>
             <div className="col-6 mb-3">
-              <label className="form-label fw-bold">Precio ($)</label>
+              <label className="form-label fw-bold">Precio por pasajero ($)</label>
               <input
                 type="text"
                 inputMode="numeric"
@@ -377,7 +383,7 @@ export const PublicarViaje = () => {
             <button
               type="button"
               className="btn btn-light-cancel w-50"
-              onClick={() => navigate('/home')}
+              onClick={handleCancelar}
             >
               Cancelar
             </button>
