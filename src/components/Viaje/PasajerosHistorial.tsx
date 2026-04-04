@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAsync } from '../../api/dataManager.ts';
-
+//historial de viajes realizados para el conductor
 export const PasajerosHistorial = () => {
   const location = useLocation();
   const navigate = useNavigate();

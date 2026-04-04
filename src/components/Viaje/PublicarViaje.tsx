@@ -41,7 +41,7 @@ export const PublicarViaje = () => {
     viajeFecha: '',
     viajeHorario: '',
     viajeCantLugares: 1,
-    viajePrecio: 0,
+    viajePrecio: 1,
     viajeAceptaMascotas: false,
     viajeComentario: '',
     viajeOrigen: '', // ID de localidad por defecto (se actualizará al seleccionar)
@@ -93,6 +93,14 @@ export const PublicarViaje = () => {
     }
   }, [navigate, userId, usuarioCompleto]);
 
+  const scrollToTop = () => {
+    const main = document.querySelector('main');
+    main?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -100,19 +108,19 @@ export const PublicarViaje = () => {
 
     if (!formData.viajeOrigen || !formData.viajeDestino) {
       setError('Debés seleccionar una localidad válida de la lista.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToTop();
       return;
     }
 
     if (formData.viajeOrigen === formData.viajeDestino) {
       setError('El origen y el destino no pueden ser iguales.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToTop();
       return;
     }
 
     if (formData.viajeCantLugares > cantLugaresDisponibles) {
       setError('La cantidad de lugares debe ser menor o igual que la cantidad de lugares del vehículo.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToTop();
       return;
     }
 
@@ -139,6 +147,12 @@ export const PublicarViaje = () => {
     setRutaModal('/home');
     setMostrarModal(true);
   };
+
+  const esCantLugaresValida =
+    formData.viajeCantLugares > 0 &&
+    formData.viajeCantLugares <= cantLugaresDisponibles;
+  
+  const esPrecioValido = formData.viajePrecio > 0;
 
   if (!usuarioCompleto) {
     return (
@@ -171,7 +185,11 @@ export const PublicarViaje = () => {
                 const selectedVehiculo = usuarioCompleto.vehiculos?.find(
                   (v) => v.patente === e.target.value,
                 );
-                setFormData({ ...formData, vehiculo: e.target.value });
+                setFormData({
+                  ...formData,
+                  vehiculo: e.target.value,
+                  viajeCantLugares: 1,
+                });
                 setCantLugaresDisponibles(selectedVehiculo?.cantLugares || 1);
               }}
             >
@@ -317,34 +335,78 @@ export const PublicarViaje = () => {
               <label className="form-label fw-bold">Lugares disponibles</label>
               <input
                 type="number"
-                className="form-control"
                 min="1"
-                //max={cantLugaresDisponibles}
+                max={cantLugaresDisponibles}
+                className={`form-control ${
+                  formData.viajeCantLugares !== undefined && !esCantLugaresValida
+                    ? 'is-invalid'
+                    : ''
+                } ${
+                  esCantLugaresValida ? 'is-valid' : ''
+                }`}
+                value={formData.viajeCantLugares}
                 required
-                onChange={(e) =>
+                onChange={(e) => {
+                  const valor = parseInt(e.target.value);
+
+                  if (isNaN(valor)) {
+                    return;
+                  }
+
                   setFormData({
                     ...formData,
-                    viajeCantLugares: parseInt(e.target.value),
-                  })
-                }
+                    viajeCantLugares: valor,
+                  });
+
+                  setError('');
+                }}
               />
+
+              {!esCantLugaresValida && (
+                <div className="invalid-feedback fw-semibold">
+                  {formData.viajeCantLugares < 1
+                    ? 'La cantidad no puede ser menor que 1.'
+                    : `La cantidad debe ser menor o igual a ${cantLugaresDisponibles}.`}
+                </div>
+              )}
             </div>
             <div className="col-6 mb-3">
               <label className="form-label fw-bold">Precio por pasajero ($)</label>
               <input
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]*"
-                className="form-control"
-                min="0"
+                className={`form-control ${
+                  formData.viajePrecio !== undefined && !esPrecioValido
+                    ? 'is-invalid'
+                    : ''
+                } ${esPrecioValido ? 'is-valid' : ''}`}
+                value={formData.viajePrecio}
                 required
-                onChange={(e) =>
+                onChange={(e) => {
+                  const valor = e.target.value;
+
+                  if (!/^\d*$/.test(valor)) return;
+
+                  if (valor === '') {
+                    setFormData({
+                      ...formData,
+                      viajePrecio: 1,
+                    });
+                    return;
+                  }
+
                   setFormData({
                     ...formData,
-                    viajePrecio: parseFloat(e.target.value),
-                  })
-                }
+                    viajePrecio: Number(valor),
+                  });
+                }}
               />
+
+              {!esPrecioValido && (
+                <div className="invalid-feedback fw-semibold">
+                  El precio debe ser mayor a 0.
+                </div>
+              )}
             </div>
           </div>
 
@@ -392,6 +454,7 @@ export const PublicarViaje = () => {
               type="submit"
               className="btn btn-success w-50 py-2 fw-bold"
               style={{ backgroundColor: '#2d4a2d' }}
+              disabled={!esCantLugaresValida}
             >
               Publicar Viaje
             </button>
