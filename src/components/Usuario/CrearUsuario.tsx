@@ -143,7 +143,7 @@ export const CrearUsuario = () => {
                     Nro. Documento
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     className={`form-control custom-input ${formData.nroDocumento && !esDocValido ? 'is-invalid' : ''} ${formData.nroDocumento && esDocValido ? 'is-valid' : ''}`}
                     name="nroDocumento"
                     value={formData.nroDocumento}
@@ -193,7 +193,9 @@ export const CrearUsuario = () => {
                     <option value="Femenino">Femenino</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Otro">Otro</option>
-                    <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                    <option value="Prefiero no decirlo">
+                      Prefiero no decirlo
+                    </option>
                   </select>
                 </div>
               </div>
