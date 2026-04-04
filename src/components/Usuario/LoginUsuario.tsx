@@ -80,6 +80,7 @@ export const LoginUsuario = () => {
               <input
                 type="email"
                 className={`form-control custom-input ${email && !esEmailValido ? 'is-invalid' : ''} ${email && esEmailValido ? 'is-valid' : ''}`}
+                style={email && esEmailValido ? { backgroundImage: 'none' } : undefined}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -98,6 +99,7 @@ export const LoginUsuario = () => {
               <input
                 type="password"
                 className={`form-control custom-input ${contrasenaUsuario && !esContraValida ? 'is-invalid' : ''} ${contrasenaUsuario && esContraValida ? 'is-valid' : ''}`}
+                style={contrasenaUsuario && esContraValida ? { backgroundImage: 'none' } : undefined}
                 value={contrasenaUsuario}
                 onChange={(e) => setContrasenaUsuario(e.target.value)}
                 required

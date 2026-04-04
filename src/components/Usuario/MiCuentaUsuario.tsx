@@ -197,7 +197,7 @@ export const MiCuenta = () => {
               </div>
             </div>
 
-            {/* MENÚ DE OPCIONES (Botones Blancos) */}
+            {/* MENÚ DE OPCIONES */}
             <div className="menu-navegacion d-grid gap-2">
               <div
                 className="campo-box d-flex align-items-center shadow-sm pointer py-3 px-3 rounded-3"
@@ -306,10 +306,10 @@ export const MiCuenta = () => {
               className="btn btn-light-cancel w-100 mt-4 py-3 fw-bold rounded-4 shadow-sm"
               style={{ transition: 'all 0.2s ease' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#e2e6ea'; // Gris un poco más oscuro
+                e.currentTarget.style.backgroundColor = '#e2e6ea'; 
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = ''; // Vuelve a clase original
+                e.currentTarget.style.backgroundColor = ''; 
               }}
             >
               Cerrar Sesión

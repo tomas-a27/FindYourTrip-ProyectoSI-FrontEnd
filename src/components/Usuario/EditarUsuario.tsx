@@ -191,6 +191,13 @@ export const EditarUsuario = () => {
   const botonDeshabilitado = () => {
     if (campoSeleccionado === 'telefono') return !esTelValido;
     if (campoSeleccionado === 'email') return !esEmailValido;
+    
+    if (campoSeleccionado === 'nombreCompleto') {
+      return nuevoValor.trim().length === 0 || nuevoApellido.trim().length === 0;
+    }
+    
+    if (typeof nuevoValor === 'string' && nuevoValor.trim().length === 0) return true;
+
     return false;
   };
 
@@ -323,20 +330,37 @@ export const EditarUsuario = () => {
             <form onSubmit={handleSubmit}>
               {campoSeleccionado === 'nombreCompleto' ? (
                 <>
-                  <input
-                    className="form-control mb-3 p-2"
-                    placeholder="Nombre"
-                    value={nuevoValor}
-                    onChange={(e) => setNuevoValor(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="form-control mb-3 p-2"
-                    placeholder="Apellido"
-                    value={nuevoApellido}
-                    onChange={(e) => setNuevoApellido(e.target.value)}
-                    required
-                  />
+                  <div className="mb-3">
+                    <input
+                      className={`form-control p-2 ${nuevoValor.trim().length === 0 ? 'is-invalid' : 'is-valid'}`}
+                      style={nuevoValor.trim().length > 0 ? { backgroundImage: 'none' } : undefined}
+                      placeholder="Nombre"
+                      value={nuevoValor}
+                      onChange={(e) => setNuevoValor(e.target.value)}
+                      required
+                    />
+                    {nuevoValor.trim().length === 0 && (
+                      <div className="invalid-feedback fw-semibold mt-1" style={{ fontSize: '0.8rem' }}>
+                        El nombre no puede estar vacío.
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="mb-3">
+                    <input
+                      className={`form-control p-2 ${nuevoApellido.trim().length === 0 ? 'is-invalid' : 'is-valid'}`}
+                      style={nuevoApellido.trim().length > 0 ? { backgroundImage: 'none' } : undefined}
+                      placeholder="Apellido"
+                      value={nuevoApellido}
+                      onChange={(e) => setNuevoApellido(e.target.value)}
+                      required
+                    />
+                    {nuevoApellido.trim().length === 0 && (
+                      <div className="invalid-feedback fw-semibold mt-1" style={{ fontSize: '0.8rem' }}>
+                        El apellido no puede estar vacío.
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : campoSeleccionado === 'generoUsuario' ? (
                 <select
@@ -354,6 +378,7 @@ export const EditarUsuario = () => {
                   <input
                     type='tel'
                     className={`form-control p-2 ${nuevoValor && !esTelValido ? 'is-invalid' : ''} ${nuevoValor && esTelValido ? 'is-valid' : ''}`}
+                    style={nuevoValor && esTelValido ? { backgroundImage: 'none' } : undefined}
                     placeholder="Teléfono"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
@@ -370,6 +395,7 @@ export const EditarUsuario = () => {
                   <input
                     type="email"
                     className={`form-control p-2 ${nuevoValor && !esEmailValido ? 'is-invalid' : ''} ${nuevoValor && esEmailValido ? 'is-valid' : ''}`}
+                    style={nuevoValor && esEmailValido ? { backgroundImage: 'none' } : undefined}
                     placeholder="Email"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
@@ -447,6 +473,7 @@ export const EditarUsuario = () => {
                 <input
                   type="password"
                   className={`form-control p-2 ${passNueva && !esPassNuevaLarga ? 'is-invalid' : ''} ${passNueva && esPassNuevaLarga ? 'is-valid' : ''}`}
+                  style={passNueva && esPassNuevaLarga ? { backgroundImage: 'none' } : undefined}
                   value={passNueva}
                   onChange={(e) => setPassNueva(e.target.value)}
                   required
@@ -463,6 +490,7 @@ export const EditarUsuario = () => {
                 <input
                   type="password"
                   className={`form-control p-2 ${passConfirmacion && !contrasenasCoinciden ? 'is-invalid' : ''} ${passConfirmacion && contrasenasCoinciden ? 'is-valid' : ''}`}
+                  style={passConfirmacion && contrasenasCoinciden ? { backgroundImage: 'none' } : undefined}
                   value={passConfirmacion}
                   onChange={(e) => setPassConfirmacion(e.target.value)}
                   required
