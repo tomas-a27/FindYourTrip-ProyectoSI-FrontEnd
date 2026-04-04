@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getAsync, getOne, patch } from '../../api/dataManager'; 
+import { getAsync, getOne, patch } from '../../api/dataManager';
 import { UsuarioDTO } from '../../entities/entities';
 import { useAuth } from '../../auth/AuthContext';
 import { ModalAlertAviso } from '../ModalAlert.tsx';
@@ -15,7 +15,9 @@ export const MisViajes = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
-  const [vistaActiva, setVistaActiva] = useState<'pasajero' | 'conductor'>('pasajero');
+  const [vistaActiva, setVistaActiva] = useState<'pasajero' | 'conductor'>(
+    'pasajero',
+  );
 
   useEffect(() => {
     if (!userId) {
@@ -34,7 +36,8 @@ export const MisViajes = () => {
   const [solicitudACancelar, setSolicitudACancelar] = useState<any | null>(
     null,
   );
-  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] = useState(false);
+  const [mostrarModalCancelarSolicitud, setMostrarModalCancelarSolicitud] =
+    useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
   const [pasajerosACalificar, setPasajerosACalificar] = useState<any[]>([]);
@@ -52,7 +55,7 @@ export const MisViajes = () => {
       const aprobado =
         user?.estadoConductor?.toLowerCase() === 'aprobado' ||
         user?.tipoUsuario?.toLowerCase() === 'conductor';
-      
+
       setIsConductorAprobado(aprobado);
 
       if (!aprobado) {
@@ -165,7 +168,7 @@ export const MisViajes = () => {
 
   const handleSiguienteCalificacion = () => {
     if (indiceCalificacion < pasajerosACalificar.length - 1) {
-      setIndiceCalificacion((prev) => prev + 1); 
+      setIndiceCalificacion((prev) => prev + 1);
     } else {
       setPasajerosACalificar([]);
       setViajeIdActual(null);
@@ -254,8 +257,12 @@ export const MisViajes = () => {
                 color: colorTextoGrisOscuro,
                 transition: 'all 0.2s ease',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f1f8f1')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ffffff')}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = '#f1f8f1')
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = '#ffffff')
+              }
               onClick={() =>
                 setVistaActiva(
                   vistaActiva === 'pasajero' ? 'conductor' : 'pasajero',
@@ -291,9 +298,9 @@ export const MisViajes = () => {
                     key={sol.solViajeId}
                     solicitud={sol}
                     hora={formatearHora(sol.viaje?.viajeHorario)}
-                    ={bufferToBase64(
+                    foto={bufferToBase64(
                       sol.viaje?.usuarioConductor?.fotoPerfil,
-                    )}foto
+                    )}
                     onCancelar={() => handleCancelarSolicitud(sol)}
                   />
                 ))
@@ -302,9 +309,17 @@ export const MisViajes = () => {
                 <Link
                   to="/historial-pasajero"
                   className="text-decoration-underline fw-bold"
-                  style={{ color: '#1f5c2f', cursor: 'pointer', transition: 'color 0.2s' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#143c1e'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#1f5c2f'}
+                  style={{
+                    color: '#1f5c2f',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s',
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = '#143c1e')
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = '#1f5c2f')
+                  }
                 >
                   Ver historial de viajes realizados
                 </Link>
@@ -528,10 +543,10 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
   return (
     <div
       className="card border-0 mb-3"
-      style={{ 
-        borderRadius: '16px', 
+      style={{
+        borderRadius: '16px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-        transition: 'all 0.3s ease'
+        transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
@@ -547,53 +562,126 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
           <div className="col-8 col-md-7">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
-                <div style={{ width: '2px', height: '35px', backgroundColor: '#555', margin: '2px 0' }}></div>
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '2px',
+                    height: '35px',
+                    backgroundColor: '#555',
+                    margin: '2px 0',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
               </div>
               <div>
-                <h5 className="fw-bold m-0 text-dark mb-3" style={{ fontSize: '1.1rem' }}>
+                <h5
+                  className="fw-bold m-0 text-dark mb-3"
+                  style={{ fontSize: '1.1rem' }}
+                >
                   {viaje?.viajeOrigen?.nombre}
                 </h5>
-                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>
+                <h5
+                  className="fw-bold m-0 text-dark"
+                  style={{ fontSize: '1.1rem' }}
+                >
                   {viaje?.viajeDestino?.nombre}
                 </h5>
               </div>
             </div>
 
             <div className="mt-3 d-flex align-items-center mb-1">
-              <img src={foto} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} className="me-2" />
-              <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
-                {viaje?.usuarioConductor?.nombreUsuario} {viaje?.usuarioConductor?.apellidoUsuario}
+              <img
+                src={foto}
+                alt="Avatar"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+                className="me-2"
+              />
+              <span
+                className="fw-bold text-dark"
+                style={{ fontSize: '0.95rem' }}
+              >
+                {viaje?.usuarioConductor?.nombreUsuario}{' '}
+                {viaje?.usuarioConductor?.apellidoUsuario}
               </span>
             </div>
-            
+
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.85rem' }}>
               <i className="bi bi-car-front-fill me-2"></i>
-              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} - {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
+              {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
             </p>
             {viaje?.usuarioConductor?.telefono && (
-              <p className="text-muted m-0 mb-1" style={{ fontSize: '0.85rem' }}>
-                <i className="bi bi-telephone-fill me-1"></i> {viaje?.usuarioConductor?.telefono} | <i className="bi bi-envelope-fill mx-1"></i> {viaje?.usuarioConductor?.email}
+              <p
+                className="text-muted m-0 mb-1"
+                style={{ fontSize: '0.85rem' }}
+              >
+                <i className="bi bi-telephone-fill me-1"></i>{' '}
+                {viaje?.usuarioConductor?.telefono} |{' '}
+                <i className="bi bi-envelope-fill mx-1"></i>{' '}
+                {viaje?.usuarioConductor?.email}
               </p>
             )}
           </div>
 
           <div className="col-4 col-md-5 d-flex flex-column align-items-end justify-content-start">
-            <div className="text-muted d-flex align-items-center mb-1" style={{ fontSize: '0.9rem' }}>
-              <i className="bi bi-calendar3 me-2"></i> 
-              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span>
+            <div
+              className="text-muted d-flex align-items-center mb-1"
+              style={{ fontSize: '0.9rem' }}
+            >
+              <i className="bi bi-calendar3 me-2"></i>
+              <span>
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
+              </span>
             </div>
-            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
+            <div
+              className="text-muted d-flex align-items-center mb-2"
+              style={{ fontSize: '0.9rem' }}
+            >
               <i className="bi bi-clock me-2"></i> <span>{hora}</span>
             </div>
-            <div className="fw-bold text-dark d-flex align-items-center mt-1" style={{ fontSize: '1.3rem' }}>
-              <i className="bi bi-currency-dollar me-1" style={{ fontSize: '1.1rem' }}></i> {viaje?.viajePrecio}
+            <div
+              className="fw-bold text-dark d-flex align-items-center mt-1"
+              style={{ fontSize: '1.3rem' }}
+            >
+              <i
+                className="bi bi-currency-dollar me-1"
+                style={{ fontSize: '1.1rem' }}
+              ></i>{' '}
+              {viaje?.viajePrecio}
             </div>
           </div>
         </div>
       </div>
-      <div className="text-end" style={{ marginTop: '-20px', marginRight: '15px', position: 'relative', zIndex: 2 }}>
+      <div
+        className="text-end"
+        style={{
+          marginTop: '-20px',
+          marginRight: '15px',
+          position: 'relative',
+          zIndex: 2,
+        }}
+      >
         <button
           onClick={onCancelar}
           className="btn btn-sm rounded-pill fw-bold px-3 py-1"
@@ -603,7 +691,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             color: '#dc3545',
             fontSize: '0.85rem',
             boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#dc3545';
@@ -622,7 +710,12 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
   );
 };
 
-const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => {
+const TarjetaPasajeroReciente = ({
+  solicitud,
+  hora,
+  foto,
+  onCancelar,
+}: any) => {
   const viaje = solicitud.viaje;
   const isPendiente = solicitud.estadoSolicitud?.toLowerCase() === 'pendiente';
 
@@ -633,7 +726,7 @@ const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => 
         borderRadius: '16px',
         border: '1px solid #eaeaea',
         boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-        transition: 'all 0.3s ease'
+        transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
@@ -649,34 +742,86 @@ const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => 
           <div className="col-6 col-md-5">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', border: '2px solid #555' }}></div>
-                <div style={{ width: '2px', height: '30px', backgroundColor: '#555', margin: '2px 0' }}></div>
-                <div style={{ width: '10px', height: '10px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '2px',
+                    height: '30px',
+                    backgroundColor: '#555',
+                    margin: '2px 0',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
               </div>
               <div>
-                <h6 className="fw-bold m-0 text-dark mb-2">{viaje?.viajeOrigen?.nombre}</h6>
-                <h6 className="fw-bold m-0 text-dark">{viaje?.viajeDestino?.nombre}</h6>
+                <h6 className="fw-bold m-0 text-dark mb-2">
+                  {viaje?.viajeOrigen?.nombre}
+                </h6>
+                <h6 className="fw-bold m-0 text-dark">
+                  {viaje?.viajeDestino?.nombre}
+                </h6>
               </div>
             </div>
             <div className="mt-3 d-flex align-items-center">
-              <img src={foto} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} className="me-2" />
-              <span className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>
-                {viaje?.usuarioConductor?.nombreUsuario} {viaje?.usuarioConductor?.apellidoUsuario}
+              <img
+                src={foto}
+                alt="Avatar"
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+                className="me-2"
+              />
+              <span
+                className="fw-bold text-dark"
+                style={{ fontSize: '0.9rem' }}
+              >
+                {viaje?.usuarioConductor?.nombreUsuario}{' '}
+                {viaje?.usuarioConductor?.apellidoUsuario}
               </span>
             </div>
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.8rem' }}>
-              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} - {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
+              {viaje?.vehiculo?.patente}
             </p>
           </div>
 
           <div className="col-3 col-md-4 d-flex flex-column justify-content-center">
-            <div className="text-muted d-flex align-items-center mb-1" style={{ fontSize: '0.85rem' }}>
-              <i className="bi bi-calendar3 me-2"></i> {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+            <div
+              className="text-muted d-flex align-items-center mb-1"
+              style={{ fontSize: '0.85rem' }}
+            >
+              <i className="bi bi-calendar3 me-2"></i>{' '}
+              {viaje?.viajeFecha
+                ? viaje.viajeFecha.split('-').reverse().join('/')
+                : ''}
             </div>
-            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.85rem' }}>
+            <div
+              className="text-muted d-flex align-items-center mb-2"
+              style={{ fontSize: '0.85rem' }}
+            >
               <i className="bi bi-clock me-2"></i> {hora}
             </div>
-            <div className="fw-bold text-dark mt-1" style={{ fontSize: '1.1rem' }}>
+            <div
+              className="fw-bold text-dark mt-1"
+              style={{ fontSize: '1.1rem' }}
+            >
               $ {viaje?.viajePrecio}
             </div>
           </div>
@@ -684,13 +829,29 @@ const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => 
           <div className="col-3 col-md-3 d-flex flex-column align-items-center justify-content-center text-center border-start">
             {isPendiente ? (
               <>
-                <i className="bi bi-clock-fill" style={{ fontSize: '2rem', color: colorNaranja }}></i>
-                <span className="fw-bold mt-1" style={{ color: colorNaranja, fontSize: '0.85rem' }}>Pendiente</span>
+                <i
+                  className="bi bi-clock-fill"
+                  style={{ fontSize: '2rem', color: colorNaranja }}
+                ></i>
+                <span
+                  className="fw-bold mt-1"
+                  style={{ color: colorNaranja, fontSize: '0.85rem' }}
+                >
+                  Pendiente
+                </span>
               </>
             ) : (
               <>
-                <i className="bi bi-x-circle-fill text-danger" style={{ fontSize: '2rem' }}></i>
-                <span className="fw-bold text-danger mt-1" style={{ fontSize: '0.85rem' }}>Denegada</span>
+                <i
+                  className="bi bi-x-circle-fill text-danger"
+                  style={{ fontSize: '2rem' }}
+                ></i>
+                <span
+                  className="fw-bold text-danger mt-1"
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  Denegada
+                </span>
               </>
             )}
           </div>
@@ -699,7 +860,15 @@ const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => 
 
       {isPendiente && (
         <>
-          <div className="text-end" style={{ marginTop: '-20px', marginRight: '15px', position: 'relative', zIndex: 2 }}>
+          <div
+            className="text-end"
+            style={{
+              marginTop: '-20px',
+              marginRight: '15px',
+              position: 'relative',
+              zIndex: 2,
+            }}
+          >
             <button
               onClick={onCancelar}
               className="btn btn-sm rounded-pill fw-bold px-3 py-1"
@@ -709,7 +878,7 @@ const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => 
                 color: '#dc3545',
                 fontSize: '0.85rem',
                 boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#dc3545';
@@ -730,18 +899,24 @@ const TarjetaPasajeroReciente = ({ solicitud, hora, foto, onCancelar }: any) => 
   );
 };
 
-const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSolicitudes }: any) => {
+const TarjetaConductorActivo = ({
+  viaje,
+  hora,
+  onCancelar,
+  onFinalizar,
+  onVerSolicitudes,
+}: any) => {
   const isCompleto = viaje.solicitudesAprobadas >= viaje.viajeCantLugares;
   const isEnCurso = viaje.viajeEstado?.toLowerCase() === 'encurso';
 
   return (
-    <div 
+    <div
       className="mb-4 card border-0"
       style={{
         borderRadius: '16px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
         overflow: 'hidden',
-        transition: 'all 0.3s ease'
+        transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
@@ -757,23 +932,62 @@ const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSol
           <div className="col-5">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
-                <div style={{ width: '2px', height: '35px', backgroundColor: '#555', margin: '2px 0' }}></div>
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '2px',
+                    height: '35px',
+                    backgroundColor: '#555',
+                    margin: '2px 0',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
               </div>
               <div>
-                <h5 className="fw-bold m-0 text-dark mb-3" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
-                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
+                <h5
+                  className="fw-bold m-0 text-dark mb-3"
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  {viaje?.viajeOrigen?.nombre}
+                </h5>
+                <h5
+                  className="fw-bold m-0 text-dark"
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  {viaje?.viajeDestino?.nombre}
+                </h5>
               </div>
             </div>
           </div>
 
           <div className="col-3 d-flex flex-column justify-content-center">
-            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
-              <i className="bi bi-calendar3 me-2"></i> 
-              {viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}
+            <div
+              className="text-muted d-flex align-items-center mb-2"
+              style={{ fontSize: '0.9rem' }}
+            >
+              <i className="bi bi-calendar3 me-2"></i>
+              {viaje?.viajeFecha
+                ? viaje.viajeFecha.split('-').reverse().join('/')
+                : ''}
             </div>
-            <div className="text-muted d-flex align-items-center" style={{ fontSize: '0.9rem' }}>
+            <div
+              className="text-muted d-flex align-items-center"
+              style={{ fontSize: '0.9rem' }}
+            >
               <i className="bi bi-clock me-2"></i> {hora} AM
             </div>
           </div>
@@ -781,13 +995,29 @@ const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSol
           <div className="col-4 d-flex flex-column align-items-end justify-content-center text-end">
             {isCompleto ? (
               <>
-                <i className="bi bi-check-circle-fill text-success mb-1" style={{ fontSize: '1.8rem' }}></i>
-                <span className="fw-bold text-success" style={{ fontSize: '0.85rem' }}>Completo</span>
+                <i
+                  className="bi bi-check-circle-fill text-success mb-1"
+                  style={{ fontSize: '1.8rem' }}
+                ></i>
+                <span
+                  className="fw-bold text-success"
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  Completo
+                </span>
               </>
             ) : (
               <>
-                <i className="bi bi-clock-fill mb-1" style={{ fontSize: '1.8rem', color: colorNaranja }}></i>
-                <span className="fw-bold" style={{ color: colorNaranja, fontSize: '0.85rem' }}>Aún quedan lugares</span>
+                <i
+                  className="bi bi-clock-fill mb-1"
+                  style={{ fontSize: '1.8rem', color: colorNaranja }}
+                ></i>
+                <span
+                  className="fw-bold"
+                  style={{ color: colorNaranja, fontSize: '0.85rem' }}
+                >
+                  Aún quedan lugares
+                </span>
               </>
             )}
           </div>
@@ -799,17 +1029,17 @@ const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSol
             borderTop: '1px solid #eaeaea',
             backgroundColor: '#ffffff',
             cursor: 'pointer',
-            transition: 'background-color 0.2s ease'
+            transition: 'background-color 0.2s ease',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#f1f5f9';
             const span = e.currentTarget.querySelector('span');
-            if(span) span.style.textDecoration = 'underline';
+            if (span) span.style.textDecoration = 'underline';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = '#ffffff';
             const span = e.currentTarget.querySelector('span');
-            if(span) span.style.textDecoration = 'none';
+            if (span) span.style.textDecoration = 'none';
           }}
           onClick={() =>
             onVerSolicitudes(
@@ -822,12 +1052,15 @@ const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSol
             )
           }
         >
-          <span className="fw-bold" style={{ color: '#0d6efd', fontSize: '0.95rem' }}>
+          <span
+            className="fw-bold"
+            style={{ color: '#0d6efd', fontSize: '0.95rem' }}
+          >
             Ver pasajeros y solicitudes
           </span>
         </div>
       </div>
-      
+
       <div className="d-flex p-3 pt-0 gap-3">
         <button
           onClick={onCancelar}
@@ -838,7 +1071,7 @@ const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSol
             color: '#dc3545',
             fontSize: '0.95rem',
             boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
           }}
           disabled={isEnCurso}
           onMouseEnter={(e) => {
@@ -875,15 +1108,15 @@ const TarjetaConductorActivo = ({ viaje, hora, onCancelar, onFinalizar, onVerSol
 };
 
 const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   return (
     <div
       className="card bg-white mb-3"
-      style={{ 
-        borderRadius: '16px', 
+      style={{
+        borderRadius: '16px',
         border: '1px solid #eaeaea',
-        transition: 'all 0.3s ease'
+        transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
@@ -899,23 +1132,64 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
           <div className="col-7">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
-                <div style={{ width: '2px', height: '35px', backgroundColor: '#555', margin: '2px 0' }}></div>
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #555' }}></div>
+                <div
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '2px',
+                    height: '35px',
+                    backgroundColor: '#555',
+                    margin: '2px 0',
+                  }}
+                ></div>
+                <div
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: '2px solid #555',
+                  }}
+                ></div>
               </div>
               <div>
-                <h5 className="fw-bold m-0 text-dark mb-3" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
-                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
+                <h5
+                  className="fw-bold m-0 text-dark mb-3"
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  {viaje?.viajeOrigen?.nombre}
+                </h5>
+                <h5
+                  className="fw-bold m-0 text-dark"
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  {viaje?.viajeDestino?.nombre}
+                </h5>
               </div>
             </div>
           </div>
 
           <div className="col-5 d-flex flex-column align-items-end">
-            <div className="text-muted d-flex align-items-center mb-2" style={{ fontSize: '0.9rem' }}>
-              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span>{' '}
+            <div
+              className="text-muted d-flex align-items-center mb-2"
+              style={{ fontSize: '0.9rem' }}
+            >
+              <span>
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
+              </span>{' '}
               <i className="bi bi-calendar3 ms-2"></i>
             </div>
-            <div className="text-muted d-flex align-items-center" style={{ fontSize: '0.9rem' }}>
+            <div
+              className="text-muted d-flex align-items-center"
+              style={{ fontSize: '0.9rem' }}
+            >
               <span>{hora} AM</span> <i className="bi bi-clock ms-2"></i>
             </div>
           </div>
@@ -929,19 +1203,23 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
             cursor: 'pointer',
             borderBottomLeftRadius: '16px',
             borderBottomRightRadius: '16px',
-            transition: 'background-color 0.2s ease'
+            transition: 'background-color 0.2s ease',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#f1f5f9';
             const span = e.currentTarget.querySelector('span');
-            if(span) span.style.textDecoration = 'underline';
+            if (span) span.style.textDecoration = 'underline';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = '#ffffff';
             const span = e.currentTarget.querySelector('span');
-            if(span) span.style.textDecoration = 'none';
+            if (span) span.style.textDecoration = 'none';
           }}
-          onClick={() => navigate('/pasajeros-historial', { state: { viajeId: viaje.viajeId } })}
+          onClick={() =>
+            navigate('/pasajeros-historial', {
+              state: { viajeId: viaje.viajeId },
+            })
+          }
         >
           <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
             Ver pasajeros
