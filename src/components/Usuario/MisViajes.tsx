@@ -735,7 +735,8 @@ const TarjetaPasajeroReciente = ({
                 className="fw-bold text-dark"
                 style={{ fontSize: '0.9rem' }}
               >
-                {viaje?.usuarioConductor?.nombreUsuario}
+                {viaje?.usuarioConductor?.nombreUsuario}{' '}
+                {viaje?.usuarioConductor?.apellidoUsuario}
               </span>
             </div>
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.8rem' }}>
