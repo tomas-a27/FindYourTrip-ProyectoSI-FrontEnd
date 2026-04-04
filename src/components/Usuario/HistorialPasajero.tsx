@@ -84,7 +84,7 @@ export const HistorialPasajero = () => {
 };
 
 // =========================================================================
-// COMPONENTE DE TARJETA (Con Hover Feedback)
+// COMPONENTE DE TARJETA 
 // =========================================================================
 const TarjetaHistorialPasajero = ({ viaje, hora }: any) => {
   return (
