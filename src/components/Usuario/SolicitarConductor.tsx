@@ -14,6 +14,8 @@ export const SolicitarConductor = () => {
   
   const [error, setError] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
+  
+  const [mostrarAviso, setMostrarAviso] = useState(!!mensajeAviso);
 
   const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
   const [fotoLicencia, setFotoLicencia] = useState<File | null>(null);
@@ -40,7 +42,6 @@ export const SolicitarConductor = () => {
   const lugaresValidos = cantLugares > 0 && cantLugares <= 50;
   
   const formValido = esLicenciaValida && esPatenteValida && esMarcaValida && esColorValido && esModeloValido && lugaresValidos && fotoPerfil && fotoLicencia && vigenciaLicencia;
-  // ------------------------------------
 
   const handleCancelar = () => {
     navigate('/home'); 
@@ -62,7 +63,7 @@ export const SolicitarConductor = () => {
     formData.append('vigenciaLicenciaConductorUsuario', vigenciaLicencia);
     
     const vehiculoData = {
-      patente: patente.trim().toUpperCase().replace(/\s/g, ""), // Limpiamos espacios como dice el schema
+      patente: patente.trim().toUpperCase().replace(/\s/g, ""), 
       marca: marca.trim(),
       modelo: modelo.trim(),
       color: color.trim(),
@@ -92,18 +93,26 @@ export const SolicitarConductor = () => {
   return (
     <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center flex-column align-items-center">
       
-      {/* MENSAJE DE AVISO (Solo se muestra si vino desde el botón de publicar viaje) */}
-      {mensajeAviso && (
+      {/* MENSAJE DE AVISO */}
+      {mostrarAviso && mensajeAviso && (
         <div 
-          className="alert shadow-sm w-100 mb-4 d-flex align-items-center" 
+          className="alert shadow-sm w-100 mb-4 d-flex justify-content-between align-items-center" 
           role="alert" 
           style={{ maxWidth: '700px', borderRadius: '15px', border: 'none', borderLeft: '6px solid #0d6efd', backgroundColor: '#e9f2ff' }}
         >
-          <i className="bi bi-info-circle-fill fs-3 me-3 text-primary"></i>
-          <div>
-            <h6 className="fw-bold mb-1 text-primary">¡Estás a un paso de publicar tu viaje!</h6>
-            <span className="text-dark" style={{ fontSize: '0.95rem' }}>{mensajeAviso}</span>
+          <div className="d-flex align-items-center">
+            <i className="bi bi-info-circle-fill fs-3 me-3 text-primary"></i>
+            <div>
+              <h6 className="fw-bold mb-1 text-primary">¡Estás a un paso de publicar tu viaje!</h6>
+              <span className="text-dark" style={{ fontSize: '0.95rem' }}>{mensajeAviso}</span>
+            </div>
           </div>
+          <button 
+            type="button" 
+            className="btn-close ms-3" 
+            aria-label="Cerrar"
+            onClick={() => setMostrarAviso(false)}
+          ></button>
         </div>
       )}
 
@@ -150,7 +159,7 @@ export const SolicitarConductor = () => {
                 <input 
                   type="text" 
                   className={`form-control custom-input ${nroLicencia && !esLicenciaValida ? 'is-invalid' : ''} ${nroLicencia && esLicenciaValida ? 'is-valid' : ''}`}
-                  placeholder="Coincide con el numero de DNI"
+                  placeholder="Ej: 123456789"
                   value={nroLicencia} 
                   onChange={(e) => setNroLicencia(e.target.value)} 
                   required 
@@ -256,14 +265,42 @@ export const SolicitarConductor = () => {
             </div>
 
             <div className="d-flex justify-content-between mt-4">
-              <button type="button" className="btn btn-light-cancel px-4" onClick={handleCancelar}>
+              <button 
+                type="button" 
+                className="btn btn-light-cancel px-4" 
+                onClick={handleCancelar}
+                style={{ transition: 'all 0.2s ease' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
                 Cancelar
               </button>
               
               <button 
                 type="submit" 
-                className="btn btn-pastel-green px-5"
+                className="btn btn-pastel-green px-5 shadow-sm"
                 disabled={!formValido} 
+                style={{ transition: 'all 0.2s ease' }}
+                onMouseEnter={(e) => {
+                  if (formValido) { 
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                    e.currentTarget.style.filter = 'brightness(0.95)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (formValido) {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+                    e.currentTarget.style.filter = 'brightness(1)';
+                  }
+                }}
               >
                 Solicitar
               </button>
