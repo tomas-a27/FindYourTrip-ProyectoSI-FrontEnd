@@ -148,10 +148,8 @@ export const MostrarViaje = () => {
                             className="position-absolute bottom-0 start-50 translate-middle-x badge rounded-pill bg-light text-dark border shadow-sm"
                             style={{ fontSize: '0.7rem', padding: '2px 8px' }}
                           >
-                            <i className="bi bi-star">
-                              {' '}
-                              {viaje.usuarioConductor.calificacionConductor}
-                            </i>
+                            <i className="bi bi-star text-warning me-1"></i>
+                            {viaje.usuarioConductor.calificacionConductor || 'S/C'}
                           </span>
                         </div>
 
