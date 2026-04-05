@@ -68,7 +68,7 @@ export const PasajerosHistorial = () => {
               {viajeInfo.origen} <i className="bi bi-arrow-right mx-2 text-muted"></i> {viajeInfo.destino}
             </h5>
             <div className="d-flex text-muted gap-4 mt-2" style={{ fontSize: '0.95rem' }}>
-              <span><i className="bi bi-calendar3 me-2"></i> {new Date(viajeInfo.fecha).toLocaleDateString('es-AR')}</span>
+              <span><i className="bi bi-calendar3 me-2"></i> {viajeInfo.fecha.split('-').reverse().join('/')}</span>
               <span><i className="bi bi-clock me-2"></i> {viajeInfo.horario.substring(0, 5)}</span>
             </div>
           </div>
@@ -85,17 +85,24 @@ export const PasajerosHistorial = () => {
           {pasajeros.map((pasajero) => (
             <div key={pasajero.idUsuario} className="col-12 mb-3">
               <div className="card shadow-sm border-0 rounded-4">
-                <div className="card-body p-3 d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center">
+                <div className="card-body p-3 d-flex align-items-start justify-content-between">
+                  <div className="d-flex align-items-start">
                     <div 
-                      className="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white fw-bold me-3"
-                      style={{ width: '45px', height: '45px', fontSize: '1.1rem' }}
+                      className="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white fw-bold me-3 mt-1"
+                      style={{ width: '45px', height: '45px', fontSize: '1.1rem', flexShrink: 0 }}
                     >
                       {pasajero.nombre.charAt(0)}{pasajero.apellido.charAt(0)}
                     </div>
                     <div>
                       <h6 className="fw-bold m-0 text-dark">{pasajero.nombre} {pasajero.apellido}</h6>
                       <span className="text-muted small">Pasajero</span>
+                      <h6 className="fw-bold text-dark mt-3 mb-1" style={{ fontSize: '0.90rem' }}>Datos de contacto</h6>
+                      <p className="text-muted m-0 mb-1" style={{ fontSize: '0.9rem' }}>
+                        <i className="bi bi-telephone-fill me-1 text-success"></i> {pasajero.telefono}
+                      </p>
+                      <p className="text-muted m-0" style={{ fontSize: '0.9rem' }}>
+                        <i className="bi bi-envelope-fill me-1 text-danger"></i> {pasajero.email}
+                      </p>
                     </div>
                   </div>
                   
