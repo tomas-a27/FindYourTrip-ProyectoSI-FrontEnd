@@ -182,7 +182,8 @@ export const MisViajes = () => {
     (s) =>
       s.estadoSolicitud?.toLowerCase() === 'aprobada' &&
       (s.viaje?.viajeEstado?.toLowerCase() === 'disponible' ||
-        s.viaje?.viajeEstado?.toLowerCase() === 'pendiente'),
+        s.viaje?.viajeEstado?.toLowerCase() === 'pendiente' ||
+        s.viaje?.viajeEstado?.toLowerCase() === 'encurso'),
   );
   const recientesPasajero = solicitudes.filter(
     (s) =>
@@ -235,51 +236,50 @@ export const MisViajes = () => {
       style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}
     >
       <div className="container pt-4 pb-3">
-        <div className="d-flex justify-content-between align-items-center">
+        {/* NUEVO HEADER CON TABS DE SELECCIÓN */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <h2
             className="fw-bold m-0"
-            style={{ color: colorTextoGrisOscuro, fontSize: '1.5rem' }}
+            style={{ color: colorTextoGrisOscuro, fontSize: '1.7rem', letterSpacing: '-0.5px' }}
           >
-            {vistaActiva === 'pasajero'
-              ? 'Mis próximos viajes'
-              : 'Próximos viajes'}
+            Mis Viajes
           </h2>
 
           {isConductorAprobado && (
-            <button
-              className="btn position-relative"
-              style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #ced4da',
-                borderRadius: '8px',
-                padding: '6px 16px',
-                fontWeight: '600',
-                color: colorTextoGrisOscuro,
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = '#f1f8f1')
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = '#ffffff')
-              }
-              onClick={() =>
-                setVistaActiva(
-                  vistaActiva === 'pasajero' ? 'conductor' : 'pasajero',
-                )
-              }
+            <div 
+              className="d-flex p-1 rounded-pill shadow-sm" 
+              style={{ backgroundColor: '#f1f5f9', border: '1px solid #eaeaea' }}
             >
-              Mis viajes
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+              <button
+                className="btn rounded-pill px-3 px-md-4 py-2 fw-bold d-flex align-items-center justify-content-center"
                 style={{
-                  backgroundColor: colorNaranja,
-                  border: '2px solid white',
+                  backgroundColor: vistaActiva === 'pasajero' ? '#ffffff' : 'transparent',
+                  color: vistaActiva === 'pasajero' ? '#2d4a2d' : '#6c757d',
+                  border: 'none',
+                  boxShadow: vistaActiva === 'pasajero' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '0.95rem'
                 }}
+                onClick={() => setVistaActiva('pasajero')}
               >
-                {vistaActiva === 'pasajero' ? 'Conductor' : 'Pasajero'}
-              </span>
-            </button>
+                <i className="bi bi-backpack-fill me-2 fs-5"></i> Pasajero
+              </button>
+              
+              <button
+                className="btn rounded-pill px-3 px-md-4 py-2 fw-bold d-flex align-items-center justify-content-center"
+                style={{
+                  backgroundColor: vistaActiva === 'conductor' ? '#ffffff' : 'transparent',
+                  color: vistaActiva === 'conductor' ? '#2d4a2d' : '#6c757d',
+                  border: 'none',
+                  boxShadow: vistaActiva === 'conductor' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '0.95rem'
+                }}
+                onClick={() => setVistaActiva('conductor')}
+              >
+                <i className="bi bi-car-front-fill me-2 fs-5"></i> Conductor
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -540,6 +540,7 @@ export const MisViajes = () => {
 
 const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
   const viaje = solicitud.viaje;
+  const isEnCurso = viaje?.viajeEstado?.toLowerCase() === 'encurso';
   return (
     <div
       className="card border-0 mb-3"
@@ -558,8 +559,8 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
       }}
     >
       <div className="card-body p-4 position-relative">
-        <div className="row">
-          <div className="col-8 col-md-7">
+        <div className="row align-items-center">
+          <div className="col-5">
             <div className="d-flex">
               <div className="d-flex flex-column align-items-center me-3 mt-1">
                 <div
@@ -642,10 +643,10 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             )}
           </div>
 
-          <div className="col-4 col-md-5 d-flex flex-column align-items-end justify-content-start">
+          <div className="col-4 d-flex flex-column align-items-end justify-content-start align-self-start pt-2">
             <div
               className="text-muted d-flex align-items-center mb-1"
-              style={{ fontSize: '0.9rem' }}
+              style={{ fontSize: '1rem' }}
             >
               <i className="bi bi-calendar3 me-2"></i>
               <span>
@@ -656,7 +657,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             </div>
             <div
               className="text-muted d-flex align-items-center mb-2"
-              style={{ fontSize: '0.9rem' }}
+              style={{ fontSize: '1rem' }}
             >
               <i className="bi bi-clock me-2"></i> <span>{hora}</span>
             </div>
@@ -669,6 +670,38 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
                 style={{ fontSize: '1.1rem' }}
               ></i>{' '}
               {viaje?.viajePrecio}
+            </div>
+          </div>
+
+          <div className="col-3 d-flex justify-content-end align-items-center pe-md-4">
+            <div className="d-flex flex-column align-items-center text-center">
+              {isEnCurso ? (
+                <>
+                  <i
+                    className="bi bi-speedometer2 text-primary"
+                    style={{ fontSize: '2rem' }}
+                  ></i>
+                  <span
+                    className="fw-bold text-primary mt-1"
+                    style={{ fontSize: '0.85rem' }}
+                  >
+                    En curso
+                  </span>
+                </>
+              ) : (
+                <>
+                  <i
+                    className="bi bi-calendar-check-fill text-success"
+                    style={{ fontSize: '2rem' }}
+                  ></i>
+                  <span
+                    className="fw-bold text-success mt-1"
+                    style={{ fontSize: '0.85rem' }}
+                  >
+                    Confirmado
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -685,21 +718,27 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
         <button
           onClick={onCancelar}
           className="btn btn-sm rounded-pill fw-bold px-3 py-1"
+          disabled={isEnCurso}
           style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #dc3545',
-            color: '#dc3545',
-            fontSize: '0.85rem',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-            transition: 'all 0.2s ease',
+             backgroundColor: isEnCurso ? '#e9ecef' : '#ffffff',
+             border: isEnCurso ? '1px solid #ced4da' : '1px solid #dc3545',
+             color: isEnCurso ? '#6c757d' : '#dc3545',
+             fontSize: '0.85rem',
+             boxShadow: isEnCurso ? 'none' : '0 2px 5px rgba(0,0,0,0.1)',
+             transition: 'all 0.2s ease',
+             cursor: isEnCurso ? 'not-allowed' : 'pointer',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#dc3545';
-            e.currentTarget.style.color = '#ffffff';
+            if (!isEnCurso) {
+              e.currentTarget.style.backgroundColor = '#dc3545';
+              e.currentTarget.style.color = '#ffffff';
+            }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#ffffff';
-            e.currentTarget.style.color = '#dc3545';
+            if (!isEnCurso) {
+              e.currentTarget.style.backgroundColor = '#ffffff';
+              e.currentTarget.style.color = '#dc3545';
+            }
           }}
         >
           Cancelar solicitud
@@ -992,34 +1031,49 @@ const TarjetaConductorActivo = ({
             </div>
           </div>
 
-          <div className="col-4 d-flex flex-column align-items-end justify-content-center text-end">
-            {isCompleto ? (
-              <>
-                <i
-                  className="bi bi-check-circle-fill text-success mb-1"
-                  style={{ fontSize: '1.8rem' }}
-                ></i>
-                <span
-                  className="fw-bold text-success"
-                  style={{ fontSize: '0.85rem' }}
-                >
-                  Completo
-                </span>
-              </>
-            ) : (
-              <>
-                <i
-                  className="bi bi-clock-fill mb-1"
-                  style={{ fontSize: '1.8rem', color: colorNaranja }}
-                ></i>
-                <span
-                  className="fw-bold"
-                  style={{ color: colorNaranja, fontSize: '0.85rem' }}
-                >
-                  Aún quedan lugares
-                </span>
-              </>
-            )}
+          <div className="col-4 d-flex justify-content-end align-items-center pe-md-4">
+            <div className="d-flex flex-column align-items-center text-center">
+              {isEnCurso ? (
+                <>
+                  <i
+                    className="bi bi-speedometer2 mb-1 text-primary"
+                    style={{ fontSize: '1.8rem' }}
+                  ></i>
+                  <span
+                    className="fw-bold text-primary"
+                    style={{ fontSize: '0.85rem' }}
+                  >
+                    En curso
+                  </span>
+                </>
+              ) : isCompleto ? (
+                <>
+                  <i
+                    className="bi bi-check-circle-fill text-success mb-1"
+                    style={{ fontSize: '1.8rem' }}
+                  ></i>
+                  <span
+                    className="fw-bold text-success"
+                    style={{ fontSize: '0.85rem' }}
+                  >
+                    Completo
+                  </span>
+                </>
+              ) : (
+                <>
+                  <i
+                    className="bi bi-clock-fill mb-1"
+                    style={{ fontSize: '1.8rem', color: colorNaranja }}
+                  ></i>
+                  <span
+                    className="fw-bold"
+                    style={{ color: colorNaranja, fontSize: '0.85rem', lineHeight: '1.2' }}
+                  >
+                    Aún quedan <br /> lugares
+                  </span>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -1190,7 +1244,7 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
               className="text-muted d-flex align-items-center"
               style={{ fontSize: '0.9rem' }}
             >
-              <span>{hora} AM</span> <i className="bi bi-clock ms-2"></i>
+              <span>{hora} </span> <i className="bi bi-clock ms-2"></i>
             </div>
           </div>
         </div>

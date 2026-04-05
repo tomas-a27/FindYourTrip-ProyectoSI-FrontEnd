@@ -63,7 +63,12 @@ export const EditarUsuario = () => {
   const [passNueva, setPassNueva] = useState('');
   const [passConfirmacion, setPassConfirmacion] = useState('');
 
-  const esTelValido = nuevoValor.length >= 8 && !isNaN(Number(nuevoValor.replace(/\s/g, "")));
+  const telefonoLimpio = nuevoValor.trim();
+
+  const esTelValido =
+    /^\+[0-9\s]+$/.test(telefonoLimpio) &&
+    telefonoLimpio.replace(/\D/g, '').length >= 10;
+
   const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoValor);
 
   const esPassNuevaLarga = passNueva.length >= 8;
@@ -334,7 +339,7 @@ export const EditarUsuario = () => {
                     <input
                       className={`form-control p-2 ${nuevoValor.trim().length === 0 ? 'is-invalid' : 'is-valid'}`}
                       style={nuevoValor.trim().length > 0 ? { backgroundImage: 'none' } : undefined}
-                      placeholder="Nombre"
+                      placeholder="Ej: Juan"
                       value={nuevoValor}
                       onChange={(e) => setNuevoValor(e.target.value)}
                       required
@@ -350,7 +355,7 @@ export const EditarUsuario = () => {
                     <input
                       className={`form-control p-2 ${nuevoApellido.trim().length === 0 ? 'is-invalid' : 'is-valid'}`}
                       style={nuevoApellido.trim().length > 0 ? { backgroundImage: 'none' } : undefined}
-                      placeholder="Apellido"
+                      placeholder="Ej: Perez"
                       value={nuevoApellido}
                       onChange={(e) => setNuevoApellido(e.target.value)}
                       required
@@ -378,14 +383,14 @@ export const EditarUsuario = () => {
                     type='tel'
                     className={`form-control p-2 ${nuevoValor && !esTelValido ? 'is-invalid' : ''} ${nuevoValor && esTelValido ? 'is-valid' : ''}`}
                     style={nuevoValor && esTelValido ? { backgroundImage: 'none' } : undefined}
-                    placeholder="Teléfono"
+                    placeholder="Ej: +541112345678"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
                     required
                   />
                   {nuevoValor && !esTelValido && (
                     <div className="invalid-feedback fw-semibold mt-1">
-                      Debe contener al menos 8 números.
+                      Debe comenzar con + y tener al menos 10 números.
                     </div>
                   )}
                 </div>
@@ -395,7 +400,7 @@ export const EditarUsuario = () => {
                     type="email"
                     className={`form-control p-2 ${nuevoValor && !esEmailValido ? 'is-invalid' : ''} ${nuevoValor && esEmailValido ? 'is-valid' : ''}`}
                     style={nuevoValor && esEmailValido ? { backgroundImage: 'none' } : undefined}
-                    placeholder="Email"
+                    placeholder="Ej: juanperez@gmail.com"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
                     required
