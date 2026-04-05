@@ -236,51 +236,50 @@ export const MisViajes = () => {
       style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}
     >
       <div className="container pt-4 pb-3">
-        <div className="d-flex justify-content-between align-items-center">
+        {/* NUEVO HEADER CON TABS DE SELECCIÓN */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <h2
             className="fw-bold m-0"
-            style={{ color: colorTextoGrisOscuro, fontSize: '1.5rem' }}
+            style={{ color: colorTextoGrisOscuro, fontSize: '1.7rem', letterSpacing: '-0.5px' }}
           >
-            {vistaActiva === 'pasajero'
-              ? 'Mis próximos viajes'
-              : 'Próximos viajes'}
+            Mis Viajes
           </h2>
 
           {isConductorAprobado && (
-            <button
-              className="btn position-relative"
-              style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #ced4da',
-                borderRadius: '8px',
-                padding: '6px 16px',
-                fontWeight: '600',
-                color: colorTextoGrisOscuro,
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = '#f1f8f1')
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = '#ffffff')
-              }
-              onClick={() =>
-                setVistaActiva(
-                  vistaActiva === 'pasajero' ? 'conductor' : 'pasajero',
-                )
-              }
+            <div 
+              className="d-flex p-1 rounded-pill shadow-sm" 
+              style={{ backgroundColor: '#f1f5f9', border: '1px solid #eaeaea' }}
             >
-              Mis viajes
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+              <button
+                className="btn rounded-pill px-3 px-md-4 py-2 fw-bold d-flex align-items-center justify-content-center"
                 style={{
-                  backgroundColor: colorNaranja,
-                  border: '2px solid white',
+                  backgroundColor: vistaActiva === 'pasajero' ? '#ffffff' : 'transparent',
+                  color: vistaActiva === 'pasajero' ? '#2d4a2d' : '#6c757d',
+                  border: 'none',
+                  boxShadow: vistaActiva === 'pasajero' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '0.95rem'
                 }}
+                onClick={() => setVistaActiva('pasajero')}
               >
-                {vistaActiva === 'pasajero' ? 'Conductor' : 'Pasajero'}
-              </span>
-            </button>
+                <i className="bi bi-backpack-fill me-2 fs-5"></i> Pasajero
+              </button>
+              
+              <button
+                className="btn rounded-pill px-3 px-md-4 py-2 fw-bold d-flex align-items-center justify-content-center"
+                style={{
+                  backgroundColor: vistaActiva === 'conductor' ? '#ffffff' : 'transparent',
+                  color: vistaActiva === 'conductor' ? '#2d4a2d' : '#6c757d',
+                  border: 'none',
+                  boxShadow: vistaActiva === 'conductor' ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '0.95rem'
+                }}
+                onClick={() => setVistaActiva('conductor')}
+              >
+                <i className="bi bi-car-front-fill me-2 fs-5"></i> Conductor
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -1028,7 +1027,7 @@ const TarjetaConductorActivo = ({
               className="text-muted d-flex align-items-center"
               style={{ fontSize: '0.9rem' }}
             >
-              <i className="bi bi-clock me-2"></i> {hora}
+              <i className="bi bi-clock me-2"></i> {hora} AM
             </div>
           </div>
 
