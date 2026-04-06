@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { patch } from '../../api/dataManager.ts';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface ModalComenzarFinalizarViajeProps {
   query?: string;
@@ -16,12 +16,12 @@ const ModalComenzarFinalizarViaje = ({
   routeNav,
   onConfirm,
 }: ModalComenzarFinalizarViajeProps) => {
-  const navigate = useNavigate();
-
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleOpenModal = () => {
+    setErrorMessage('');
     setShowModal(true);
   };
   const handleCloseModal = () => {
@@ -36,6 +36,7 @@ const ModalComenzarFinalizarViaje = ({
     }
 
     setIsProcessing(true);
+    setErrorMessage('');
 
     try {
       if (onConfirm) {
@@ -47,7 +48,16 @@ const ModalComenzarFinalizarViaje = ({
         location.reload();
       }
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(
+          (error.response?.data as { message?: string })?.message ||
+            'No se pudo procesar la solicitud.',
+        );
+      } else {
+        setErrorMessage('No se pudo procesar la solicitud.');
+      }
       console.error('Error al procesar', error);
+    } finally {
       setIsProcessing(false);
     }
   }
@@ -107,6 +117,11 @@ const ModalComenzarFinalizarViaje = ({
         </Modal.Header>
         <Modal.Body>
           ¿Estás seguro de que deseas {accion.toLowerCase()} este viaje?
+          {errorMessage && (
+            <div className="alert alert-danger mt-3 mb-0" role="alert">
+              {errorMessage}
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <button
