@@ -281,9 +281,9 @@ export const EditarUsuario = () => {
                 className="usuario-foto-grande mb-0"
               />
 
-              <div className="mt-0">
+              <div className="my-2">
                 <button
-                  className="btn btn-light btn-sm"
+                  className="btn btn-outline-secondary btn-sm"
                   onClick={() => {
                     setCampoSeleccionado('fotoPerfil');
                     setFotoPerfil(null);
