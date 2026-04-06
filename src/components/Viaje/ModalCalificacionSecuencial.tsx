@@ -111,9 +111,9 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
         {(paso === 'estrellas' || paso === 'comentario' || paso === 'reporte') && (
           <div className="animate__animated animate__fadeIn">
             <h5 className="fw-bold mb-1" style={styles.titulo}>¿Cómo calificas al {tipo === 'Conductor' ? 'conductor' : 'pasajero'}?</h5>
-            <h4 className="fw-bold text-success mb-4">{usuarioACalificar.nombre} {usuarioACalificar.apellido}</h4>
+            <h4 className="fw-bold text-success mb-1">{usuarioACalificar.nombre} {usuarioACalificar.apellido}</h4>
 
-            <div className="my-4 d-flex justify-content-center gap-2">
+            <div className="my-2 d-flex justify-content-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <i
                   key={star}
@@ -134,11 +134,8 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
                 ENVIAR
               </button>
 
-              <div className="d-flex gap-2">
-                <button className="btn btn-light w-50 border" onClick={() => setPaso('comentario')}>
-                  DEJAR COMENTARIO
-                </button>
-                <button className="btn btn-light w-50 border text-danger" onClick={() => setPaso('reporte')}>
+              <div className="d-flex justify-content-center">
+                <button className="btn btn-light border text-danger w-100" onClick={() => setPaso('reporte')}>
                   REPORTAR {tipo === 'Conductor' ? 'CONDUCTOR' : 'PASAJERO'}
                 </button>
               </div>
@@ -147,28 +144,12 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
           </div>
         )}
 
-        {paso === 'comentario' && (
-          <div className="animate__animated animate__fadeIn">
-            <h5 className="fw-bold mb-3">Dejar un comentario</h5>
-            <textarea
-              className="form-control border-0 bg-light p-3"
-              rows={4}
-              placeholder="Escribí aquí..."
-              style={{ borderRadius: '12px' }}
-              value={comentario}
-              onChange={(e) => setComentario(e.target.value)}
-            ></textarea>
-            <div className="d-flex gap-2 mt-3">
-              <button className="btn btn-light w-50 border" onClick={() => setPaso('estrellas')}>CANCELAR</button>
-              <button className="btn btn-success w-50 fw-bold" style={styles.btnPrimary} onClick={() => setPaso('estrellas')}>ACEPTAR</button>
-            </div>
-          </div>
-        )}
+
 
         {paso === 'reporte' && (
           <div className="animate__animated animate__fadeIn text-start">
-            <h5 className="fw-bold mb-3 text-center">Motivo de Reporte</h5>
-            <div className="list-group list-group-flush mb-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+            <h5 className="fw-bold mb-2 text-center">Motivo de Reporte</h5>
+            <div className="list-group list-group-flush mb-3" style={{ maxHeight: '130px', overflowY: 'auto' }}>
               {motivosAMostrar.map((m) => (
                 <label key={m} className="list-group-item border-0 d-flex align-items-center gap-2 py-2">
                   <input
@@ -182,9 +163,20 @@ export const ModalCalificacionSecuencial = ({ usuarioACalificar, viajeId, indice
                 </label>
               ))}
             </div>
+            <div className="mb-2">
+              <h6 className="fw-bold mb-1">Comentario (opcional)</h6>
+              <textarea
+                className="form-control border-0 bg-light p-3"
+                rows={3}
+                placeholder={tipo === 'Conductor' ? 'Ej: Adelantó un camión en una curva a 150km/h.' : 'Ej: Mal trato hacia los demás pasajeros.'}
+                style={{ borderRadius: '12px' }}
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+              ></textarea>
+            </div>
             <div className="d-flex gap-2">
-              <button className="btn btn-light w-50 border" onClick={() => { setMotivoReporte(''); setPaso('estrellas') }}>CANCELAR</button>
-              <button className="btn btn-danger w-50 fw-bold" onClick={() => setPaso('estrellas')} disabled={!motivoReporte}>LISTO</button>
+              <button className="btn btn-light w-50 border" onClick={() => { setMotivoReporte(''); setComentario(''); setPaso('estrellas') }}>CANCELAR</button>
+              <button className="btn btn-danger w-50 fw-bold" onClick={handleEnviar} disabled={!motivoReporte || puntos === 0}>ENVIAR</button>
             </div>
           </div>
         )}

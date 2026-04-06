@@ -72,7 +72,7 @@ export const CrearUsuario = () => {
     <>
       <div className="container mt-5 mb-5 d-flex justify-content-center">
         <div
-          className="card custom-card shadow-sm border-0"
+          className="card custom-card shadow-lg border-0"
           style={{ width: '100%', maxWidth: '600px', borderRadius: '15px' }}
         >
           <div className="card-body p-4 p-md-5">

@@ -135,6 +135,28 @@ export const PublicarViaje = () => {
       return;
     }
 
+    // valida que la fecha/hora no haya pasado
+    const ahora = new Date();
+
+    const [anio, mes, dia] = formData.viajeFecha.split('-').map(Number);
+    const [horas, minutos] = formData.viajeHorario.split(':').map(Number);
+
+    const fechaHoraViaje = new Date(
+      anio,
+      mes - 1,
+      dia,
+      horas,
+      minutos,
+      0,
+      0
+    );
+
+    if (fechaHoraViaje <= ahora) {
+      setError('No podés publicar un viaje para una hora que ya pasó.');
+      scrollToTop();
+      return;
+    }
+
     const viajeAPublicar = {
       ...formData,
       usuarioConductor: usuarioCompleto?.idUsuario,
@@ -168,7 +190,7 @@ export const PublicarViaje = () => {
   if (!usuarioCompleto) {
     return (
       <p className="text-center mt-5 text-muted fw-bold">
-        Cargando datos de tu perfil...
+        Cargando...
       </p>
     );
   }
@@ -180,7 +202,7 @@ export const PublicarViaje = () => {
       </h2>
 
       <div
-        className="card shadow-sm border-0 p-4 mx-auto"
+        className="card shadow-lg border-0 p-4 mx-auto"
         style={{ maxWidth: '600px' }}
       >
         {error && <div className="alert alert-danger fw-bold">{error}</div>}
