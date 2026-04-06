@@ -1092,36 +1092,35 @@ const TarjetaConductorActivo = ({
           style={{
             borderTop: '1px solid #eaeaea',
             backgroundColor: '#ffffff',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#f1f5f9';
-            const span = e.currentTarget.querySelector('span');
-            if (span) span.style.textDecoration = 'underline';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#ffffff';
-            const span = e.currentTarget.querySelector('span');
-            if (span) span.style.textDecoration = 'none';
-          }}
-          onClick={() =>
-            onVerSolicitudes(
-              viaje.viajeId,
-              viaje.viajeDestino?.nombre,
-              viaje.viajeOrigen?.nombre,
-              viaje.viajeFecha,
-              viaje.solicitudesAprobadas,
-              viaje.viajeCantLugares,
-            )
-          }
         >
-          <span
-            className="fw-bold"
-            style={{ color: '#0d6efd', fontSize: '0.95rem' }}
+          <button
+            type="button"
+            className="btn p-0 fw-bold text-decoration-underline"
+            style={{
+              color: '#1f5c2f',
+              fontSize: '0.95rem',
+              transition: 'color 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#143c1e';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#1f5c2f';
+            }}
+            onClick={() =>
+              onVerSolicitudes(
+                viaje.viajeId,
+                viaje.viajeDestino?.nombre,
+                viaje.viajeOrigen?.nombre,
+                viaje.viajeFecha,
+                viaje.solicitudesAprobadas,
+                viaje.viajeCantLugares,
+              )
+            }
           >
             Ver pasajeros y solicitudes
-          </span>
+          </button>
         </div>
       </div>
 
