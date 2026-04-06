@@ -20,6 +20,19 @@ export const EditarVehiculo = () => {
   const esCantLugaresValida =
     vehiculoToUpdate.cantLugares >= 1 &&
     vehiculoToUpdate.cantLugares <= 50;
+  
+  const regexLetras = /^[a-zA-Z\sÀ-ÿ]+$/;
+
+  const esMarcaValida =
+    vehiculoToUpdate.marca.trim().length >= 1 &&
+    regexLetras.test(vehiculoToUpdate.marca.trim());
+
+  const esColorValido =
+    vehiculoToUpdate.color.trim().length >= 1 &&
+    regexLetras.test(vehiculoToUpdate.color.trim());
+
+  const esModeloValido =
+    vehiculoToUpdate.modelo.trim().length >= 1;
 
   useEffect(() => {
     if (data) {
@@ -47,61 +60,97 @@ export const EditarVehiculo = () => {
             <h2 className="text-center mb-4">Editar datos de vehículo</h2>
 
             <form className="d-flex flex-column" onSubmit={handleSubmit}>
-              <div className="mb-3 d-flex align-items-center">
-                <label className="form-label text-muted fw-bold me-3 mb-0" style={{width: '150px'}}>
-                  Modelo
-                </label>
-                <input
-                  required
-                  type="text"
-                  className="form-control custom-input"
-                  placeholder="Ej: Etios"
-                  value={vehiculoToUpdate.modelo}
-                  onChange={(e) =>
-                    setVehiculoToUpdate({
-                      ...vehiculoToUpdate,
-                      modelo: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div className="mb-3 d-flex align-items-center">
-                <label className="form-label text-muted fw-bold me-3 mb-0" style={{width: '150px'}}>
+              <div className="mb-3 d-flex">
+                <label
+                  className="form-label text-muted fw-bold me-3 mb-0"
+                  style={{ width: '150px' }}
+                >
                   Marca
                 </label>
-                <input
-                  required
-                  type="text"
-                  className="form-control custom-input"
-                  placeholder="Ej: Toyota"
-                  value={vehiculoToUpdate.marca}
-                  onChange={(e) =>
-                    setVehiculoToUpdate({
-                      ...vehiculoToUpdate,
-                      marca: e.target.value,
-                    })
-                  }
-                />
+
+                <div className="w-100">
+                  <input
+                    required
+                    type="text"
+                    className={`form-control custom-input ${
+                      vehiculoToUpdate.marca && !esMarcaValida ? 'is-invalid' : ''
+                    } ${vehiculoToUpdate.marca && esMarcaValida ? 'is-valid' : ''}`}
+                    placeholder="Ej: Toyota"
+                    value={vehiculoToUpdate.marca}
+                    onChange={(e) =>
+                      setVehiculoToUpdate({
+                        ...vehiculoToUpdate,
+                        marca: e.target.value,
+                      })
+                    }
+                  />
+
+                  {vehiculoToUpdate.marca && !esMarcaValida && (
+                    <div className="invalid-feedback fw-semibold">
+                      Solo letras.
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="mb-3 d-flex align-items-center">
-                <label className="form-label text-muted fw-bold me-3 mb-0" style={{width: '150px'}}>
+              <div className="mb-3 d-flex">
+                <label
+                  className="form-label text-muted fw-bold me-3 mb-0"
+                  style={{ width: '150px' }}
+                >
+                  Modelo
+                </label>
+
+                <div className="w-100">
+                  <input
+                    required
+                    type="text"
+                    className={`form-control custom-input ${
+                      vehiculoToUpdate.modelo && !esModeloValido ? 'is-invalid' : ''
+                    } ${vehiculoToUpdate.modelo && esModeloValido ? 'is-valid' : ''}`}
+                    placeholder="Ej: Etios"
+                    value={vehiculoToUpdate.modelo}
+                    onChange={(e) =>
+                      setVehiculoToUpdate({
+                        ...vehiculoToUpdate,
+                        modelo: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="mb-3 d-flex">
+                <label
+                  className="form-label text-muted fw-bold me-3 mb-0"
+                  style={{ width: '150px' }}
+                >
                   Color
                 </label>
-                <input
-                  required
-                  type="text"
-                  className="form-control custom-input"
-                  placeholder='Ej: gris'
-                  value={vehiculoToUpdate.color}
-                  onChange={(e) =>
-                    setVehiculoToUpdate({
-                      ...vehiculoToUpdate,
-                      color: e.target.value,
-                    })
-                  }
-                />
+
+                <div className="w-100">
+                  <input
+                    required
+                    type="text"
+                    className={`form-control custom-input ${
+                      vehiculoToUpdate.color && !esColorValido ? 'is-invalid' : ''
+                    } ${vehiculoToUpdate.color && esColorValido ? 'is-valid' : ''}`}
+                    placeholder="Ej: gris"
+                    value={vehiculoToUpdate.color}
+                    onChange={(e) =>
+                      setVehiculoToUpdate({
+                        ...vehiculoToUpdate,
+                        color: e.target.value,
+                      })
+                    }
+                  />
+
+                  {vehiculoToUpdate.color && !esColorValido && (
+                    <div className="invalid-feedback fw-semibold">
+                      Solo letras.
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="mb-3 d-flex align-items-center">
@@ -171,7 +220,12 @@ export const EditarVehiculo = () => {
                   <button
                     type="submit"
                     className="btn btn-pastel-green w-100"
-                    disabled={!esCantLugaresValida}
+                    disabled={
+                      !esCantLugaresValida ||
+                      !esMarcaValida ||
+                      !esColorValido ||
+                      !esModeloValido
+                    }
                   >
                     Confirmar
                   </button>

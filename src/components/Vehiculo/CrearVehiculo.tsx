@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { post } from '../../api/dataManager';
 import { useAuth } from '../../auth/AuthContext';
@@ -23,6 +23,12 @@ export const CrearVehiculo = () => {
 
   const esCantLugaresValida =
     cantLugares >= 1 && cantLugares <= 50;
+  
+  const regexLetras = /^[a-zA-Z\sÀ-ÿ]+$/;
+
+  const esMarcaValida = marca.trim().length >= 1 && regexLetras.test(marca.trim());
+  const esColorValido = color.trim().length >= 1 && regexLetras.test(color.trim());
+  const esModeloValido = modelo.trim().length >= 1;
 
   const handleVolver = () => {
     if (userId) {
@@ -90,55 +96,82 @@ export const CrearVehiculo = () => {
           {error && <div className="alert alert-danger fw-bold">{error}</div>}
 
           <form className="d-flex flex-column" onSubmit={handleSubmit}>
-            <div className="mb-3 d-flex align-items-center">
-              <label
-                className="form-label text-muted fw-bold me-3 mb-0"
-                style={{ width: '150px' }}
-              >
-                Modelo
-              </label>
-              <input
-                type="text"
-                className="form-control custom-input"
-                placeholder="Ej: Etios"
-                value={modelo}
-                onChange={(e) => setModelo(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="mb-3 d-flex align-items-center">
+            <div className="mb-3 d-flex">
               <label
                 className="form-label text-muted fw-bold me-3 mb-0"
                 style={{ width: '150px' }}
               >
                 Marca
               </label>
-              <input
-                type="text"
-                className="form-control custom-input"
-                placeholder="Ej: Toyota"
-                value={marca}
-                onChange={(e) => setMarca(e.target.value)}
-                required
-              />
+
+              <div className="w-100">
+                <input
+                  type="text"
+                  className={`form-control custom-input ${
+                    marca && !esMarcaValida ? 'is-invalid' : ''
+                  } ${marca && esMarcaValida ? 'is-valid' : ''}`}
+                  placeholder="Ej: Toyota"
+                  value={marca}
+                  onChange={(e) => setMarca(e.target.value)}
+                  required
+                />
+
+                {marca && !esMarcaValida && (
+                  <div className="invalid-feedback fw-semibold">
+                    Solo letras.
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="mb-3 d-flex align-items-center">
+            <div className="mb-3 d-flex">
+              <label
+                className="form-label text-muted fw-bold me-3 mb-0"
+                style={{ width: '150px' }}
+              >
+                Modelo
+              </label>
+
+              <div className="w-100">
+                <input
+                  type="text"
+                  className={`form-control custom-input ${
+                    modelo && !esModeloValido ? 'is-invalid' : ''
+                  } ${modelo && esModeloValido ? 'is-valid' : ''}`}
+                  placeholder="Ej: Etios"
+                  value={modelo}
+                  onChange={(e) => setModelo(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="mb-3 d-flex">
               <label
                 className="form-label text-muted fw-bold me-3 mb-0"
                 style={{ width: '150px' }}
               >
                 Color
               </label>
-              <input
-                type="text"
-                className="form-control custom-input"
-                placeholder='Ej: gris'
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                required
-              />
+
+              <div className="w-100">
+                <input
+                  type="text"
+                  className={`form-control custom-input ${
+                    color && !esColorValido ? 'is-invalid' : ''
+                  } ${color && esColorValido ? 'is-valid' : ''}`}
+                  placeholder="Ej: gris"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  required
+                />
+
+                {color && !esColorValido && (
+                  <div className="invalid-feedback fw-semibold">
+                    Solo letras.
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="mb-3 d-flex">
@@ -219,7 +252,13 @@ export const CrearVehiculo = () => {
                 <button
                   type="submit"
                   className="btn btn-pastel-green w-100"
-                  disabled={!esPatenteValida || !esCantLugaresValida}
+                  disabled={
+                    !esPatenteValida ||
+                    !esCantLugaresValida ||
+                    !esMarcaValida ||
+                    !esColorValido ||
+                    !esModeloValido
+                  }
                 >
                   Confirmar
                 </button>
