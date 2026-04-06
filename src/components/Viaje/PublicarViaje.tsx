@@ -141,15 +141,7 @@ export const PublicarViaje = () => {
     const [anio, mes, dia] = formData.viajeFecha.split('-').map(Number);
     const [horas, minutos] = formData.viajeHorario.split(':').map(Number);
 
-    const fechaHoraViaje = new Date(
-      anio,
-      mes - 1,
-      dia,
-      horas,
-      minutos,
-      0,
-      0
-    );
+    const fechaHoraViaje = new Date(anio, mes - 1, dia, horas, minutos, 0, 0);
 
     if (fechaHoraViaje <= ahora) {
       setError('No podés publicar un viaje para una hora que ya pasó.');
@@ -188,11 +180,7 @@ export const PublicarViaje = () => {
   const esPrecioValido = formData.viajePrecio > 0;
 
   if (!usuarioCompleto) {
-    return (
-      <p className="text-center mt-5 text-muted fw-bold">
-        Cargando...
-      </p>
-    );
+    return <p className="text-center mt-5 text-muted fw-bold">Cargando...</p>;
   }
 
   return (
@@ -211,7 +199,7 @@ export const PublicarViaje = () => {
           <div className="mb-3">
             <label className="form-label fw-bold">¿En qué vehículo vas?</label>
             <select
-              className="form-select"
+              className="form-select custom-input custom-select"
               required
               value={formData.vehiculo}
               onChange={(e) => {
@@ -343,7 +331,7 @@ export const PublicarViaje = () => {
               <input
                 type="date"
                 min={today}
-                className="form-control"
+                className="form-control custom-input"
                 required
                 onChange={(e) =>
                   setFormData({ ...formData, viajeFecha: e.target.value })
@@ -354,7 +342,7 @@ export const PublicarViaje = () => {
               <label className="form-label fw-bold">Hora aproximada</label>
               <input
                 type="time"
-                className="form-control"
+                className="form-control custom-input"
                 required
                 onChange={(e) =>
                   setFormData({ ...formData, viajeHorario: e.target.value })
@@ -370,7 +358,7 @@ export const PublicarViaje = () => {
                 type="number"
                 min="1"
                 max={cantLugaresDisponibles}
-                className={`form-control ${
+                className={`form-control custom-input ${
                   formData.viajeCantLugares !== undefined &&
                   !esCantLugaresValida
                     ? 'is-invalid'
@@ -409,7 +397,7 @@ export const PublicarViaje = () => {
               <input
                 type="text"
                 inputMode="numeric"
-                className={`form-control ${
+                className={`form-control custom-input ${
                   formData.viajePrecio !== undefined && !esPrecioValido
                     ? 'is-invalid'
                     : ''
@@ -446,7 +434,7 @@ export const PublicarViaje = () => {
 
           <div className="form-check mb-3">
             <input
-              className="form-check-input"
+              className="form-check-input custom-checkbox"
               type="checkbox"
               id="mascotas"
               onChange={(e) =>
@@ -464,7 +452,7 @@ export const PublicarViaje = () => {
           <div className="mb-3">
             <label className="form-label fw-bold">Comentarios (opcional)</label>
             <textarea
-              className="form-control"
+              className="form-control custom-input"
               rows={3}
               style={{ resize: 'none' }}
               placeholder="Ej: No se puede fumar..."

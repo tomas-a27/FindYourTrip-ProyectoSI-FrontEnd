@@ -161,9 +161,17 @@ export const MiCuenta = () => {
                 <span className="fw-medium">{usuario.telefono}</span>
               </div>
 
-              <div className="mb-2 d-flex justify-content-between align-items-center">
+              <div className="mb-2 d-flex justify-content-between align-items-start gap-2">
                 <span className="text-muted small fw-bold">Email</span>
-                <span className="fw-medium ms-2" style={{ maxWidth: '180px' }}>
+                <span
+                  className="fw-medium ms-2 text-end"
+                  style={{
+                    maxWidth: '65%',
+                    whiteSpace: 'normal',
+                    overflowWrap: 'anywhere',
+                    wordBreak: 'break-word',
+                  }}
+                >
                   {usuario.email}
                 </span>
               </div>
@@ -306,10 +314,10 @@ export const MiCuenta = () => {
               className="btn btn-light-cancel w-100 mt-4 py-3 fw-bold rounded-4 shadow-sm"
               style={{ transition: 'all 0.2s ease' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#e2e6ea'; 
+                e.currentTarget.style.backgroundColor = '#e2e6ea';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = ''; 
+                e.currentTarget.style.backgroundColor = '';
               }}
             >
               Cerrar Sesión

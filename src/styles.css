@@ -337,6 +337,28 @@
   min-width: 0;
 }
 
+.btn-enviar-solicitud {
+  background-color: #2d4a2d;
+  border: 2px solid #2d4a2d;
+  color: #ffffff;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.btn-enviar-solicitud:hover:not(:disabled) {
+  background-color: transparent;
+  color: #2d4a2d;
+  border-color: #2d4a2d;
+  transform: translateY(-1px);
+}
+
+.btn-enviar-solicitud:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
 @media (max-width: 575.98px) {
   .mis-viajes-switcher {
     width: 100%;

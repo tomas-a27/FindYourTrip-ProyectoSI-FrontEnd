@@ -8,10 +8,15 @@ import { ModalAlertAviso } from '../ModalAlert';
 export const MostrarViaje = () => {
   const { userId } = useAuth();
 
-  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] =
+    useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
-  const [viajeSeleccionado, setViajeSeleccionado] = useState<ViajeDTO | null>(null);
-  const [disponibilidad, setDisponibilidad] = useState<Record<number, number>>({});
+  const [viajeSeleccionado, setViajeSeleccionado] = useState<ViajeDTO | null>(
+    null,
+  );
+  const [disponibilidad, setDisponibilidad] = useState<Record<number, number>>(
+    {},
+  );
   const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
   const bufferToBase64 = (buffer: any) => {
@@ -46,11 +51,12 @@ export const MostrarViaje = () => {
         viajes.map(async (v) => {
           try {
             const res = await getAsync<any>(`viaje/detalle/${v.viajeId}`);
-            resultados[v.viajeId] = res.data?.data?.lugaresDisponibles ?? v.viajeCantLugares;
+            resultados[v.viajeId] =
+              res.data?.data?.lugaresDisponibles ?? v.viajeCantLugares;
           } catch {
             resultados[v.viajeId] = v.viajeCantLugares;
           }
-        })
+        }),
       );
 
       setDisponibilidad(resultados);
@@ -61,7 +67,7 @@ export const MostrarViaje = () => {
 
   const handleSubmit = async () => {
     if (!viajeSeleccionado) return;
-    
+
     const solicitudViaje = {
       viaje: viajeSeleccionado.viajeId,
       usuario: userId,
@@ -124,7 +130,8 @@ export const MostrarViaje = () => {
         <div className="container mt-4">
           <div className="row">
             {viajes.map((viaje) => {
-              const lugares = disponibilidad[viaje.viajeId] ?? viaje.viajeCantLugares;
+              const lugares =
+                disponibilidad[viaje.viajeId] ?? viaje.viajeCantLugares;
               const sinLugar = lugares <= 0;
 
               return (
@@ -160,7 +167,8 @@ export const MostrarViaje = () => {
                               style={{ fontSize: '0.7rem', padding: '2px 8px' }}
                             >
                               <i className="bi bi-star text-warning me-1"></i>
-                              {viaje.usuarioConductor.calificacionConductor || 'S/C'}
+                              {viaje.usuarioConductor.calificacionConductor ||
+                                'S/C'}
                             </span>
                           </div>
 
@@ -250,7 +258,10 @@ export const MostrarViaje = () => {
                               : 'Sin mascotas'}
                           </div>
                           <div className="fw-bold">
-                            Quedan {disponibilidad[viaje.viajeId] ?? viaje.viajeCantLugares} lugares disponibles
+                            Quedan{' '}
+                            {disponibilidad[viaje.viajeId] ??
+                              viaje.viajeCantLugares}{' '}
+                            lugares disponibles
                           </div>
                         </div>
                       </div>
@@ -265,13 +276,7 @@ export const MostrarViaje = () => {
                         <button
                           type="button"
                           disabled={sinLugar}
-                          className="btn w-100 py-3 fw-bold border-0"
-                          style={{
-                            backgroundColor: sinLugar ? '#ccc' : '#2d4a2d',
-                            borderRadius: '15px',
-                            cursor: sinLugar ? 'not-allowed' : 'pointer',
-                            color: sinLugar ? '#666' : 'white'
-                          }}
+                          className="btn btn-enviar-solicitud w-100 py-3 fw-bold"
                           onClick={() => {
                             if (sinLugar) {
                               return;
@@ -281,7 +286,9 @@ export const MostrarViaje = () => {
                             setMostrarModalConfirmacion(true);
                           }}
                         >
-                          {sinLugar ? 'Sin lugares disponibles' : 'Enviar solicitud'}
+                          {sinLugar
+                            ? 'Sin lugares disponibles'
+                            : 'Enviar solicitud'}
                         </button>
                       </div>
                     </div>
@@ -304,7 +311,6 @@ export const MostrarViaje = () => {
       {mostrarModalConfirmacion && viajeSeleccionado && (
         <div className="modal-overlay">
           <div className="custom-modal text-center">
-
             <h5 className="fw-bold mb-3">
               ¿Desea confirmar envío de solicitud a{' '}
               {viajeSeleccionado.usuarioConductor.nombreUsuario}{' '}
@@ -313,8 +319,8 @@ export const MostrarViaje = () => {
 
             <p className="text-muted mb-4">
               <b>
-                {viajeSeleccionado.viajeFecha.split('-').reverse().join('/')} a las{' '}
-                {viajeSeleccionado.viajeHorario}
+                {viajeSeleccionado.viajeFecha.split('-').reverse().join('/')} a
+                las {viajeSeleccionado.viajeHorario}
               </b>
             </p>
 
@@ -336,7 +342,6 @@ export const MostrarViaje = () => {
                 Enviar
               </button>
             </div>
-
           </div>
         </div>
       )}
@@ -348,7 +353,7 @@ export const MostrarViaje = () => {
               ¡La solicitud ha sido enviada con éxito!
             </h5>
 
-            <button 
+            <button
               className="btn btn-pastel-green w-100"
               onClick={() => navigate('/mis-viajes')}
             >
