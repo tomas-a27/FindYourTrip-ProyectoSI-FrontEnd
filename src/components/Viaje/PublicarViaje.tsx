@@ -135,6 +135,28 @@ export const PublicarViaje = () => {
       return;
     }
 
+    // valida que la fecha/hora no haya pasado
+    const ahora = new Date();
+
+    const [anio, mes, dia] = formData.viajeFecha.split('-').map(Number);
+    const [horas, minutos] = formData.viajeHorario.split(':').map(Number);
+
+    const fechaHoraViaje = new Date(
+      anio,
+      mes - 1,
+      dia,
+      horas,
+      minutos,
+      0,
+      0
+    );
+
+    if (fechaHoraViaje <= ahora) {
+      setError('No podés publicar un viaje para una hora que ya pasó.');
+      scrollToTop();
+      return;
+    }
+
     const viajeAPublicar = {
       ...formData,
       usuarioConductor: usuarioCompleto?.idUsuario,
