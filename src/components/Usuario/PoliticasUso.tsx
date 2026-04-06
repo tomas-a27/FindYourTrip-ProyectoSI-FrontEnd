@@ -16,18 +16,28 @@ export const PoliticasUso = () => {
     <div className="container mt-4 mt-md-5 pb-5">
       <div className="row justify-content-center">
         <div className="col-12 col-md-8 col-lg-7">
-          
-          {/* Header unificado (Flecha + Título) */}
-          <div className="d-flex align-items-center mb-4">
-            <button 
-              onClick={() => navigate(-1)} 
-              className="btn btn-link text-dark p-0 me-3 fs-3" 
-              style={{ textDecoration: 'none' }}
+          <div
+            className="mb-4 d-flex align-items-center"
+            onClick={() => navigate(-1)}
+            style={{ cursor: 'pointer' }}
+          >
+            <div
+              className="bg-success rounded-circle d-flex align-items-center justify-content-center me-2"
+              style={{ width: '24px', height: '24px' }}
             >
-              <i className="bi bi-arrow-left"></i>
-            </button>
-            <h2 className="fw-bold m-0" style={{ color: '#2d4a2d' }}>Políticas de uso</h2>
+              <i className="bi bi-arrow-left text-white fs-9"></i>
+            </div>
+            <span className="fw-bold text-success fs-7">
+              Volver a Mi Cuenta
+            </span>
           </div>
+
+          <h2
+            className="fw-bold m-0 text-center mb-3"
+            style={{ color: '#2d4a2d' }}
+          >
+            Políticas de uso
+          </h2>
 
           {/* Card de contenido */}
           <div className="bg-white rounded-4 shadow-sm border p-4 p-md-5">
