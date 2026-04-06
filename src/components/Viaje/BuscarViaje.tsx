@@ -24,7 +24,8 @@ export const BuscarViaje = () => {
   const [viajeOrigen, setLocalidadOrigen] = useState('');
   const [mostrarSugerenciaOrigen, setMostrarSugerenciaOrigen] = useState(false);
   const [viajeDestino, setLocalidadDestino] = useState('');
-  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] = useState(false);
+  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] =
+    useState(false);
 
   const [mostrarModalAviso, setMostrarModalAviso] = useState(false);
   const [mostrarModalRegistro, setMostrarModalRegistro] = useState(false);
@@ -157,7 +158,9 @@ export const BuscarViaje = () => {
                             setMostrarSugerenciaOrigen(false);
                           }}
                         >
-                          <strong>{l.nombre.substring(0, viajeOrigen.length)}</strong>
+                          <strong>
+                            {l.nombre.substring(0, viajeOrigen.length)}
+                          </strong>
                           {l.nombre.substring(viajeOrigen.length)}
                         </li>
                       ))
@@ -200,7 +203,9 @@ export const BuscarViaje = () => {
                             setMostrarSugerenciaDestino(false);
                           }}
                         >
-                          <strong>{l.nombre.substring(0, viajeDestino.length)}</strong>
+                          <strong>
+                            {l.nombre.substring(0, viajeDestino.length)}
+                          </strong>
                           {l.nombre.substring(viajeDestino.length)}
                         </li>
                       ))
@@ -217,7 +222,7 @@ export const BuscarViaje = () => {
                 <input
                   type="date"
                   min={today}
-                  className="form-control"
+                  className="form-control custom-input"
                   required
                   onChange={(e) =>
                     setFormData({ ...formData, viajeFecha: e.target.value })
@@ -231,7 +236,7 @@ export const BuscarViaje = () => {
                   Género del conductor
                 </label>
                 <select
-                  className="form-control"
+                  className="form-control custom-input"
                   onChange={(e) =>
                     setFormData({
                       ...formData,
