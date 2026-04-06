@@ -236,7 +236,7 @@ export const BuscarViaje = () => {
                   Género del conductor
                 </label>
                 <select
-                  className="form-control custom-input"
+                  className="form-control custom-input custom-select"
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -258,7 +258,7 @@ export const BuscarViaje = () => {
 
                   <input
                     type="checkbox"
-                    className="form-check-input"
+                    className="form-check-input custom-checkbox"
                     id="mascota"
                     checked={formData.mascota}
                     onChange={(e) =>

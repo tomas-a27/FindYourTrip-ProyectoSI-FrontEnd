@@ -48,6 +48,36 @@
   box-shadow: 0 0 0 0.2rem rgba(178, 216, 178, 0.25) !important;
 }
 
+.custom-select:hover {
+  background-color: #f3f8f3;
+  border-color: #cfe3cf;
+}
+
+.custom-select:focus {
+  background-color: #f3f8f3;
+  border-color: #bcdcbc !important;
+}
+
+.custom-checkbox {
+  border: 1px solid #cfe3cf !important;
+  transition: all 0.2s ease;
+}
+
+.custom-checkbox:hover {
+  border-color: #bcdcbc !important;
+  box-shadow: 0 0 0 0.12rem rgba(178, 216, 178, 0.2);
+}
+
+.custom-checkbox:focus {
+  border-color: #bcdcbc !important;
+  box-shadow: 0 0 0 0.2rem rgba(178, 216, 178, 0.25) !important;
+}
+
+.custom-checkbox:checked {
+  background-color: #b2d8b2;
+  border-color: #b2d8b2 !important;
+}
+
 /* La tarjeta con borde completo */
 .custom-card {
   border: 1px solid #e0e0e0;
