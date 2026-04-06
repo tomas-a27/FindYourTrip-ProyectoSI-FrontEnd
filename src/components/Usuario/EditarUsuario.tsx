@@ -12,7 +12,7 @@ export const EditarUsuario = () => {
   if (userId !== Number(id)) {
     return <p className="text-center mt-5">No autorizado</p>;
   }
-  
+
   const { data } = getOne<UsuarioDTO>('usuario/' + id);
 
   const [usuarioToUpdate, setUsuarioToUpdate] = useState<UsuarioDTO>({
@@ -72,7 +72,8 @@ export const EditarUsuario = () => {
   const esEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoValor);
 
   const esPassNuevaLarga = passNueva.length >= 8;
-  const contrasenasCoinciden = passNueva === passConfirmacion && passNueva !== '';
+  const contrasenasCoinciden =
+    passNueva === passConfirmacion && passNueva !== '';
 
   const handleEditar = (campo: string) => {
     setCampoSeleccionado(campo);
@@ -101,7 +102,13 @@ export const EditarUsuario = () => {
     if (campoSeleccionado === 'telefono' && !esTelValido) return;
     if (campoSeleccionado === 'email' && !esEmailValido) return;
 
-    const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, fotoPerfil, ...dataBase } = usuarioToUpdate;
+    const {
+      contrasenaUsuario,
+      contrasenaUsuarioConfirmacion,
+      contrasenaUsuarioActual,
+      fotoPerfil,
+      ...dataBase
+    } = usuarioToUpdate;
 
     try {
       if (campoSeleccionado === 'fotoPerfil') {
@@ -165,7 +172,13 @@ export const EditarUsuario = () => {
     }
 
     try {
-      const { contrasenaUsuario, contrasenaUsuarioConfirmacion, contrasenaUsuarioActual, fotoPerfil, ...dataBase } = usuarioToUpdate;
+      const {
+        contrasenaUsuario,
+        contrasenaUsuarioConfirmacion,
+        contrasenaUsuarioActual,
+        fotoPerfil,
+        ...dataBase
+      } = usuarioToUpdate;
 
       await put(`usuario/${usuarioToUpdate.idUsuario}`, {
         ...dataBase,
@@ -196,12 +209,15 @@ export const EditarUsuario = () => {
   const botonDeshabilitado = () => {
     if (campoSeleccionado === 'telefono') return !esTelValido;
     if (campoSeleccionado === 'email') return !esEmailValido;
-    
+
     if (campoSeleccionado === 'nombreCompleto') {
-      return nuevoValor.trim().length === 0 || nuevoApellido.trim().length === 0;
+      return (
+        nuevoValor.trim().length === 0 || nuevoApellido.trim().length === 0
+      );
     }
-    
-    if (typeof nuevoValor === 'string' && nuevoValor.trim().length === 0) return true;
+
+    if (typeof nuevoValor === 'string' && nuevoValor.trim().length === 0)
+      return true;
 
     return false;
   };
@@ -219,17 +235,20 @@ export const EditarUsuario = () => {
   return (
     <div className="container mt-5 pb-5 mb-5 d-flex justify-content-center">
       <div className="editar-usuario-wrapper">
-
-        <div className="mb-4 d-flex align-items-center"
+        <div
+          className="mb-4 d-flex align-items-center"
           onClick={() => navigate(`/mi-cuenta/${usuarioToUpdate.idUsuario}`)}
-          style={{ cursor: 'pointer' }}>
-          <div className="bg-success rounded-circle d-flex align-items-center justify-content-center me-2"
-            style={{ width: '24px', height: '24px' }}>
+          style={{ cursor: 'pointer' }}
+        >
+          <div
+            className="bg-success rounded-circle d-flex align-items-center justify-content-center me-2"
+            style={{ width: '24px', height: '24px' }}
+          >
             <i className="bi bi-arrow-left text-white fs-9"></i>
           </div>
           <span className="fw-bold text-success fs-7">Volver a Mi Cuenta</span>
         </div>
-        
+
         <h2 className="text-center mb-3">Editar datos de cuenta</h2>
 
         {error && <div className="alert alert-danger">{error}</div>}
@@ -259,7 +278,7 @@ export const EditarUsuario = () => {
                         : ''
                 }
                 alt="Foto de perfil"
-                className='usuario-foto-grande mb-0'
+                className="usuario-foto-grande mb-0"
               />
 
               <div className="mt-0">
@@ -279,9 +298,13 @@ export const EditarUsuario = () => {
           {renderCampo(
             'Nombre',
             `${usuarioToUpdate.nombreUsuario} ${usuarioToUpdate.apellidoUsuario}`,
-            'nombreCompleto'
+            'nombreCompleto',
           )}
-          {renderCampo('Género', usuarioToUpdate.generoUsuario, 'generoUsuario')}
+          {renderCampo(
+            'Género',
+            usuarioToUpdate.generoUsuario,
+            'generoUsuario',
+          )}
           {renderCampo('Teléfono', usuarioToUpdate.telefono, 'telefono')}
           {renderCampo('Email', usuarioToUpdate.email, 'email')}
 
@@ -290,9 +313,11 @@ export const EditarUsuario = () => {
               {renderCampo(
                 'Fecha vencimiento licencia',
                 usuarioToUpdate.vigenciaLicenciaConductorUsuario
-                  ? new Date(usuarioToUpdate.vigenciaLicenciaConductorUsuario).toISOString().split('T')[0]
+                  ? new Date(usuarioToUpdate.vigenciaLicenciaConductorUsuario)
+                      .toISOString()
+                      .split('T')[0]
                   : '',
-                'vigenciaLicenciaConductorUsuario'
+                'vigenciaLicenciaConductorUsuario',
               )}
             </>
           )}
@@ -301,7 +326,9 @@ export const EditarUsuario = () => {
             {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
               <button
                 className="btn btn-outline-secondary"
-                onClick={() => navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)}
+                onClick={() =>
+                  navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)
+                }
               >
                 Ver mis vehículos
               </button>
@@ -324,12 +351,18 @@ export const EditarUsuario = () => {
       {campoSeleccionado && (
         <div className="modal-overlay">
           <div className="custom-modal p-4" style={{ maxWidth: '400px' }}>
-            <button onClick={cerrarModal} className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted">
+            <button
+              onClick={cerrarModal}
+              className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted"
+            >
               <i className="bi bi-x-lg"></i>
             </button>
 
             <h5 className="text-center mb-4 fw-bold text-dark">
-              Actualizar {campoSeleccionado === 'nombreCompleto' ? 'Nombre' : campoSeleccionado}
+              Actualizar{' '}
+              {campoSeleccionado === 'nombreCompleto'
+                ? 'Nombre'
+                : campoSeleccionado}
             </h5>
 
             <form onSubmit={handleSubmit}>
@@ -338,30 +371,44 @@ export const EditarUsuario = () => {
                   <div className="mb-3">
                     <input
                       className={`form-control p-2 ${nuevoValor.trim().length === 0 ? 'is-invalid' : 'is-valid'}`}
-                      style={nuevoValor.trim().length > 0 ? { backgroundImage: 'none' } : undefined}
+                      style={
+                        nuevoValor.trim().length > 0
+                          ? { backgroundImage: 'none' }
+                          : undefined
+                      }
                       placeholder="Ej: Juan"
                       value={nuevoValor}
                       onChange={(e) => setNuevoValor(e.target.value)}
                       required
                     />
                     {nuevoValor.trim().length === 0 && (
-                      <div className="invalid-feedback fw-semibold mt-1" style={{ fontSize: '0.8rem' }}>
+                      <div
+                        className="invalid-feedback fw-semibold mt-1"
+                        style={{ fontSize: '0.8rem' }}
+                      >
                         El nombre no puede estar vacío.
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="mb-3">
                     <input
                       className={`form-control p-2 ${nuevoApellido.trim().length === 0 ? 'is-invalid' : 'is-valid'}`}
-                      style={nuevoApellido.trim().length > 0 ? { backgroundImage: 'none' } : undefined}
+                      style={
+                        nuevoApellido.trim().length > 0
+                          ? { backgroundImage: 'none' }
+                          : undefined
+                      }
                       placeholder="Ej: Perez"
                       value={nuevoApellido}
                       onChange={(e) => setNuevoApellido(e.target.value)}
                       required
                     />
                     {nuevoApellido.trim().length === 0 && (
-                      <div className="invalid-feedback fw-semibold mt-1" style={{ fontSize: '0.8rem' }}>
+                      <div
+                        className="invalid-feedback fw-semibold mt-1"
+                        style={{ fontSize: '0.8rem' }}
+                      >
                         El apellido no puede estar vacío.
                       </div>
                     )}
@@ -380,9 +427,13 @@ export const EditarUsuario = () => {
               ) : campoSeleccionado === 'telefono' ? (
                 <div className="mb-4">
                   <input
-                    type='tel'
+                    type="tel"
                     className={`form-control p-2 ${nuevoValor && !esTelValido ? 'is-invalid' : ''} ${nuevoValor && esTelValido ? 'is-valid' : ''}`}
-                    style={nuevoValor && esTelValido ? { backgroundImage: 'none' } : undefined}
+                    style={
+                      nuevoValor && esTelValido
+                        ? { backgroundImage: 'none' }
+                        : undefined
+                    }
                     placeholder="Ej: +541112345678"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
@@ -399,7 +450,11 @@ export const EditarUsuario = () => {
                   <input
                     type="email"
                     className={`form-control p-2 ${nuevoValor && !esEmailValido ? 'is-invalid' : ''} ${nuevoValor && esEmailValido ? 'is-valid' : ''}`}
-                    style={nuevoValor && esEmailValido ? { backgroundImage: 'none' } : undefined}
+                    style={
+                      nuevoValor && esEmailValido
+                        ? { backgroundImage: 'none' }
+                        : undefined
+                    }
                     placeholder="Ej: juanperez@gmail.com"
                     value={nuevoValor}
                     onChange={(e) => setNuevoValor(e.target.value)}
@@ -416,7 +471,9 @@ export const EditarUsuario = () => {
                   type="file"
                   accept="image/*"
                   className="form-control mb-4 p-2"
-                  onChange={(e) => setFotoPerfilTemp(e.target.files?.[0] || null)}
+                  onChange={(e) =>
+                    setFotoPerfilTemp(e.target.files?.[0] || null)
+                  }
                   required
                 />
               ) : campoSeleccionado === 'vigenciaLicenciaConductorUsuario' ? (
@@ -454,15 +511,22 @@ export const EditarUsuario = () => {
       {mostrarModalPass && (
         <div className="modal-overlay">
           <div className="custom-modal p-4" style={{ maxWidth: '400px' }}>
-            <button onClick={() => setMostrarModalPass(false)} className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted">
+            <button
+              onClick={() => setMostrarModalPass(false)}
+              className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted"
+            >
               <i className="bi bi-x-lg"></i>
             </button>
 
-            <h5 className="text-center mb-4 fw-bold text-dark">Modificar contraseña</h5>
+            <h5 className="text-center mb-4 fw-bold text-dark">
+              Modificar contraseña
+            </h5>
 
             <form onSubmit={handleCambiarPassword}>
               <div className="mb-3">
-                <label className="text-muted small fw-bold mb-1">Contraseña Actual</label>
+                <label className="text-muted small fw-bold mb-1">
+                  Contraseña Actual
+                </label>
                 <input
                   type="password"
                   className="form-control p-2"
@@ -473,34 +537,52 @@ export const EditarUsuario = () => {
               </div>
 
               <div className="mb-3">
-                <label className="text-muted small fw-bold mb-1">Nueva Contraseña</label>
+                <label className="text-muted small fw-bold mb-1">
+                  Nueva Contraseña
+                </label>
                 <input
                   type="password"
                   className={`form-control p-2 ${passNueva && !esPassNuevaLarga ? 'is-invalid' : ''} ${passNueva && esPassNuevaLarga ? 'is-valid' : ''}`}
-                  style={passNueva && esPassNuevaLarga ? { backgroundImage: 'none' } : undefined}
+                  style={
+                    passNueva && esPassNuevaLarga
+                      ? { backgroundImage: 'none' }
+                      : undefined
+                  }
                   value={passNueva}
                   onChange={(e) => setPassNueva(e.target.value)}
                   required
                 />
                 {passNueva && !esPassNuevaLarga && (
-                  <div className="invalid-feedback fw-semibold" style={{ fontSize: '0.8rem' }}>
+                  <div
+                    className="invalid-feedback fw-semibold"
+                    style={{ fontSize: '0.8rem' }}
+                  >
                     Mínimo 8 caracteres.
                   </div>
                 )}
               </div>
 
               <div className="mb-4">
-                <label className="text-muted small fw-bold mb-1">Repetir Nueva Contraseña</label>
+                <label className="text-muted small fw-bold mb-1">
+                  Repetir Nueva Contraseña
+                </label>
                 <input
                   type="password"
                   className={`form-control p-2 ${passConfirmacion && !contrasenasCoinciden ? 'is-invalid' : ''} ${passConfirmacion && contrasenasCoinciden ? 'is-valid' : ''}`}
-                  style={passConfirmacion && contrasenasCoinciden ? { backgroundImage: 'none' } : undefined}
+                  style={
+                    passConfirmacion && contrasenasCoinciden
+                      ? { backgroundImage: 'none' }
+                      : undefined
+                  }
                   value={passConfirmacion}
                   onChange={(e) => setPassConfirmacion(e.target.value)}
                   required
                 />
                 {passConfirmacion && !contrasenasCoinciden && (
-                  <div className="invalid-feedback fw-semibold" style={{ fontSize: '0.8rem' }}>
+                  <div
+                    className="invalid-feedback fw-semibold"
+                    style={{ fontSize: '0.8rem' }}
+                  >
                     Las contraseñas no coinciden.
                   </div>
                 )}
@@ -510,7 +592,9 @@ export const EditarUsuario = () => {
                 <button
                   type="submit"
                   className="btn btn-success py-2 fw-bold shadow-sm"
-                  disabled={!esPassNuevaLarga || !contrasenasCoinciden || !passActual}
+                  disabled={
+                    !esPassNuevaLarga || !contrasenasCoinciden || !passActual
+                  }
                 >
                   Actualizar Contraseña
                 </button>

@@ -328,3 +328,29 @@
   background-color: #f7fbf7;
   border-radius: 8px;
 }
+
+.mis-viajes-switcher {
+  min-width: min(100%, 360px);
+}
+
+.mis-viajes-switcher-btn {
+  min-width: 0;
+}
+
+@media (max-width: 575.98px) {
+  .mis-viajes-switcher {
+    width: 100%;
+    border-radius: 18px !important;
+  }
+
+  .mis-viajes-switcher-btn {
+    width: 100%;
+    font-size: 0.92rem;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .mis-viajes-switcher-btn i {
+    font-size: 1.1rem !important;
+  }
+}
