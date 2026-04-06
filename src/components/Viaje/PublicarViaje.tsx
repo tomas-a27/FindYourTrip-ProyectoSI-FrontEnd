@@ -180,7 +180,7 @@ export const PublicarViaje = () => {
       </h2>
 
       <div
-        className="card shadow-sm border-0 p-4 mx-auto"
+        className="card shadow-lg border-0 p-4 mx-auto"
         style={{ maxWidth: '600px' }}
       >
         {error && <div className="alert alert-danger fw-bold">{error}</div>}
