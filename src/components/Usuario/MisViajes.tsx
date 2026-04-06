@@ -1027,7 +1027,7 @@ const TarjetaConductorActivo = ({
               className="text-muted d-flex align-items-center"
               style={{ fontSize: '0.9rem' }}
             >
-              <i className="bi bi-clock me-2"></i> {hora} AM
+              <i className="bi bi-clock me-2"></i> {hora}
             </div>
           </div>
 
