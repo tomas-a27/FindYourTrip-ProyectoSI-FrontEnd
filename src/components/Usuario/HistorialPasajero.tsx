@@ -170,40 +170,37 @@ const TarjetaHistorialPasajero = ({
         <div className="row p-4 align-items-start">
           {/* Izquierda: Ruta y conductor */}
           <div className="col-7">
-            <div className="d-flex">
-              <div className="d-flex flex-column align-items-center me-3 mt-1">
-                <div
+            <div
+              className="d-flex flex-column gap-3 ms-2"
+              style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '20px' }}
+            >
+              <div className="position-relative">
+                <i
+                  className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success"
                   style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
+                    fontSize: '1.2rem',
+                    marginLeft: '-20px',
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
                   }}
-                ></div>
-                <div
-                  style={{
-                    width: '2px',
-                    height: '35px',
-                    backgroundColor: '#555',
-                    margin: '2px 0',
-                  }}
-                ></div>
-                <div
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    border: '2px solid #555',
-                  }}
-                ></div>
-              </div>
-              <div>
+                ></i>
                 <h5
-                  className="fw-bold m-0 text-dark mb-3"
+                  className="fw-bold m-0 text-dark"
                   style={{ fontSize: '1.1rem' }}
                 >
                   {viaje?.viajeOrigen?.nombre}
                 </h5>
+              </div>
+              <div className="position-relative">
+                <i
+                  className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger"
+                  style={{
+                    fontSize: '1.2rem',
+                    marginLeft: '-20px',
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
+                  }}
+                ></i>
                 <h5
                   className="fw-bold m-0 text-dark"
                   style={{ fontSize: '1.1rem' }}
