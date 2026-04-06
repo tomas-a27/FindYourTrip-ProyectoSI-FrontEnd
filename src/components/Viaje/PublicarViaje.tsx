@@ -168,7 +168,7 @@ export const PublicarViaje = () => {
   if (!usuarioCompleto) {
     return (
       <p className="text-center mt-5 text-muted fw-bold">
-        Cargando datos de tu perfil...
+        Cargando...
       </p>
     );
   }
