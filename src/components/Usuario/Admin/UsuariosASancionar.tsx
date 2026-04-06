@@ -7,7 +7,9 @@ export const UsuariosASancionar = () => {
   const { data, loading, error } = get<any>('sancion/usuarios-a-sancionar');
 
   const [usuarios, setUsuarios] = useState<any[]>([]);
-  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<number | null>(null);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     if (data) {
@@ -17,7 +19,9 @@ export const UsuariosASancionar = () => {
 
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
-    const binary = buffer.data.map((b: number) => String.fromCharCode(b)).join('');
+    const binary = buffer.data
+      .map((b: number) => String.fromCharCode(b))
+      .join('');
     return `data:image/jpeg;base64,${btoa(binary)}`;
   };
 
@@ -38,20 +42,19 @@ export const UsuariosASancionar = () => {
         </Link>
       </div>
 
-      <h2 style={{ color: '#2d4a2d' }}>
-        Sancionar usuarios
-      </h2>
+      <h2 style={{ color: '#2d4a2d' }}>Sancionar usuarios</h2>
 
       <hr className="mb-3" />
 
       {error && <div className="alert alert-danger">{error}</div>}
 
       {usuarios.length === 0 ? (
-        <p className="text-muted">
-          No hay usuarios a sancionar
-        </p>
+        <p className="text-muted p-4 mb-0">No hay usuarios a sancionar</p>
       ) : (
-        <div>
+        <div
+          className="card border-0 shadow-sm px-4"
+          style={{ borderRadius: '16px', overflow: 'hidden' }}
+        >
           {usuarios.map((u, index) => (
             <div key={u.idUsuario}>
               <div className="d-flex align-items-center justify-content-between py-3 list-hover">
@@ -67,21 +70,39 @@ export const UsuariosASancionar = () => {
                       <span style={{ fontSize: '0.7rem' }}>Sin foto</span>
                     </div>
                   )}
-                  
+
                   <div className="d-flex w-100">
                     <div className="d-flex flex-column usuario-col">
-                      <span><b>Nombre:</b> {u.nombre}</span>
-                      <span><b>Apellido:</b> {u.apellido}</span>
+                      <span>
+                        <b>Nombre:</b> {u.nombre}
+                      </span>
+                      <span>
+                        <b>Apellido:</b> {u.apellido}
+                      </span>
                     </div>
 
-                    <div className="d-flex flex-column usuario-col" style={{ marginLeft: '150px' }}>
-                      <span><b>Tipo usuario:</b> {u.tipoUsuario}</span>
-                      <span><b>Cant reportes:</b> {u.cantidadReportes}</span>
+                    <div
+                      className="d-flex flex-column usuario-col"
+                      style={{ marginLeft: '150px' }}
+                    >
+                      <span>
+                        <b>Tipo usuario:</b> {u.tipoUsuario}
+                      </span>
+                      <span>
+                        <b>Cant reportes:</b> {u.cantidadReportes}
+                      </span>
                     </div>
 
-                    <div className="d-flex flex-column usuario-col" style={{ marginLeft: '200px' }}>
-                      <span><b>Email:</b> {u.email}</span>
-                      <span><b>Teléfono:</b> {u.telefono}</span>
+                    <div
+                      className="d-flex flex-column usuario-col"
+                      style={{ marginLeft: '200px' }}
+                    >
+                      <span>
+                        <b>Email:</b> {u.email}
+                      </span>
+                      <span>
+                        <b>Teléfono:</b> {u.telefono}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -96,7 +117,7 @@ export const UsuariosASancionar = () => {
                   </button>
                 </div>
               </div>
-              
+
               {index < usuarios.length - 1 && <hr className="my-2" />}
             </div>
           ))}
