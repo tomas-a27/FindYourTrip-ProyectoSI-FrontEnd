@@ -84,26 +84,18 @@ const ModalComenzarFinalizarViaje = ({
             e.currentTarget.style.color = '#0d6efd';
           }}
         >
-          COMENZAR VIAJE
+          Comenzar viaje
         </button>
       ) : (
         <button
-          className="btn btn-success w-50 rounded-pill fw-bold py-2 shadow-sm"
+          className="btn btn-custom-outline w-50 rounded-pill fw-bold py-2 shadow-sm"
           onClick={handleOpenModal}
           style={{
             fontSize: '0.95rem',
-            backgroundColor: '#2d4a2d',
-            border: 'none',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#1e331e'; // Hover verde oscuro
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#2d4a2d'; // Vuelve a su color normal
+            letterSpacing: '0.2px',
           }}
         >
-          FINALIZAR VIAJE
+          Finalizar viaje
         </button>
       )}
 
