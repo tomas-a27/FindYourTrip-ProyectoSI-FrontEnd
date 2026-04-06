@@ -161,15 +161,17 @@ export const MiCuenta = () => {
                 <span className="fw-medium">{usuario.telefono}</span>
               </div>
 
-              <div className="mb-2 d-flex justify-content-between align-items-start gap-2">
+              <div className="mb-2 d-flex justify-content-between align-items-center gap-2">
                 <span className="text-muted small fw-bold">Email</span>
                 <span
                   className="fw-medium ms-2 text-end"
+                  title={usuario.email}
                   style={{
                     maxWidth: '65%',
-                    whiteSpace: 'normal',
-                    overflowWrap: 'anywhere',
-                    wordBreak: 'break-word',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
                   {usuario.email}
