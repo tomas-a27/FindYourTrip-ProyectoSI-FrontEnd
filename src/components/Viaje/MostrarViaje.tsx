@@ -113,8 +113,13 @@ export const MostrarViaje = () => {
       </div>
 
       {!loadingViajes && !errorViajes && viajes?.length === 0 && (
-        <div className="alert alert-info">No hay viajes disponibles.</div>
+        <div className="container mt-4">
+          <div className="alert alert-success bg-success-subtle border border-success-subtle text-center text-success-emphasis rounded-4">
+            No hay viajes disponibles.
+          </div>
+        </div>
       )}
+
       {!loadingViajes && !errorViajes && viajes?.length > 0 && (
         <div className="container mt-4">
           <div className="row">
