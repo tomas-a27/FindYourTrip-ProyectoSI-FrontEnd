@@ -116,7 +116,7 @@ export const SolicitarConductor = () => {
         </div>
       )}
 
-      <div className="card custom-card shadow-sm w-100 border-0" style={{ maxWidth: '700px', borderRadius: '15px' }}>
+      <div className="card custom-card shadow-lg w-100 border-0" style={{ maxWidth: '700px', borderRadius: '15px' }}>
         <div className="card-body p-4 p-md-5">
           <h2 className="text-center mb-2 fw-bold" style={{ color: '#2d4a2d' }}>Convertite en Conductor </h2>
           <p className="text-center text-muted mb-4">

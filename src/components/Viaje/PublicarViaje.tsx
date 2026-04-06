@@ -22,7 +22,8 @@ export const PublicarViaje = () => {
   const [localidadOrigen, setLocalidadOrigen] = useState('');
   const [mostrarSugerenciaOrigen, setMostrarSugerenciaOrigen] = useState(false);
   const [localidadDestino, setLocalidadDestino] = useState('');
-  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] = useState(false);
+  const [mostrarSugerenciaDestino, setMostrarSugerenciaDestino] =
+    useState(false);
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
@@ -59,7 +60,9 @@ export const PublicarViaje = () => {
 
     // Validamos que el usuario sea conductor aprobado antes de mostrar el formulario
     if (usuarioCompleto.estadoConductor?.toLowerCase() === 'pendiente') {
-      setMensajeModal('Usted podrá publicar un viaje una vez que su solicitud sea aprobada.');
+      setMensajeModal(
+        'Usted podrá publicar un viaje una vez que su solicitud sea aprobada.',
+      );
       setRutaModal('/home');
       setMostrarModal(true);
       return;
@@ -70,7 +73,9 @@ export const PublicarViaje = () => {
       usuarioCompleto.tipoUsuario?.toLowerCase() !== 'conductor' &&
       usuarioCompleto.estadoConductor?.toLowerCase() !== 'aprobado'
     ) {
-      setMensajeModal('Debes registrarte y ser aprobado como conductor para publicar viajes.');
+      setMensajeModal(
+        'Debes registrarte y ser aprobado como conductor para publicar viajes.',
+      );
       setRutaModal('/home');
       setMostrarModal(true);
       return;
@@ -78,7 +83,9 @@ export const PublicarViaje = () => {
 
     //Validamos que haya localidades cargadas para mostrar el formulario
     if (!cargandoLocs && (!localidades || localidades.length === 0)) {
-      setMensajeModal('No hay localidades disponibles. Por favor, contacta al administrador.');
+      setMensajeModal(
+        'No hay localidades disponibles. Por favor, contacta al administrador.',
+      );
       setRutaModal('/home');
       setMostrarModal(true);
       return;
@@ -86,7 +93,9 @@ export const PublicarViaje = () => {
 
     // Verificamos que tenga vehículos registrados
     if (!usuarioCompleto.vehiculos || usuarioCompleto.vehiculos.length === 0) {
-      setMensajeModal('Primero debés registrar un vehículo para publicar un viaje.');
+      setMensajeModal(
+        'Primero debés registrar un vehículo para publicar un viaje.',
+      );
       setRutaModal('/crear-vehiculo');
       setMostrarModal(true);
       return;
@@ -119,7 +128,9 @@ export const PublicarViaje = () => {
     }
 
     if (formData.viajeCantLugares > cantLugaresDisponibles) {
-      setError('La cantidad de lugares debe ser menor o igual que la cantidad de lugares del vehículo.');
+      setError(
+        'La cantidad de lugares debe ser menor o igual que la cantidad de lugares del vehículo.',
+      );
       scrollToTop();
       return;
     }
@@ -151,13 +162,13 @@ export const PublicarViaje = () => {
   const esCantLugaresValida =
     formData.viajeCantLugares > 0 &&
     formData.viajeCantLugares <= cantLugaresDisponibles;
-  
+
   const esPrecioValido = formData.viajePrecio > 0;
 
   if (!usuarioCompleto) {
     return (
       <p className="text-center mt-5 text-muted fw-bold">
-        Cargando datos de tu perfil...
+        Cargando...
       </p>
     );
   }
@@ -169,7 +180,7 @@ export const PublicarViaje = () => {
       </h2>
 
       <div
-        className="card shadow-sm border-0 p-4 mx-auto"
+        className="card shadow-lg border-0 p-4 mx-auto"
         style={{ maxWidth: '600px' }}
       >
         {error && <div className="alert alert-danger fw-bold">{error}</div>}
@@ -338,12 +349,11 @@ export const PublicarViaje = () => {
                 min="1"
                 max={cantLugaresDisponibles}
                 className={`form-control ${
-                  formData.viajeCantLugares !== undefined && !esCantLugaresValida
+                  formData.viajeCantLugares !== undefined &&
+                  !esCantLugaresValida
                     ? 'is-invalid'
                     : ''
-                } ${
-                  esCantLugaresValida ? 'is-valid' : ''
-                }`}
+                } ${esCantLugaresValida ? 'is-valid' : ''}`}
                 value={formData.viajeCantLugares}
                 required
                 onChange={(e) => {
@@ -371,7 +381,9 @@ export const PublicarViaje = () => {
               )}
             </div>
             <div className="col-6 mb-3">
-              <label className="form-label fw-bold">Precio por pasajero ($)</label>
+              <label className="form-label fw-bold">
+                Precio por pasajero ($)
+              </label>
               <input
                 type="text"
                 inputMode="numeric"
@@ -452,8 +464,7 @@ export const PublicarViaje = () => {
 
             <button
               type="submit"
-              className="btn btn-success w-50 py-2 fw-bold"
-              style={{ backgroundColor: '#2d4a2d' }}
+              className="btn btn-pastel-green w-50 shadow-sm"
               disabled={!esCantLugaresValida}
             >
               Publicar Viaje

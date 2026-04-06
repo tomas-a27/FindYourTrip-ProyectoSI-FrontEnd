@@ -118,7 +118,7 @@ export const BuscarViaje = () => {
           style={{
             borderRadius: '0.5rem',
             overflow: 'hidden',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
             padding: '20px',
           }}
         >
