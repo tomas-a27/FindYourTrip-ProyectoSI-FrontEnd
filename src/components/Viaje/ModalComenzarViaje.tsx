@@ -62,18 +62,18 @@ const ModalComenzarFinalizarViaje = ({
           onClick={handleOpenModal}
           style={{
             backgroundColor: '#ffffff',
-            border: '2px solid #0dcaf0',
-            color: '#0d6efd',
+            border: '2px solid #1f5c2f',
+            color: '#1f5c2f',
             fontSize: '0.95rem',
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#0dcaf0';
+            e.currentTarget.style.backgroundColor = '#1f5c2f';
             e.currentTarget.style.color = '#ffffff';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = '#ffffff';
-            e.currentTarget.style.color = '#0d6efd';
+            e.currentTarget.style.color = '#1f5c2f';
           }}
         >
           COMENZAR VIAJE
@@ -108,7 +108,7 @@ const ModalComenzarFinalizarViaje = ({
               {isComenzar ? (
                 <i
                   className="bi bi-car-front-fill"
-                  style={{ fontSize: '3rem', color: '#0dcaf0' }}
+                  style={{ fontSize: '3rem', color: '#1f5c2f' }} // <-- AHORA ES VERDE
                 ></i>
               ) : (
                 <i
@@ -135,7 +135,7 @@ const ModalComenzarFinalizarViaje = ({
                 disabled={loading} 
                 className="btn py-2 fw-bold rounded-3 shadow-sm text-white d-flex justify-content-center align-items-center"
                 style={{ 
-                  backgroundColor: isComenzar ? '#0dcaf0' : '#2d4a2d',
+                  backgroundColor: isComenzar ? '#1f5c2f' : '#2d4a2d', // <-- AHORA ES VERDE
                   border: 'none'
                 }}
               >

@@ -970,20 +970,27 @@ const TarjetaConductorActivo = ({
 
   return (
     <div
-      className="mb-4 card border-0"
+      className="mb-4 card"
       style={{
         borderRadius: '16px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        border: isEnCurso ? '2px solid #1f5c2f' : '0px solid transparent',
+        boxShadow: isEnCurso 
+          ? '0 4px 15px rgba(31, 92, 47, 0.15)' 
+          : '0 4px 12px rgba(0,0,0,0.05)',
         overflow: 'hidden',
         transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+        e.currentTarget.style.boxShadow = isEnCurso
+          ? '0 8px 25px rgba(31, 92, 47, 0.25)'
+          : '0 8px 24px rgba(0,0,0,0.12)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
+        e.currentTarget.style.boxShadow = isEnCurso
+          ? '0 4px 15px rgba(31, 92, 47, 0.15)'
+          : '0 4px 12px rgba(0,0,0,0.05)';
       }}
     >
       <div className="card-body p-0">
@@ -1004,7 +1011,7 @@ const TarjetaConductorActivo = ({
                   }}
                 ></i>
                 <h5
-                  className="fw-bold m-0 text-dark"
+                  className="fw-bold m-0 text-dark mb-3"
                   style={{ fontSize: '1.1rem' }}
                 >
                   {viaje?.viajeOrigen?.nombre}
@@ -1084,11 +1091,7 @@ const TarjetaConductorActivo = ({
                   ></i>
                   <span
                     className="fw-bold"
-                    style={{
-                      color: colorNaranja,
-                      fontSize: '0.85rem',
-                      lineHeight: '1.2',
-                    }}
+                    style={{ color: colorNaranja, fontSize: '0.85rem', lineHeight: '1.2' }}
                   >
                     Aún quedan <br /> lugares
                   </span>
@@ -1098,26 +1101,24 @@ const TarjetaConductorActivo = ({
           </div>
         </div>
 
-        <div
-          className="w-100 text-center py-3"
-          style={{
-            borderTop: '1px solid #eaeaea',
-            backgroundColor: '#ffffff',
-          }}
-        >
-          <button
-            type="button"
-            className="btn p-0 fw-bold text-decoration-underline"
+        {!isEnCurso && (
+          <div
+            className="w-100 text-center py-3"
             style={{
-              color: '#1f5c2f',
-              fontSize: '0.95rem',
-              transition: 'color 0.2s ease',
+              borderTop: '1px solid #eaeaea',
+              backgroundColor: '#ffffff',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#143c1e';
+              e.currentTarget.style.backgroundColor = '#f1f5f9';
+              const span = e.currentTarget.querySelector('span');
+              if (span) span.style.textDecoration = 'underline';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#1f5c2f';
+              e.currentTarget.style.backgroundColor = '#ffffff';
+              const span = e.currentTarget.querySelector('span');
+              if (span) span.style.textDecoration = 'none';
             }}
             onClick={() =>
               onVerSolicitudes(
@@ -1130,12 +1131,17 @@ const TarjetaConductorActivo = ({
               )
             }
           >
-            Ver pasajeros y solicitudes
-          </button>
-        </div>
+            <span
+              className="fw-bold"
+              style={{ color: '#1f5c2f', fontSize: '0.95rem' }}
+            >
+              Ver pasajeros y solicitudes
+            </span>
+          </div>
+        )}
       </div>
 
-      <div className="d-flex p-3 pt-0 gap-3">
+      <div className={`d-flex p-3 gap-3 ${isEnCurso ? 'pt-3 border-top' : 'pt-0'}`}>
         <button
           onClick={onCancelar}
           className="btn w-50 rounded-pill fw-bold py-2"
