@@ -203,12 +203,17 @@ export const CrearVehiculo = () => {
             </div>
 
             <div className="mb-3 d-flex">
-              <label
-                className="form-label text-muted fw-bold me-3 mb-0"
-                style={{ width: '150px' }}
-              >
-                Cantidad de lugares
-              </label>
+              <div style={{ width: '150px' }} className="me-3">
+                <label
+                  className="form-label text-muted fw-bold me-3 mb-0"
+                  style={{ width: '150px' }}
+                >
+                  Cantidad de lugares
+                </label>
+                <small className="text-muted d-block" style={{ fontSize: '0.8rem' }}>
+                  (sin contar al conductor)
+                </small>
+              </div>
 
               <div className="w-100">
                 <input
