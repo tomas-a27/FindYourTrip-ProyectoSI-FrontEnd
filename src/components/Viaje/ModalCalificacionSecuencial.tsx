@@ -11,6 +11,7 @@ interface Props {
     viajeDestino?: string;
     viajeFecha?: string;
     cancelacionTardia?: boolean; 
+    fotoPerfil?: any; // <-- AGREGAMOS LA FOTO
   };
   viajeId: number | null;
   indice: number;
@@ -59,6 +60,16 @@ export const ModalCalificacionSecuencial = ({
   const [comentario, setComentario] = useState('');
   const [motivoReporte, setMotivoReporte] = useState('');
   const [mostrandoExito, setMostrandoExito] = useState(false);
+
+  // Función para procesar la foto de perfil
+  const bufferToBase64 = (buffer: any) => {
+    if (!buffer?.data)
+      return `https://ui-avatars.com/api/?name=${usuarioACalificar.nombre}+${usuarioACalificar.apellido}&background=random`;
+    const binary = buffer.data
+      .map((byte: number) => String.fromCharCode(byte))
+      .join('');
+    return `data:image/jpeg;base64,${btoa(binary)}`;
+  };
 
   const finalizarPaso = () => {
     setMostrandoExito(false);
@@ -112,7 +123,7 @@ export const ModalCalificacionSecuencial = ({
             <p className="text-muted small">Reporte enviado: {motivoReporte}</p>
           )}
           <button
-            className="btn btn-success w-100 mt-4 py-2 fw-bold"
+            className="btn w-100 mt-4 py-2 fw-bold"
             style={styles.btnPrimary}
             onClick={finalizarPaso}
           >
@@ -140,19 +151,16 @@ export const ModalCalificacionSecuencial = ({
         {(paso === 'estrellas' ||
           paso === 'comentario' ||
           paso === 'reporte') && (
-          <div className="animate__animated animate__fadeIn">
+          <div className="animate__animated animate__fadeIn text-center">
             
             {/* CAJA CON LOS DATOS DEL VIAJE */}
             {(usuarioACalificar.viajeOrigen && usuarioACalificar.viajeDestino) && (
-              <div className="mb-3 p-2 rounded-3 text-start position-relative" style={{ backgroundColor: '#f8f9fa', border: '1px solid #eaeaea' }}>
-                
-                {/* ETIQUETA ROJA SI FUE CANCELADO */}
+              <div className="mb-4 p-2 rounded-3 text-start position-relative" style={{ backgroundColor: '#f8f9fa', border: '1px solid #eaeaea' }}>
                 {usuarioACalificar.cancelacionTardia && (
                   <span className="badge bg-danger position-absolute top-0 end-0 m-2 shadow-sm">
                     Viaje Cancelado
                   </span>
                 )}
-
                 <p className="m-0 text-muted fw-bold pe-5" style={{ fontSize: '0.85rem' }}>
                   <i className="bi bi-geo-alt-fill text-success me-1"></i> {usuarioACalificar.viajeOrigen} a {usuarioACalificar.viajeDestino}
                 </p>
@@ -163,18 +171,35 @@ export const ModalCalificacionSecuencial = ({
             )}
 
             {/* TÍTULO DINÁMICO */}
-            <h5 className="fw-bold mb-1" style={styles.titulo}>
+            <h5 className="fw-bold mb-3" style={styles.titulo}>
               {usuarioACalificar.cancelacionTardia 
                 ? `Calificación por cancelación al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}:` 
                 : `¿Cómo calificas al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}?`
               }
             </h5>
 
-            <h4 className="fw-bold text-success mb-1">
-              {usuarioACalificar.nombre} {usuarioACalificar.apellido}
-            </h4>
+            {/* FOTO DE PERFIL Y NOMBRE */}
+            <div className="d-flex flex-column align-items-center justify-content-center mb-3">
+              <img
+                src={bufferToBase64(usuarioACalificar.fotoPerfil)}
+                alt="Avatar"
+                style={{
+                  width: '75px',
+                  height: '75px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '3px solid #1f5c2f',
+                  padding: '2px'
+                }}
+                className="mb-2 shadow-sm"
+              />
+              <h4 className="fw-bold text-success m-0">
+                {usuarioACalificar.nombre} {usuarioACalificar.apellido}
+              </h4>
+            </div>
 
-            <div className="my-2 d-flex justify-content-center gap-2">
+            {/* ESTRELLAS */}
+            <div className="my-3 d-flex justify-content-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <i
                   key={star}
@@ -187,6 +212,7 @@ export const ModalCalificacionSecuencial = ({
                 ></i>
               ))}
             </div>
+
             {paso === 'estrellas' && (
               <>
                 <button
