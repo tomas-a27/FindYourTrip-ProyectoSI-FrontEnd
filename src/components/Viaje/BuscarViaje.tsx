@@ -177,7 +177,7 @@ export const BuscarViaje = () => {
                   type="text"
                   required
                   className="form-control custom-input"
-                  placeholder="Ej: Buenos Aires"
+                  placeholder="Ej: CABA"
                   value={viajeDestino}
                   onChange={(e) => {
                     setLocalidadDestino(e.target.value);
