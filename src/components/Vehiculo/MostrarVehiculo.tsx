@@ -22,7 +22,7 @@ export const MostrarVehiculo = () => {
     <div className="container mt-5 mb-5 pb-5">
       <div
         className="mb-4 d-flex align-items-center"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(`/mi-cuenta/${userId}`)}
         style={{ cursor: 'pointer' }}
       >
         <div
