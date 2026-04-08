@@ -234,7 +234,7 @@ export const SolicitarConductor = () => {
             </div>
 
             <div className="row">
-              <div className="col-md-6 mb-3">
+              <div className="col-5 mb-3">
                 <label className="form-label text-muted fw-bold">Color</label>
                 <input 
                   type="text" 
@@ -250,17 +250,36 @@ export const SolicitarConductor = () => {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 mb-4">
-                <label className="form-label text-muted fw-bold">Cantidad de lugares</label>
+              <div className="col-md-7 mb-4">
+                <label className="form-label text-muted fw-bold">
+                  Cantidad de lugares
+                </label>
+                
                 <input 
                   type="number" 
-                  className={`form-control custom-input ${cantLugares && !lugaresValidos ? 'is-invalid' : ''} ${cantLugares && lugaresValidos ? 'is-valid' : ''}`}
+                  className={`form-control custom-input ${
+                    !lugaresValidos ? 'is-invalid' : ''
+                  } ${
+                    lugaresValidos ? 'is-valid' : ''
+                  }`}
                   min="1" 
                   max="50"
                   value={cantLugares} 
                   onChange={(e) => setCantLugares(Number(e.target.value))} 
                   required 
                 />
+
+                {!lugaresValidos && (
+                  <div className="invalid-feedback fw-semibold">
+                    {cantLugares < 1
+                      ? 'La cantidad no puede ser menor que 1.'
+                      : 'La cantidad no puede ser mayor a 50.'}
+                  </div>
+                )}
+
+                <small className="text-muted d-block mt-1" style={{ fontSize: '0.8rem' }}>
+                  (sin contar al conductor)
+                </small>
               </div>
             </div>
 
