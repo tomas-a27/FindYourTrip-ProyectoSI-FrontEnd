@@ -19,21 +19,21 @@ const ModalComenzarFinalizarViaje = ({
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(''); // <-- NUEVO ESTADO PARA MOSTRAR ERRORES
+  const [errorMsg, setErrorMsg] = useState(''); 
 
   const handleOpenModal = () => {
-    setErrorMsg(''); // Limpiamos cualquier error anterior al abrir
+    setErrorMsg(''); 
     setShowModal(true);
   };
   
   const handleCloseModal = () => {
     setShowModal(false);
-    setErrorMsg(''); // Limpiamos al cerrar
+    setErrorMsg(''); 
   };
 
   async function handleConfirmar() {
     setLoading(true);
-    setErrorMsg(''); // Reseteamos el error antes de intentar de nuevo
+    setErrorMsg(''); 
     
     try {
       if (onConfirm) {
@@ -46,7 +46,6 @@ const ModalComenzarFinalizarViaje = ({
       }
     } catch (error: any) {
       console.error('Error en la operación:', error);
-      // En vez del alert(), guardamos el mensaje en el estado para mostrarlo lindo
       setErrorMsg(error.response?.data?.message || 'Ocurrió un error al procesar la solicitud.');
     } finally {
       setLoading(false);
@@ -119,7 +118,6 @@ const ModalComenzarFinalizarViaje = ({
               )}
             </div>
 
-            {/* SI HAY ERROR, MOSTRAMOS ESTE CARTELITO PROLIJO */}
             {errorMsg && (
               <div className="alert alert-danger fw-bold fs-6 mb-4 p-2 d-flex align-items-center justify-content-center" role="alert">
                 <i className="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
