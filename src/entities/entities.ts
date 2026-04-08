@@ -53,6 +53,7 @@ interface ViajeDTO {
   viajePrecio: number;
   usuarioConductor: UsuarioDTO;
   vehiculo: VehiculoDTO;
+  cancelacionTardia?: boolean;
 }
 
 interface SolicitudViajeDTO {

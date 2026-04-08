@@ -3,7 +3,15 @@ import { post } from '../../api/dataManager';
 import { useAuth } from '../../auth/AuthContext';
 
 interface Props {
-  usuarioACalificar: { idUsuario: number; nombre: string; apellido: string };
+  usuarioACalificar: { 
+    idUsuario: number; 
+    nombre: string; 
+    apellido: string;
+    viajeOrigen?: string;
+    viajeDestino?: string;
+    viajeFecha?: string;
+    cancelacionTardia?: boolean; 
+  };
   viajeId: number | null;
   indice: number;
   total: number;
@@ -53,7 +61,6 @@ export const ModalCalificacionSecuencial = ({
   const [mostrandoExito, setMostrandoExito] = useState(false);
 
   const finalizarPaso = () => {
-    // Resetear estados locales para el próximo pasajero o cerrar
     setMostrandoExito(false);
     setPuntos(0);
     setComentario('');
@@ -63,7 +70,6 @@ export const ModalCalificacionSecuencial = ({
   };
 
   const handleEnviar = async () => {
-    console.log('Apreté el botón enviar');
     try {
       const data = {
         viajeId,
@@ -110,7 +116,7 @@ export const ModalCalificacionSecuencial = ({
             style={styles.btnPrimary}
             onClick={finalizarPaso}
           >
-            ACEPTAR
+            {indice < total ? 'SIGUIENTE' : 'ACEPTAR'}
           </button>
         </div>
       </div>
@@ -121,15 +127,13 @@ export const ModalCalificacionSecuencial = ({
     <div className="modal-overlay" style={styles.overlay}>
       <div className="custom-modal" style={styles.modal}>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          {tipo === 'Pasajero' && (
-            <span style={styles.badge}>
-              Pasajero {indice} de {total}
-            </span>
-          )}
+          <span style={styles.badge}>
+            {tipo} {indice} de {total}
+          </span>
           <button
             className="btn-close"
             style={{ cursor: 'pointer' }}
-            onClick={onClose} //
+            onClick={onClose} 
           ></button>
         </div>
 
@@ -137,10 +141,35 @@ export const ModalCalificacionSecuencial = ({
           paso === 'comentario' ||
           paso === 'reporte') && (
           <div className="animate__animated animate__fadeIn">
+            
+            {/* CAJA CON LOS DATOS DEL VIAJE */}
+            {(usuarioACalificar.viajeOrigen && usuarioACalificar.viajeDestino) && (
+              <div className="mb-3 p-2 rounded-3 text-start position-relative" style={{ backgroundColor: '#f8f9fa', border: '1px solid #eaeaea' }}>
+                
+                {/* ETIQUETA ROJA SI FUE CANCELADO */}
+                {usuarioACalificar.cancelacionTardia && (
+                  <span className="badge bg-danger position-absolute top-0 end-0 m-2 shadow-sm">
+                    Viaje Cancelado
+                  </span>
+                )}
+
+                <p className="m-0 text-muted fw-bold pe-5" style={{ fontSize: '0.85rem' }}>
+                  <i className="bi bi-geo-alt-fill text-success me-1"></i> {usuarioACalificar.viajeOrigen} a {usuarioACalificar.viajeDestino}
+                </p>
+                <p className="m-0 text-muted mt-1" style={{ fontSize: '0.8rem' }}>
+                  <i className="bi bi-calendar3 me-1"></i> {usuarioACalificar.viajeFecha ? usuarioACalificar.viajeFecha.split('-').reverse().join('/') : ''}
+                </p>
+              </div>
+            )}
+
+            {/* TÍTULO DINÁMICO */}
             <h5 className="fw-bold mb-1" style={styles.titulo}>
-              ¿Cómo calificas al{' '}
-              {tipo === 'Conductor' ? 'conductor' : 'pasajero'}?
+              {usuarioACalificar.cancelacionTardia 
+                ? `Calificación por cancelación al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}:` 
+                : `¿Cómo calificas al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}?`
+              }
             </h5>
+
             <h4 className="fw-bold text-success mb-1">
               {usuarioACalificar.nombre} {usuarioACalificar.apellido}
             </h4>

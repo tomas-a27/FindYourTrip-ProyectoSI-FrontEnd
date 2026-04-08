@@ -195,13 +195,24 @@ export const MisViajes = () => {
     (v) =>
       v.viajeEstado?.toLowerCase() === 'encurso' ||
       v.viajeEstado?.toLowerCase() === 'pendiente',
-  );
+  )
+  .sort((a, b) => {
+      // Orden ASCENDENTE: Los viajes más cercanos a hoy aparecen arriba
+      const dateA = new Date(`${a.viajeFecha}T${a.viajeHorario}`);
+      const dateB = new Date(`${b.viajeFecha}T${b.viajeHorario}`);
+      return dateA.getTime() - dateB.getTime();
+    });
   const realizadosConductor = viajesPublicados.filter(
     (v) =>
       v.viajeEstado?.toLowerCase() !== 'encurso' &&
-      v.viajeEstado?.toLowerCase() !== 'pendiente' &&
-      v.viajeEstado?.toLowerCase() !== 'cancelado',
-  );
+      v.viajeEstado?.toLowerCase() !== 'pendiente' 
+  )
+  .sort((a, b) => {
+      // Orden DESCENDENTE: Los viajes que terminaron más recientemente aparecen arriba
+      const dateA = new Date(`${a.viajeFecha}T${a.viajeHorario}`);
+      const dateB = new Date(`${b.viajeFecha}T${b.viajeHorario}`);
+      return dateB.getTime() - dateA.getTime();
+    });
 
   const handleVerSolicitudes = (
     viajeId: number,
@@ -1173,17 +1184,24 @@ const TarjetaConductorActivo = ({
 const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
   const navigate = useNavigate();
 
+  const isCanceladoTarde = viaje?.cancelacionTardia === true;
+  const isCanceladoNormal = viaje?.viajeEstado?.toLowerCase() === 'cancelado';
+  const isCancelado = isCanceladoTarde || isCanceladoNormal;
+
   return (
     <div
-      className="card bg-white mb-3"
+      className="card mb-3"
       style={{
         borderRadius: '16px',
-        border: '1px solid #eaeaea',
+        border: isCancelado ? '1px solid #f5c2c7' : '1px solid #eaeaea',
+        backgroundColor: isCancelado ? '#fffafb' : '#ffffff',
         transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+        e.currentTarget.style.boxShadow = isCancelado 
+          ? '0 8px 20px rgba(220, 53, 69, 0.08)' 
+          : '0 8px 20px rgba(0,0,0,0.1)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
@@ -1193,63 +1211,28 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
       <div className="card-body p-0">
         <div className="row p-4 align-items-center">
           <div className="col-7">
-            <div
-              className="d-flex flex-column gap-3 ms-2"
-              style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '20px' }}
-            >
+            <div className={`d-flex flex-column gap-3 ms-2 ${isCancelado ? 'opacity-75' : ''}`} style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '20px' }}>
               <div className="position-relative">
-                <i
-                  className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success"
-                  style={{
-                    fontSize: '1.2rem',
-                    marginLeft: '-20px',
-                    paddingTop: '2px',
-                    paddingBottom: '2px',
-                  }}
-                ></i>
-                <h5
-                  className="fw-bold m-0 text-dark"
-                  style={{ fontSize: '1.1rem' }}
-                >
-                  {viaje?.viajeOrigen?.nombre}
-                </h5>
+                <i className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success" style={{ fontSize: '1.2rem', marginLeft: '-20px', paddingTop: '2px', paddingBottom: '2px' }}></i>
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
               </div>
               <div className="position-relative">
-                <i
-                  className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger"
-                  style={{
-                    fontSize: '1.2rem',
-                    marginLeft: '-20px',
-                    paddingTop: '2px',
-                    paddingBottom: '2px',
-                  }}
-                ></i>
-                <h5
-                  className="fw-bold m-0 text-dark"
-                  style={{ fontSize: '1.1rem' }}
-                >
-                  {viaje?.viajeDestino?.nombre}
-                </h5>
+                <i className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger" style={{ fontSize: '1.2rem', marginLeft: '-20px', paddingTop: '2px', paddingBottom: '2px' }}></i>
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
               </div>
             </div>
           </div>
 
           <div className="col-5 d-flex flex-column align-items-end">
-            <div
-              className="text-muted d-flex align-items-center mb-2"
-              style={{ fontSize: '0.9rem' }}
-            >
-              <span>
-                {viaje?.viajeFecha
-                  ? viaje.viajeFecha.split('-').reverse().join('/')
-                  : ''}
-              </span>{' '}
-              <i className="bi bi-calendar3 ms-2"></i>
+            {isCancelado && (
+              <span className="badge mb-2 px-2 py-1 shadow-sm" style={{ backgroundColor: '#fde8e8', color: '#dc3545', border: '1px solid #f5c2c7' }}>
+                <i className="bi bi-x-circle-fill me-1"></i>Cancelado
+              </span>
+            )}
+            <div className={`text-muted d-flex align-items-center mb-2 ${isCancelado ? 'opacity-75' : ''}`} style={{ fontSize: '0.9rem' }}>
+              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span> <i className="bi bi-calendar3 ms-2"></i>
             </div>
-            <div
-              className="text-muted d-flex align-items-center"
-              style={{ fontSize: '0.9rem' }}
-            >
+            <div className={`text-muted d-flex align-items-center ${isCancelado ? 'opacity-75' : ''}`} style={{ fontSize: '0.9rem' }}>
               <span>{hora} </span> <i className="bi bi-clock ms-2"></i>
             </div>
           </div>
@@ -1258,28 +1241,24 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
         <div
           className="w-100 text-center py-3"
           style={{
-            borderTop: '1px solid #eaeaea',
-            backgroundColor: '#ffffff',
+            borderTop: isCancelado ? '1px solid #f5c2c7' : '1px solid #eaeaea',
+            backgroundColor: isCancelado ? '#fffdfd' : '#ffffff',
             cursor: 'pointer',
             borderBottomLeftRadius: '16px',
             borderBottomRightRadius: '16px',
             transition: 'background-color 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#f1f5f9';
+            e.currentTarget.style.backgroundColor = isCancelado ? '#fcf0f1' : '#f1f5f9';
             const span = e.currentTarget.querySelector('span');
             if (span) span.style.textDecoration = 'underline';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.backgroundColor = isCancelado ? '#fffdfd' : '#ffffff';
             const span = e.currentTarget.querySelector('span');
             if (span) span.style.textDecoration = 'none';
           }}
-          onClick={() =>
-            navigate('/pasajeros-historial', {
-              state: { viajeId: viaje.viajeId },
-            })
-          }
+          onClick={() => navigate('/pasajeros-historial', { state: { viajeId: viaje.viajeId } })}
         >
           <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
             Ver pasajeros
