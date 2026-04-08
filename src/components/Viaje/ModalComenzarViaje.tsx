@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Modal } from 'react-bootstrap';
-import { patch } from '../../api/dataManager.ts';
-import axios from 'axios';
+import { patch } from '../../api/dataManager';
+import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 
 interface ModalComenzarFinalizarViajeProps {
   query?: string;
@@ -16,123 +16,148 @@ const ModalComenzarFinalizarViaje = ({
   routeNav,
   onConfirm,
 }: ModalComenzarFinalizarViajeProps) => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(''); 
 
   const handleOpenModal = () => {
-    setErrorMessage('');
+    setErrorMsg(''); 
     setShowModal(true);
   };
+  
   const handleCloseModal = () => {
-    if (!isProcessing) {
-      setShowModal(false);
-    }
+    setShowModal(false);
+    setErrorMsg(''); 
   };
 
   async function handleConfirmar() {
-    if (isProcessing) {
-      return;
-    }
-
-    setIsProcessing(true);
-    setErrorMessage('');
-
+    setLoading(true);
+    setErrorMsg(''); 
+    
     try {
       if (onConfirm) {
+        await onConfirm(); 
         handleCloseModal();
-        onConfirm();
       } else if (query) {
-        await patch(query);
+        await patch(query, {});
         handleCloseModal();
         location.reload();
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(
-          (error.response?.data as { message?: string })?.message ||
-            'No se pudo procesar la solicitud.',
-        );
-      } else {
-        setErrorMessage('No se pudo procesar la solicitud.');
-      }
-      console.error('Error al procesar', error);
+    } catch (error: any) {
+      console.error('Error en la operación:', error);
+      setErrorMsg(error.response?.data?.message || 'Ocurrió un error al procesar la solicitud.');
     } finally {
-      setIsProcessing(false);
+      setLoading(false);
     }
   }
 
+  const isComenzar = accion.toUpperCase() === 'COMENZAR';
+
   return (
     <>
-      {accion.toUpperCase() === 'COMENZAR' ? (
+      {isComenzar ? (
         <button
           className="btn w-50 rounded-pill fw-bold py-2 shadow-sm"
           onClick={handleOpenModal}
           style={{
-            backgroundColor: '#ffffff', // Fondo controlado manualmente
-            border: '2px solid #0dcaf0',
-            color: '#0d6efd',
+            backgroundColor: '#ffffff',
+            border: '2px solid #1f5c2f',
+            color: '#1f5c2f',
             fontSize: '0.95rem',
-            transition: 'all 0.2s ease', // Transición fluida
+            transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#0dcaf0';
+            e.currentTarget.style.backgroundColor = '#1f5c2f';
             e.currentTarget.style.color = '#ffffff';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = '#ffffff';
-            e.currentTarget.style.color = '#0d6efd';
+            e.currentTarget.style.color = '#1f5c2f';
           }}
         >
-          Comenzar viaje
+          COMENZAR VIAJE
         </button>
       ) : (
         <button
-          className="btn btn-custom-outline w-50 rounded-pill fw-bold py-2 shadow-sm"
+          className="btn w-50 rounded-pill fw-bold py-2 shadow-sm"
           onClick={handleOpenModal}
           style={{
             fontSize: '0.95rem',
-            letterSpacing: '0.2px',
+            backgroundColor: '#2d4a2d',
+            color: '#ffffff',
+            border: 'none',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#1e331e';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#2d4a2d';
           }}
         >
-          Finalizar viaje
+          FINALIZAR VIAJE
         </button>
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {accion.toUpperCase() === 'COMENZAR'
-              ? 'Comenzar Viaje'
-              : 'Finalizar Viaje'}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          ¿Estás seguro de que deseas {accion.toLowerCase()} este viaje?
-          {errorMessage && (
-            <div className="alert alert-danger mt-3 mb-0" role="alert">
-              {errorMessage}
+      {showModal && createPortal(
+        <div className="modal-overlay">
+          <div className="custom-modal p-4 text-center">
+            
+            <div className="mb-3">
+              {isComenzar ? (
+                <i
+                  className="bi bi-car-front-fill"
+                  style={{ fontSize: '3rem', color: '#1f5c2f' }} // <-- AHORA ES VERDE
+                ></i>
+              ) : (
+                <i
+                  className="bi bi-check-circle-fill"
+                  style={{ fontSize: '3rem', color: '#2d4a2d' }}
+                ></i>
+              )}
             </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            className="btn btn-secondary"
-            onClick={handleCloseModal}
-            disabled={isProcessing}
-          >
-            Cancelar
-          </button>
 
-          <button
-            className="btn btn-primary"
-            onClick={handleConfirmar}
-            disabled={isProcessing}
-          >
-            {isProcessing ? 'Procesando...' : 'Confirmar'}
-          </button>
-        </Modal.Footer>
-      </Modal>
+            {errorMsg && (
+              <div className="alert alert-danger fw-bold fs-6 mb-4 p-2 d-flex align-items-center justify-content-center" role="alert">
+                <i className="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            <h5 className="fw-bold mb-4">
+              ¿Está seguro que desea {accion.toLowerCase()} el viaje?
+            </h5>
+
+            <div className="d-grid gap-2">
+              <button
+                onClick={handleConfirmar}
+                disabled={loading} 
+                className="btn py-2 fw-bold rounded-3 shadow-sm text-white d-flex justify-content-center align-items-center"
+                style={{ 
+                  backgroundColor: isComenzar ? '#1f5c2f' : '#2d4a2d', // <-- AHORA ES VERDE
+                  border: 'none'
+                }}
+              >
+                {loading ? (
+                  <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+                ) : (
+                  'Confirmar'
+                )}
+              </button>
+              <button
+                onClick={handleCloseModal}
+                disabled={loading} 
+                className="btn btn-light py-2 fw-bold rounded-3 border"
+              >
+                No
+              </button>
+            </div>
+
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   );
 };

@@ -123,19 +123,19 @@ const TarjetaHistorialPasajero = ({
 }: any) => {
   const [expandido, setExpandido] = useState(false);
 
+  // LÓGICA DE CANCELACIÓN 
+  const isCanceladoTarde = viaje?.cancelacionTardia === true;
+  const isCanceladoNormal = viaje?.viajeEstado?.toLowerCase() === 'cancelado';
+  const isCancelado = isCanceladoTarde || isCanceladoNormal;
+
   const renderEstrellas = (calificacion: number | null | undefined) => {
-    if (
-      calificacion === null ||
-      calificacion === undefined ||
-      calificacion === 0
-    ) {
+    if (calificacion === null || calificacion === undefined || calificacion === 0) {
       return (
         <span className="badge bg-light text-muted border px-2 py-1">
           Sin calificar
         </span>
       );
     }
-
     return (
       <div className="d-flex text-warning ms-2" style={{ fontSize: '1.2rem' }}>
         {[1, 2, 3, 4, 5].map((star) => (
@@ -150,16 +150,19 @@ const TarjetaHistorialPasajero = ({
 
   return (
     <div
-      className="card bg-white mb-4"
+      className="card mb-4"
       style={{
         borderRadius: '16px',
-        border: '1px solid #eaeaea',
+        border: isCancelado ? '1px solid #f5c2c7' : '1px solid #eaeaea',
+        backgroundColor: isCancelado ? '#fffafb' : '#ffffff',
         boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
         transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+        e.currentTarget.style.boxShadow = isCancelado 
+          ? '0 8px 20px rgba(220, 53, 69, 0.08)' 
+          : '0 8px 20px rgba(0,0,0,0.1)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
@@ -171,187 +174,104 @@ const TarjetaHistorialPasajero = ({
           {/* Izquierda: Ruta y conductor */}
           <div className="col-7">
             <div
-              className="d-flex flex-column gap-3 ms-2"
+              className={`d-flex flex-column gap-3 ms-2 ${isCancelado ? 'opacity-75' : ''}`}
               style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '20px' }}
             >
               <div className="position-relative">
-                <i
-                  className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success"
-                  style={{
-                    fontSize: '1.2rem',
-                    marginLeft: '-20px',
-                    paddingTop: '2px',
-                    paddingBottom: '2px',
-                  }}
-                ></i>
-                <h5
-                  className="fw-bold m-0 text-dark"
-                  style={{ fontSize: '1.1rem' }}
-                >
-                  {viaje?.viajeOrigen?.nombre}
-                </h5>
+                <i className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success" style={{ fontSize: '1.2rem', marginLeft: '-20px', paddingTop: '2px', paddingBottom: '2px' }}></i>
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
               </div>
               <div className="position-relative">
-                <i
-                  className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger"
-                  style={{
-                    fontSize: '1.2rem',
-                    marginLeft: '-20px',
-                    paddingTop: '2px',
-                    paddingBottom: '2px',
-                  }}
-                ></i>
-                <h5
-                  className="fw-bold m-0 text-dark"
-                  style={{ fontSize: '1.1rem' }}
-                >
-                  {viaje?.viajeDestino?.nombre}
-                </h5>
+                <i className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger" style={{ fontSize: '1.2rem', marginLeft: '-20px', paddingTop: '2px', paddingBottom: '2px' }}></i>
+                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
               </div>
             </div>
           </div>
 
           {/* Derecha: Fecha y hora */}
           <div className="col-5 d-flex flex-column align-items-end h-100 justify-content-start">
-            <div
-              className="text-muted d-flex align-items-center mb-2"
-              style={{ fontSize: '1rem' }}
-            >
-              <span>
-                {viaje?.viajeFecha
-                  ? viaje.viajeFecha.split('-').reverse().join('/')
-                  : ''}
+            {isCancelado && (
+              <span className="badge mb-2 px-2 py-1 shadow-sm" style={{ backgroundColor: '#fde8e8', color: '#dc3545', border: '1px solid #f5c2c7' }}>
+                <i className="bi bi-x-circle-fill me-1"></i>Cancelado
               </span>
+            )}
+            <div className={`text-muted d-flex align-items-center mb-2 ${isCancelado ? 'opacity-75' : ''}`} style={{ fontSize: '1rem' }}>
+              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span>
             </div>
-            <div
-              className="text-muted d-flex align-items-center"
-              style={{ fontSize: '1.2rem' }}
-            >
-              <span className="fw-bold">{hora}</span>
-              <i className="bi bi-clock ms-2"></i>
+            <div className={`text-muted d-flex align-items-center ${isCancelado ? 'opacity-75' : ''}`} style={{ fontSize: '1.2rem' }}>
+              <span className="fw-bold">{hora}</span><i className="bi bi-clock ms-2"></i>
             </div>
           </div>
         </div>
 
-        {/* Contenido expandible a lo ancho de toda la tarjeta */}
+        {/* Contenido expandible */}
         {expandido && (
-          <div
-            className="px-4 pb-4 pt-3 border-top"
-            style={{
-              animation: 'fadeIn 0.3s ease',
-              backgroundColor: '#ffffff',
-            }}
-          >
+          <div className="px-4 pb-4 pt-3 border-top" style={{ animation: 'fadeIn 0.3s ease', backgroundColor: isCancelado ? '#fffdfd' : '#ffffff', borderTopColor: isCancelado ? '#f5c2c7' : '#eaeaea' }}>
             <div className="d-flex align-items-center justify-content-between mb-3">
               <div className="d-flex align-items-center">
-                <img
-                  src={foto}
-                  alt="Avatar"
-                  style={{
-                    width: '45px',
-                    height: '45px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                  }}
-                  className="me-3 shadow-sm border"
-                />
+                <img src={foto} alt="Avatar" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover', filter: isCancelado ? 'grayscale(0.5)' : 'none' }} className="me-3 shadow-sm border" />
                 <div>
-                  <span className="fw-bold text-dark d-block">
-                    {viaje?.usuarioConductor?.nombreUsuario}{' '}
-                    {viaje?.usuarioConductor?.apellidoUsuario}
-                  </span>
-                  <span className="text-muted" style={{ fontSize: '0.85rem' }}>
-                    Conductor
-                  </span>
+                  <span className="fw-bold text-dark d-block">{viaje?.usuarioConductor?.nombreUsuario} {viaje?.usuarioConductor?.apellidoUsuario}</span>
+                  <span className="text-muted" style={{ fontSize: '0.85rem' }}>Conductor</span>
                 </div>
               </div>
 
               <div className="d-flex flex-column align-items-end text-end ms-3">
-                <span
-                  className="text-muted fw-semibold mb-1"
-                  style={{ fontSize: '0.85rem' }}
-                >
-                  Tu calificación:
-                </span>
-                {renderEstrellas(calificacionOtorgada)}
+                {isCanceladoNormal ? (
+                  <span className="text-danger fw-semibold" style={{ fontSize: '0.85rem' }}>
+                    Viaje cancelado. No aplica calificación.
+                  </span>
+                ) : (
+                  <>
+                    <span className="text-muted fw-semibold mb-1" style={{ fontSize: '0.85rem' }}>
+                      {isCanceladoTarde ? 'Calificación por cancelación:' : 'Tu calificación:'}
+                    </span>
+                    {renderEstrellas(calificacionOtorgada)}
+                  </>
+                )}
               </div>
             </div>
 
             <p className="text-muted m-0 mb-2" style={{ fontSize: '0.9rem' }}>
               <i className="bi bi-car-front-fill me-2 text-primary"></i>
-              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.color} - Patente{' '}
-              <span className="fw-semibold">{viaje?.vehiculo?.patente}</span>
+              {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} - {viaje?.vehiculo?.color} - Patente <span className="fw-semibold">{viaje?.vehiculo?.patente}</span>
             </p>
 
-            {viaje?.usuarioConductor?.telefono && (
+            {viaje?.usuarioConductor?.telefono && !isCanceladoNormal && (
               <>
-                <h6
-                  className="fw-bold text-dark mt-3 mb-2"
-                  style={{ fontSize: '0.95rem' }}
-                >
-                  Datos de contacto
-                </h6>
-                <p
-                  className="text-muted m-0 mb-1"
-                  style={{ fontSize: '0.9rem' }}
-                >
-                  <i className="bi bi-telephone-fill me-2 text-success"></i>{' '}
-                  {viaje?.usuarioConductor?.telefono}
+                <h6 className="fw-bold text-dark mt-3 mb-2" style={{ fontSize: '0.95rem' }}>Datos de contacto</h6>
+                <p className="text-muted m-0 mb-1" style={{ fontSize: '0.9rem' }}>
+                  <i className="bi bi-telephone-fill me-2 text-success"></i> {viaje?.usuarioConductor?.telefono}
                 </p>
                 <p className="text-muted m-0" style={{ fontSize: '0.9rem' }}>
-                  <i className="bi bi-envelope-fill me-2 text-danger"></i>{' '}
-                  {viaje?.usuarioConductor?.email}
+                  <i className="bi bi-envelope-fill me-2 text-danger"></i> {viaje?.usuarioConductor?.email}
                 </p>
               </>
             )}
           </div>
         )}
 
-        {/* Botón inferior ancho completo */}
         <div
           className="w-100 text-center py-3"
-          style={{
-            borderTop: '1px solid #eaeaea',
-            backgroundColor: expandido ? '#f8f9fa' : '#ffffff',
-            cursor: 'pointer',
-            borderBottomLeftRadius: '16px',
-            borderBottomRightRadius: '16px',
-            transition: 'background-color 0.2s ease',
-          }}
+          style={{ borderTop: isCancelado ? '1px solid #f5c2c7' : '1px solid #eaeaea', backgroundColor: expandido ? (isCancelado ? '#fcf0f1' : '#f8f9fa') : 'transparent', cursor: 'pointer', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px', transition: 'background-color 0.2s ease' }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#f8f9fa';
+            e.currentTarget.style.backgroundColor = isCancelado ? '#fcf0f1' : '#f8f9fa';
             const span = e.currentTarget.querySelector('span');
             if (span) span.style.textDecoration = 'underline';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = expandido
-              ? '#f8f9fa'
-              : '#ffffff';
+            e.currentTarget.style.backgroundColor = expandido ? (isCancelado ? '#fcf0f1' : '#f8f9fa') : 'transparent';
             const span = e.currentTarget.querySelector('span');
             if (span) span.style.textDecoration = 'none';
           }}
           onClick={() => setExpandido(!expandido)}
         >
-          <span
-            className="fw-bold text-dark d-flex justify-content-center align-items-center"
-            style={{ fontSize: '0.95rem' }}
-          >
+          <span className="fw-bold text-dark d-flex justify-content-center align-items-center" style={{ fontSize: '0.95rem' }}>
             {expandido ? 'Ocultar conductor' : 'Ver conductor'}
-            <i
-              className={`bi bi-chevron-${expandido ? 'up' : 'down'} ms-2`}
-            ></i>
+            <i className={`bi bi-chevron-${expandido ? 'up' : 'down'} ms-2`}></i>
           </span>
         </div>
       </div>
-      <style>
-        {`
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}
-      </style>
     </div>
   );
 };

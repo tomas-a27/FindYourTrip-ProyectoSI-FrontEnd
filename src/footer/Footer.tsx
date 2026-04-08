@@ -8,7 +8,9 @@ import './footer.css';
 
 export function Footer() {
   const { userId } = useAuth();
-  const [pendiente, setPendiente] = useState<any>(null);
+  
+  const [pendientes, setPendientes] = useState<any[]>([]);
+  const [indiceActual, setIndiceActual] = useState(0);
 
   useEffect(() => {
     const chequearPendientes = async () => {
@@ -23,12 +25,14 @@ export function Footer() {
             localStorage.getItem('calificaciones_ignoradas') || '[]',
           );
 
-          const viajeParaMostrar = res.data.find(
+          // Guardamos todos los viajes que NO hayan sido ignorados
+          const viajesParaMostrar = res.data.filter(
             (v: any) => !ignorados.includes(v.viajeId),
           );
 
-          if (viajeParaMostrar) {
-            setPendiente(viajeParaMostrar);
+          if (viajesParaMostrar.length > 0) {
+            setPendientes(viajesParaMostrar);
+            setIndiceActual(0); // Empezamos a calificar desde el primero
           }
         }
       } catch (e) {
@@ -39,7 +43,15 @@ export function Footer() {
     chequearPendientes();
   }, [userId]);
 
-  // función para cuando el usuario cierra con la X
+  const avanzarSiguiente = () => {
+    if (indiceActual < pendientes.length - 1) {
+      setIndiceActual(indiceActual + 1);
+    } else {
+      // Si ya no quedan más, limpiamos la lista para cerrar el modal
+      setPendientes([]); 
+    }
+  };
+
   const handleIgnorarCalificacion = (viajeId: number) => {
     const ignorados = JSON.parse(
       localStorage.getItem('calificaciones_ignoradas') || '[]',
@@ -53,8 +65,10 @@ export function Footer() {
       );
     }
 
-    setPendiente(null);
+    avanzarSiguiente(); 
   };
+
+  const viajeEnPantalla = pendientes[indiceActual];
 
   return (
     <>
@@ -77,16 +91,15 @@ export function Footer() {
         </div>
       </footer>
 
-      {/* modal q se muestra sobre cualquier pantalla */}
-      {pendiente && (
+      {viajeEnPantalla && (
         <ModalCalificacionSecuencial
-          usuarioACalificar={pendiente} // pasamos los datos del conductor a calificar
-          viajeId={pendiente.viajeId}
-          indice={1}
-          total={1}
+          usuarioACalificar={viajeEnPantalla} 
+          viajeId={viajeEnPantalla.viajeId}
+          indice={indiceActual + 1}
+          total={pendientes.length}
           tipo="Conductor"
-          onSuccess={() => setPendiente(null)}
-          onClose={() => handleIgnorarCalificacion(pendiente.viajeId)}
+          onSuccess={avanzarSiguiente} 
+          onClose={() => handleIgnorarCalificacion(viajeEnPantalla.viajeId)}
         />
       )}
     </>

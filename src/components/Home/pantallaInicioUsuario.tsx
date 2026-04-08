@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import logo from '../../images/logoFYT.png';
 
 export function PantallaInicioUsuario() {
-  // Sintaxis corregida para que se ejecute solo una vez al montar el componente
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -13,14 +12,11 @@ export function PantallaInicioUsuario() {
       className="container mt-5 d-flex justify-content-center align-items-center"
       style={{ minHeight: '75vh' }}
     >
-      {/* EXACTAMENTE la misma tarjeta del login */}
       <div
         className="card custom-card shadow-lg border-0"
         style={{ width: '100%', maxWidth: '420px', borderRadius: '15px' }}
       >
-        {/* EXACTAMENTE el mismo padding del login */}
         <div className="card-body p-5">
-          {/* Encabezado calcado del login */}
           <div className="text-center mb-4">
             <img
               src={logo}
@@ -37,7 +33,6 @@ export function PantallaInicioUsuario() {
             <h2 className="fw-bold mb-1" style={{ color: '#2d4a2d' }}>
               Find Your Trip
             </h2>
-            {/* Mismo formato de subtítulo que "Iniciar Sesión" para mantener la proporción */}
             <p className="text-muted fw-semibold fs-5 mt-2">¡Bienvenido!</p>
           </div>
 
@@ -121,7 +116,6 @@ export function PantallaInicioUsuario() {
             </button>
           </div>
 
-          {/* Botón Principal (Mismas clases que el botón de Ingresar) */}
           <div className="d-grid gap-3 mt-2">
             <Link
               to="/login"

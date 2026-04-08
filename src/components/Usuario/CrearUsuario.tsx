@@ -225,7 +225,6 @@ export const CrearUsuario = () => {
                     className={`form-control custom-input ${formData.contrasenaUsuario && !esContraLarga ? 'is-invalid' : ''} ${formData.contrasenaUsuario && esContraLarga ? 'is-valid' : ''}`}
                     name="contrasenaUsuario"
                     value={formData.contrasenaUsuario}
-                    placeholder="Ej: MiClave123"
                     onChange={handleChange}
                     required
                   />
@@ -247,7 +246,6 @@ export const CrearUsuario = () => {
                     className={`form-control custom-input ${formData.contrasenaUsuarioConfirmacion && !contrasenasCoinciden ? 'is-invalid' : ''} ${formData.contrasenaUsuarioConfirmacion && contrasenasCoinciden ? 'is-valid' : ''}`}
                     name="contrasenaUsuarioConfirmacion"
                     value={formData.contrasenaUsuarioConfirmacion}
-                    placeholder="Ej: MiClave123"
                     onChange={handleChange}
                     required
                   />
