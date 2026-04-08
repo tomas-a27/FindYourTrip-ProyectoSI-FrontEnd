@@ -1,6 +1,8 @@
+import axios from 'axios';
+import { BACKEND_URL } from '../../endpoints.config.ts';
+import { remove } from '../api/dataManager.ts';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { remove } from '../api/dataManager.ts';
 
 interface Props {
   idToDelete: string;
@@ -18,11 +20,24 @@ const DeleteEntityButton = ({
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function handleDelete() {
-    await remove(`${route}/${idToDelete}`);
-    setShowConfirm(false);
-    setShowSuccess(true);
+    try {
+      const response = await axios.delete(
+        `${BACKEND_URL}/api/${route}/${idToDelete}`
+      );
+
+      setShowConfirm(false);
+      setShowSuccess(true);
+    } catch (error: any) {
+      setShowConfirm(false);
+
+      setErrorMessage(
+        error?.response?.data?.message ||
+        'No se pudo eliminar el vehículo'
+      );
+    }
   }
 
   const isVehiculo = entityToDelete === 'vehiculo';
@@ -92,6 +107,21 @@ const DeleteEntityButton = ({
             </button>
 
             <h5 className="mt-3">{successMessage}</h5>
+          </div>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="modal-overlay">
+          <div className="custom-modal text-center" style={{ maxWidth: '350px', width: '90%' }}>
+            <button
+              className="btn-cerrar"
+              onClick={() => setErrorMessage('')}
+            >
+              X
+            </button>
+
+            <h5 className="mt-3 text-danger">{errorMessage}</h5>
           </div>
         </div>
       )}
