@@ -77,7 +77,7 @@ export const PasajerosHistorial = () => {
         >
           <i className="bi bi-arrow-left text-white fs-9"></i>
         </div>
-        <span className="fw-bold text-success fs-7">Volver a Mi Cuenta</span>
+        <span className="fw-bold text-success fs-7">Volver a Mis Viajes</span>
       </div>
 
       <h2 className="fw-bold m-0 text-center mb-3" style={{ color: '#2d4a2d' }}>
