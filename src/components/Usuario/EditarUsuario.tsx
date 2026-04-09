@@ -533,6 +533,12 @@ export const EditarUsuario = () => {
               Modificar contraseña
             </h5>
 
+            {error && (
+              <div className="alert alert-danger text-center">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleCambiarPassword}>
               <div className="mb-3">
                 <label className="text-muted small fw-bold mb-1">
