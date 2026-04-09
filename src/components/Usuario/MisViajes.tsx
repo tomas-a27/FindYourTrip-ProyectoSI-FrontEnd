@@ -191,23 +191,25 @@ export const MisViajes = () => {
       s.estadoSolicitud?.toLowerCase() === 'denegada',
   );
 
-  const proximosConductor = viajesPublicados.filter(
-    (v) =>
-      v.viajeEstado?.toLowerCase() === 'encurso' ||
-      v.viajeEstado?.toLowerCase() === 'pendiente',
-  )
-  .sort((a, b) => {
+  const proximosConductor = viajesPublicados
+    .filter(
+      (v) =>
+        v.viajeEstado?.toLowerCase() === 'encurso' ||
+        v.viajeEstado?.toLowerCase() === 'pendiente',
+    )
+    .sort((a, b) => {
       // Orden ASCENDENTE: Los viajes más cercanos a hoy aparecen arriba
       const dateA = new Date(`${a.viajeFecha}T${a.viajeHorario}`);
       const dateB = new Date(`${b.viajeFecha}T${b.viajeHorario}`);
       return dateA.getTime() - dateB.getTime();
     });
-  const realizadosConductor = viajesPublicados.filter(
-    (v) =>
-      v.viajeEstado?.toLowerCase() !== 'encurso' &&
-      v.viajeEstado?.toLowerCase() !== 'pendiente' 
-  )
-  .sort((a, b) => {
+  const realizadosConductor = viajesPublicados
+    .filter(
+      (v) =>
+        v.viajeEstado?.toLowerCase() !== 'encurso' &&
+        v.viajeEstado?.toLowerCase() !== 'pendiente',
+    )
+    .sort((a, b) => {
       // Orden DESCENDENTE: Los viajes que terminaron más recientemente aparecen arriba
       const dateA = new Date(`${a.viajeFecha}T${a.viajeHorario}`);
       const dateB = new Date(`${b.viajeFecha}T${b.viajeHorario}`);
@@ -976,8 +978,8 @@ const TarjetaConductorActivo = ({
       style={{
         borderRadius: '16px',
         border: isEnCurso ? '2px solid #1f5c2f' : '0px solid transparent',
-        boxShadow: isEnCurso 
-          ? '0 4px 15px rgba(31, 92, 47, 0.15)' 
+        boxShadow: isEnCurso
+          ? '0 4px 15px rgba(31, 92, 47, 0.15)'
           : '0 4px 12px rgba(0,0,0,0.05)',
         overflow: 'hidden',
         transition: 'all 0.3s ease',
@@ -1093,7 +1095,11 @@ const TarjetaConductorActivo = ({
                   ></i>
                   <span
                     className="fw-bold"
-                    style={{ color: colorNaranja, fontSize: '0.85rem', lineHeight: '1.2' }}
+                    style={{
+                      color: colorNaranja,
+                      fontSize: '0.85rem',
+                      lineHeight: '1.2',
+                    }}
                   >
                     Aún quedan <br /> lugares
                   </span>
@@ -1143,7 +1149,9 @@ const TarjetaConductorActivo = ({
         )}
       </div>
 
-      <div className={`d-flex p-3 gap-3 ${isEnCurso ? 'pt-3 border-top' : 'pt-0'}`}>
+      <div
+        className={`d-flex p-3 gap-3 ${isEnCurso ? 'pt-3 border-top' : 'pt-0'}`}
+      >
         <button
           onClick={onCancelar}
           className="btn w-50 rounded-pill fw-bold py-2"
@@ -1207,8 +1215,8 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = isCancelado 
-          ? '0 8px 20px rgba(220, 53, 69, 0.08)' 
+        e.currentTarget.style.boxShadow = isCancelado
+          ? '0 8px 20px rgba(220, 53, 69, 0.08)'
           : '0 8px 20px rgba(0,0,0,0.1)';
       }}
       onMouseLeave={(e) => {
@@ -1219,28 +1227,75 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
       <div className="card-body p-0">
         <div className="row p-4 align-items-center">
           <div className="col-7">
-            <div className={`d-flex flex-column gap-3 ms-2 ${isCancelado ? 'opacity-75' : ''}`} style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '20px' }}>
+            <div
+              className={`d-flex flex-column gap-3 ms-2 ${isCancelado ? 'opacity-75' : ''}`}
+              style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '20px' }}
+            >
               <div className="position-relative">
-                <i className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success" style={{ fontSize: '1.2rem', marginLeft: '-20px', paddingTop: '2px', paddingBottom: '2px' }}></i>
-                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeOrigen?.nombre}</h5>
+                <i
+                  className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success"
+                  style={{
+                    fontSize: '1.2rem',
+                    marginLeft: '-20px',
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
+                  }}
+                ></i>
+                <h5
+                  className="fw-bold m-0 text-dark"
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  {viaje?.viajeOrigen?.nombre}
+                </h5>
               </div>
               <div className="position-relative">
-                <i className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger" style={{ fontSize: '1.2rem', marginLeft: '-20px', paddingTop: '2px', paddingBottom: '2px' }}></i>
-                <h5 className="fw-bold m-0 text-dark" style={{ fontSize: '1.1rem' }}>{viaje?.viajeDestino?.nombre}</h5>
+                <i
+                  className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger"
+                  style={{
+                    fontSize: '1.2rem',
+                    marginLeft: '-20px',
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
+                  }}
+                ></i>
+                <h5
+                  className="fw-bold m-0 text-dark"
+                  style={{ fontSize: '1.1rem' }}
+                >
+                  {viaje?.viajeDestino?.nombre}
+                </h5>
               </div>
             </div>
           </div>
 
           <div className="col-5 d-flex flex-column align-items-end">
             {isCancelado && (
-              <span className="badge mb-2 px-2 py-1 shadow-sm" style={{ backgroundColor: '#fde8e8', color: '#dc3545', border: '1px solid #f5c2c7' }}>
+              <span
+                className="badge mb-2 px-2 py-1 shadow-sm"
+                style={{
+                  backgroundColor: '#fde8e8',
+                  color: '#dc3545',
+                  border: '1px solid #f5c2c7',
+                }}
+              >
                 <i className="bi bi-x-circle-fill me-1"></i>Cancelado
               </span>
             )}
-            <div className={`text-muted d-flex align-items-center mb-2 ${isCancelado ? 'opacity-75' : ''}`} style={{ fontSize: '0.9rem' }}>
-              <span>{viaje?.viajeFecha ? viaje.viajeFecha.split('-').reverse().join('/') : ''}</span> <i className="bi bi-calendar3 ms-2"></i>
+            <div
+              className={`text-muted d-flex align-items-center mb-2 ${isCancelado ? 'opacity-75' : ''}`}
+              style={{ fontSize: '0.9rem' }}
+            >
+              <span>
+                {viaje?.viajeFecha
+                  ? viaje.viajeFecha.split('-').reverse().join('/')
+                  : ''}
+              </span>{' '}
+              <i className="bi bi-calendar3 ms-2"></i>
             </div>
-            <div className={`text-muted d-flex align-items-center ${isCancelado ? 'opacity-75' : ''}`} style={{ fontSize: '0.9rem' }}>
+            <div
+              className={`text-muted d-flex align-items-center ${isCancelado ? 'opacity-75' : ''}`}
+              style={{ fontSize: '0.9rem' }}
+            >
               <span>{hora} </span> <i className="bi bi-clock ms-2"></i>
             </div>
           </div>
@@ -1257,16 +1312,24 @@ const TarjetaConductorRealizado = ({ viaje, hora }: any) => {
             transition: 'background-color 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = isCancelado ? '#fcf0f1' : '#f1f5f9';
+            e.currentTarget.style.backgroundColor = isCancelado
+              ? '#fcf0f1'
+              : '#f1f5f9';
             const span = e.currentTarget.querySelector('span');
             if (span) span.style.textDecoration = 'underline';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = isCancelado ? '#fffdfd' : '#ffffff';
+            e.currentTarget.style.backgroundColor = isCancelado
+              ? '#fffdfd'
+              : '#ffffff';
             const span = e.currentTarget.querySelector('span');
             if (span) span.style.textDecoration = 'none';
           }}
-          onClick={() => navigate('/pasajeros-historial', { state: { viajeId: viaje.viajeId } })}
+          onClick={() =>
+            navigate('/pasajeros-historial', {
+              state: { viajeId: viaje.viajeId },
+            })
+          }
         >
           <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
             Ver pasajeros
