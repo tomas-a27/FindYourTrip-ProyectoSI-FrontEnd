@@ -33,6 +33,9 @@ export const BuscarViaje = () => {
   const [mostrarModalRechazo, setMostrarModalRechazo] = useState(false);
   const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingConductor, setIsCheckingConductor] = useState(false);
+
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(viajeOrigen.toLowerCase()),
   );
@@ -54,6 +57,8 @@ export const BuscarViaje = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSubmitting(true);
+
     const params = new URLSearchParams();
     params.append('viajeOrigen', formData.viajeOrigen);
     params.append('viajeDestino', formData.viajeDestino);
@@ -64,27 +69,33 @@ export const BuscarViaje = () => {
       params.append('usuarioId', userId.toString());
     }
 
-    console.log(viajeOrigen);
-    console.log(viajeDestino);
-
     const query = `viaje/mostrar-viaje?${params.toString()}`;
-    navigate('/mostrar-viaje', {
-      state: {
-        query,
-        localidadOrigen: viajeOrigen,
-        localidadDestino: viajeDestino,
-      },
-    });
+    
+    setTimeout(() => {
+      navigate('/mostrar-viaje', {
+        state: {
+          query,
+          localidadOrigen: viajeOrigen,
+          localidadDestino: viajeDestino,
+        },
+      });
+      setIsSubmitting(false); 
+    }, 300);
   };
 
   const handlePublicarViaje = () => {
-    if (userTipo?.toLowerCase() === 'conductor') {
-      navigate('/publicar-viaje');
-    } else if (isPendiente) {
-      setMostrarModalAviso(true);
-    } else {
-      setMostrarModalRegistro(true);
-    }
+    setIsCheckingConductor(true); 
+    
+    setTimeout(() => {
+      if (userTipo?.toLowerCase() === 'conductor') {
+        navigate('/publicar-viaje');
+      } else if (isPendiente) {
+        setMostrarModalAviso(true);
+      } else {
+        setMostrarModalRegistro(true);
+      }
+      setIsCheckingConductor(false); 
+    }, 300);
   };
 
   const handleConfirmarRegistro = () => {
@@ -103,10 +114,19 @@ export const BuscarViaje = () => {
     setMostrarModalRechazo(true);
   };
 
+  if (loadingLocalidades || !usuario) {
+    return (
+      <div className="text-center mt-5 p-5">
+        <div className="spinner-border text-success" role="status"></div>
+        <p className="mt-3 text-muted fw-bold">Cargando...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mt-5 mb-5">
       <h2 className="mb-4 text-center" style={{ color: '#2d4a2d' }}>
-        Find Your Trip
+        Buscar un viaje
       </h2>
 
       {!loadingLocalidades &&
@@ -275,6 +295,7 @@ export const BuscarViaje = () => {
                   type="button"
                   className="btn btn-light-cancel btn-danger fw-semibold w-100 shadow-sm"
                   onClick={() => setMostrarModalCancelado(true)}
+                  disabled={isSubmitting}
                 >
                   Cancelar
                 </button>
@@ -283,17 +304,20 @@ export const BuscarViaje = () => {
               <div className="col-12 col-md-5">
                 <button
                   type="submit"
-                  className="btn btn-pastel-green w-100 shadow-sm"
+                  className="btn btn-pastel-green w-100 shadow-sm d-flex justify-content-center align-items-center"
+                  disabled={isSubmitting}
                 >
-                  Buscar
+                  {isSubmitting ? (
+                    <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+                  ) : (
+                    'Buscar'
+                  )}
                 </button>
               </div>
             </div>
           </form>
         </div>
       )}
-
-      {loadingLocalidades && <div>Cargando...</div>}
 
       {errorLocalidades && (
         <div className="alert alert-danger">{errorLocalidades}</div>
@@ -304,10 +328,15 @@ export const BuscarViaje = () => {
 
         <button
           onClick={handlePublicarViaje}
-          className="btn btn-link p-0"
+          disabled={isCheckingConductor}
+          className="btn btn-link p-0 d-flex align-items-center gap-2"
           style={{ textDecoration: 'underline' }}
         >
-          Deseo publicar un viaje
+          {isCheckingConductor ? (
+            <div className="spinner-border spinner-border-sm" role="status"></div>
+          ) : (
+            'Deseo publicar un viaje'
+          )}
         </button>
       </div>
 
