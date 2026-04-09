@@ -98,7 +98,7 @@ const ModalComenzarFinalizarViaje = ({
             e.currentTarget.style.color = '#1f5c2f';
           }}
         >
-          COMENZAR VIAJE
+          Comenzar viaje
         </button>
       ) : (
         <button
@@ -118,7 +118,7 @@ const ModalComenzarFinalizarViaje = ({
             e.currentTarget.style.backgroundColor = '#2d4a2d';
           }}
         >
-          FINALIZAR VIAJE
+          Finalizar viaje
         </button>
       )}
 
