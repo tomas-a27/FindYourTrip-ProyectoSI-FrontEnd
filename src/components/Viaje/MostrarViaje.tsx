@@ -19,6 +19,8 @@ export const MostrarViaje = () => {
   );
   const [mostrarModalCancelado, setMostrarModalCancelado] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const bufferToBase64 = (buffer: any) => {
     if (!buffer?.data) return '';
 
@@ -68,20 +70,35 @@ export const MostrarViaje = () => {
   const handleSubmit = async () => {
     if (!viajeSeleccionado) return;
 
-    const solicitudViaje = {
-      viaje: viajeSeleccionado.viajeId,
-      usuario: userId,
-    };
+    setIsSubmitting(true); 
 
-    const res = await post('viaje/solicitar-viaje', solicitudViaje);
+    try {
+      const solicitudViaje = {
+        viaje: viajeSeleccionado.viajeId,
+        usuario: userId,
+      };
 
-    if (res.status === 201) {
-      setMostrarModalConfirmacion(false);
-      setMostrarModalExito(true);
-    } else {
-      alert('Error: ' + res.data?.message);
+      const res = await post('viaje/solicitar-viaje', solicitudViaje);
+
+      if (res.status === 201) {
+        setMostrarModalConfirmacion(false);
+        setMostrarModalExito(true);
+      } else {
+        alert('Error: ' + res.data?.message);
+      }
+    } finally {
+      setIsSubmitting(false); 
     }
   };
+
+  if (loadingViajes) {
+    return (
+      <div className="text-center mt-5 p-5">
+        <div className="spinner-border text-success" role="status"></div>
+        <p className="mt-3 text-muted fw-bold">Buscando viajes disponibles...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -118,7 +135,7 @@ export const MostrarViaje = () => {
         </div>
       </div>
 
-      {!loadingViajes && !errorViajes && viajes?.length === 0 && (
+      {!errorViajes && viajes?.length === 0 && (
         <div className="container mt-4">
           <div className="alert alert-success bg-success-subtle border border-success-subtle text-center text-success-emphasis rounded-4">
             No hay viajes disponibles.
@@ -126,7 +143,7 @@ export const MostrarViaje = () => {
         </div>
       )}
 
-      {!loadingViajes && !errorViajes && viajes?.length > 0 && (
+      {!errorViajes && viajes?.length > 0 && (
         <div className="container mt-4">
           <div className="row">
             {viajes.map((viaje) => {
@@ -147,7 +164,6 @@ export const MostrarViaje = () => {
                       {/* Sección Superior: Perfil y Datos Principales */}
                       <div className="d-flex justify-content-between align-items-start mb-3">
                         <div className="d-flex align-items-center">
-                          {/* Avatar y Calificación */}
                           <div className="position-relative me-3">
                             <img
                               src={bufferToBase64(
@@ -209,7 +225,6 @@ export const MostrarViaje = () => {
                       {/* Sección Media: Ruta y Disponibilidad */}
                       <div className="row align-items-center mb-3">
                         <div className="col-7 position-relative">
-                          {/* Línea de Origen/Destino */}
                           <div
                             className="d-flex flex-column gap-3 ms-2"
                             style={{
@@ -218,13 +233,12 @@ export const MostrarViaje = () => {
                             }}
                           >
                             <div className="position-relative">
-                              {/* Ícono de Origen (verde, hueco) */}
                               <i
                                 className="bi bi-geo-alt position-absolute start-0 top-50 translate-middle bg-white text-success"
                                 style={{
-                                  fontSize: '1.2rem', // Ajustá el tamaño si lo querés más chico/grande
+                                  fontSize: '1.2rem', 
                                   marginLeft: '-20px',
-                                  paddingTop: '2px', // Pequeño ajuste visual para tapar bien la línea
+                                  paddingTop: '2px', 
                                   paddingBottom: '2px',
                                 }}
                               ></i>
@@ -233,7 +247,6 @@ export const MostrarViaje = () => {
                               </h5>
                             </div>
                             <div className="position-relative">
-                              {/* Ícono de Destino (rojo, lleno) */}
                               <i
                                 className="bi bi-geo-fill position-absolute start-0 top-50 translate-middle bg-white text-danger"
                                 style={{
@@ -250,7 +263,6 @@ export const MostrarViaje = () => {
                           </div>
                         </div>
 
-                        {/* La parte de la derecha (Disponibilidad y Mascotas) la dejo intacta por si acaso */}
                         <div className="col-5 text-end small">
                           <div className="text-muted mb-2">
                             {viaje.viajeAceptaMascotas
@@ -299,11 +311,9 @@ export const MostrarViaje = () => {
           </div>
         </div>
       )}
-      {loadingViajes && (
-        <div className="alert alert-info">Cargando viajes...</div>
-      )}
+
       {errorViajes && (
-        <div className="alert alert-danger">
+        <div className="container mt-4 alert alert-danger">
           Error al cargar viajes: {errorViajes}
         </div>
       )}
@@ -327,6 +337,7 @@ export const MostrarViaje = () => {
             <div className="d-flex gap-2">
               <button
                 className="btn btn-light-cancel w-50"
+                disabled={isSubmitting} 
                 onClick={() => {
                   setMostrarModalConfirmacion(false);
                   setMostrarModalCancelado(true);
@@ -336,10 +347,15 @@ export const MostrarViaje = () => {
               </button>
 
               <button
-                className="btn btn-pastel-green w-50"
+                className="btn btn-pastel-green w-50 d-flex justify-content-center align-items-center"
+                disabled={isSubmitting} 
                 onClick={handleSubmit}
               >
-                Enviar
+                {isSubmitting ? (
+                  <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+                ) : (
+                  'Enviar'
+                )}
               </button>
             </div>
           </div>
