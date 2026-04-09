@@ -651,7 +651,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.85rem' }}>
               <i className="bi bi-car-front-fill me-2"></i>
               {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.color} - {viaje?.vehiculo?.patente}
             </p>
             {viaje?.usuarioConductor?.telefono && (
               <p
@@ -856,8 +856,9 @@ const TarjetaPasajeroReciente = ({
               </span>
             </div>
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.8rem' }}>
+              <i className="bi bi-car-front-fill me-1"></i>
               {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.color} - {viaje?.vehiculo?.patente}
             </p>
           </div>
 
