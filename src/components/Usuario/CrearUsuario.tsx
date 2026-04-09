@@ -281,7 +281,7 @@ export const CrearUsuario = () => {
                     !contrasenasCoinciden
                   }
                 >
-                  Crear Cuenta
+                  Registrarse
                 </button>
               </div>
             </form>
