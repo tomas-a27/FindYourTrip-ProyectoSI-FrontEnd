@@ -1190,6 +1190,8 @@ const TarjetaConductorActivo = ({
             query={`viaje/comenzar/${viaje.viajeId}`}
             accion="COMENZAR"
             routeNav="/mis-viajes"
+            viajeFecha={viaje.viajeFecha}
+            viajeHorario={viaje.viajeHorario}
           />
         )}
       </div>
