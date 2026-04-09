@@ -27,6 +27,8 @@ export const AprobarDenegarSolicitud = () => {
 
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [viajeInfo, setViajeInfo] = useState<any>(null);
+  
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     if (!location.state || !location.state.viajeId) {
@@ -40,6 +42,8 @@ export const AprobarDenegarSolicitud = () => {
     if (!esRecargaOculta) {
       setSolicitudPendienteLoading(true);
       setSolicitudAprobadaRechazadaLoading(true);
+    } else {
+      setIsRefreshing(true); // Prendemos la actualización oculta
     }
 
     try {
@@ -79,6 +83,8 @@ export const AprobarDenegarSolicitud = () => {
     } catch (e) {
       console.error(e);
     }
+    
+    if (esRecargaOculta) setIsRefreshing(false);
   };
 
   const toggleHistorial = () => {
@@ -86,6 +92,15 @@ export const AprobarDenegarSolicitud = () => {
   };
 
   if (!location.state) return null;
+
+  if (solicitudPendienteLoading || solicitudAprobadaRechazadaLoading) {
+    return (
+      <div className="text-center mt-5 p-5">
+        <div className="spinner-border text-success" role="status"></div>
+        <p className="mt-3 text-muted fw-bold">Cargando solicitudes...</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -145,12 +160,8 @@ export const AprobarDenegarSolicitud = () => {
       </div>
 
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-        {solicitudPendienteLoading && (
-          <p className="text-center mt-3 text-muted">Cargando solicitudes...</p>
-        )}
 
-        {!solicitudPendienteLoading &&
-          !solicitudPendienteError &&
+        {!solicitudPendienteError &&
           solicitudPendiente.length === 0 && (
             <div className="container">
               <div className="alert alert-light border text-center text-muted rounded-4">
@@ -159,8 +170,7 @@ export const AprobarDenegarSolicitud = () => {
             </div>
           )}
 
-        {!solicitudPendienteLoading &&
-          !solicitudPendienteError &&
+        {!solicitudPendienteError &&
           solicitudPendiente.length > 0 && (
             <div className="container">
               <h5 className="fw-bold mb-3 text-dark">Pendientes de revisión</h5>
@@ -305,120 +315,128 @@ export const AprobarDenegarSolicitud = () => {
 
           {mostrarHistorial && (
             <div className="mt-4 text-start">
-              {!solicitudAprobadaRechazadaLoading &&
-                !solicitudAprobadaRechazadaError &&
-                solicitudAprobadaRechazada.length === 0 && (
-                  <div className="alert alert-light border text-center text-muted rounded-4">
-                    No hay solicitudes en el historial.
-                  </div>
-                )}
+              
+              {isRefreshing ? (
+                <div className="text-center py-4">
+                  <div className="spinner-border spinner-border-sm text-success" role="status"></div>
+                  <span className="ms-2 text-muted fw-bold small">Cargando solicitudes...</span>
+                </div>
+              ) : (
+                <>
+                  {!solicitudAprobadaRechazadaError &&
+                    solicitudAprobadaRechazada.length === 0 && (
+                      <div className="alert alert-light border text-center text-muted rounded-4">
+                        No hay solicitudes aprobadas o denegadas.
+                      </div>
+                    )}
 
-              {!solicitudAprobadaRechazadaLoading &&
-                !solicitudAprobadaRechazadaError &&
-                solicitudAprobadaRechazada.length > 0 && (
-                  <div className="row">
-                    {solicitudAprobadaRechazada.map((solicitud, index) => (
-                      <div key={index} className="col-12 col-lg-6 mb-4">
-                        <div
-                          className="card border-1 shadow-sm p-3 h-100"
-                          style={{
-                            borderRadius: '20px',
-                            backgroundColor: '#fff',
-                          }}
-                        >
-                          <div className="card-body p-2">
-                            <div className="d-flex justify-content-between align-items-start">
-                              <div className="d-flex justify-content-between align-items-start">
-                                <div>
-                                  <div className="d-flex align-items-center mb-1">
-                                    <div
-                                      className="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white fw-bold me-2"
-                                      style={{
-                                        width: '35px',
-                                        height: '35px',
-                                        fontSize: '0.9rem',
-                                      }}
-                                    >
-                                      {solicitud.usuario?.nombreUsuario?.charAt(
-                                        0,
-                                      )}
-                                      {solicitud.usuario?.apellidoUsuario?.charAt(
-                                        0,
+                  {!solicitudAprobadaRechazadaError &&
+                    solicitudAprobadaRechazada.length > 0 && (
+                      <div className="row">
+                        {solicitudAprobadaRechazada.map((solicitud, index) => (
+                          <div key={index} className="col-12 col-lg-6 mb-4">
+                            <div
+                              className="card border-1 shadow-sm p-3 h-100"
+                              style={{
+                                borderRadius: '20px',
+                                backgroundColor: '#fff',
+                              }}
+                            >
+                              <div className="card-body p-2">
+                                <div className="d-flex justify-content-between align-items-start">
+                                  <div className="d-flex justify-content-between align-items-start">
+                                    <div>
+                                      <div className="d-flex align-items-center mb-1">
+                                        <div
+                                          className="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white fw-bold me-2"
+                                          style={{
+                                            width: '35px',
+                                            height: '35px',
+                                            fontSize: '0.9rem',
+                                          }}
+                                        >
+                                          {solicitud.usuario?.nombreUsuario?.charAt(
+                                            0,
+                                          )}
+                                          {solicitud.usuario?.apellidoUsuario?.charAt(
+                                            0,
+                                          )}
+                                        </div>
+                                        <h6
+                                          className="fw-bold mb-0 me-2"
+                                          style={{ fontSize: '1.1rem' }}
+                                        >
+                                          {solicitud.usuario?.nombreUsuario}{' '}
+                                          {solicitud.usuario?.apellidoUsuario}
+                                        </h6>
+                                        <span
+                                          className="badge rounded-pill bg-light text-dark border shadow-sm"
+                                          style={{
+                                            fontSize: '0.8rem',
+                                            padding: '4px 10px',
+                                          }}
+                                        >
+                                          <i className="bi bi-star-fill text-warning me-1"></i>
+                                          {solicitud.usuario?.calificacionPas ||
+                                            'S/C'}
+                                        </span>
+                                      </div>
+                                      <p className="text-muted mb-0 small mt-2">
+                                        <strong>Documento: </strong>{' '}
+                                        {solicitud.usuario?.tipoDocumento}{' '}
+                                        {solicitud.usuario?.nroDocumento}
+                                      </p>
+                                      <p className="text-muted mb-0 small">
+                                        <strong>Género: </strong>{' '}
+                                        {solicitud.usuario?.generoUsuario}
+                                      </p>
+                                      {solicitud.estadoSolicitud?.toUpperCase() ===
+                                        'APROBADA' && (
+                                        <div
+                                          className="mt-2 p-2 rounded"
+                                          style={{ backgroundColor: '#f8f9fa' }}
+                                        >
+                                          <p className="text-dark mb-1 small fw-medium">
+                                            <i className="bi bi-telephone-fill me-2 text-muted"></i>{' '}
+                                            {solicitud.usuario?.telefono}
+                                          </p>
+                                          <p className="text-dark mb-0 small fw-medium">
+                                            <i className="bi bi-envelope-fill me-2 text-muted"></i>{' '}
+                                            {solicitud.usuario?.email}
+                                          </p>
+                                        </div>
                                       )}
                                     </div>
-                                    <h6
-                                      className="fw-bold mb-0 me-2"
-                                      style={{ fontSize: '1.1rem' }}
-                                    >
-                                      {solicitud.usuario?.nombreUsuario}{' '}
-                                      {solicitud.usuario?.apellidoUsuario}
-                                    </h6>
-                                    <span
-                                      className="badge rounded-pill bg-light text-dark border shadow-sm"
-                                      style={{
-                                        fontSize: '0.8rem',
-                                        padding: '4px 10px',
-                                      }}
-                                    >
-                                      <i className="bi bi-star-fill text-warning me-1"></i>
-                                      {solicitud.usuario?.calificacionPas ||
-                                        'S/C'}
-                                    </span>
                                   </div>
-                                  <p className="text-muted mb-0 small mt-2">
-                                    <strong>Documento: </strong>{' '}
-                                    {solicitud.usuario?.tipoDocumento}{' '}
-                                    {solicitud.usuario?.nroDocumento}
-                                  </p>
-                                  <p className="text-muted mb-0 small">
-                                    <strong>Género: </strong>{' '}
-                                    {solicitud.usuario?.generoUsuario}
-                                  </p>
-                                  {solicitud.estadoSolicitud?.toUpperCase() ===
-                                    'APROBADA' && (
-                                    <div
-                                      className="mt-2 p-2 rounded"
-                                      style={{ backgroundColor: '#f8f9fa' }}
-                                    >
-                                      <p className="text-dark mb-1 small fw-medium">
-                                        <i className="bi bi-telephone-fill me-2 text-muted"></i>{' '}
-                                        {solicitud.usuario?.telefono}
-                                      </p>
-                                      <p className="text-dark mb-0 small fw-medium">
-                                        <i className="bi bi-envelope-fill me-2 text-muted"></i>{' '}
-                                        {solicitud.usuario?.email}
-                                      </p>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
 
-                              <div className="text-end text-muted small">
-                                <div className="d-flex flex-column align-items-center">
-                                  {solicitud.estadoSolicitud?.toUpperCase() ===
-                                  'APROBADA' ? (
-                                    <i
-                                      className="bi bi-check-circle-fill text-success mb-1"
-                                      style={{ fontSize: '1.8rem' }}
-                                    ></i>
-                                  ) : (
-                                    <i
-                                      className="bi bi-x-circle-fill text-danger mb-1"
-                                      style={{ fontSize: '1.8rem' }}
-                                    ></i>
-                                  )}
-                                  <div className="fw-bold text-dark fs-6">
-                                    {solicitud.estadoSolicitud?.toUpperCase()}
+                                  <div className="text-end text-muted small">
+                                    <div className="d-flex flex-column align-items-center">
+                                      {solicitud.estadoSolicitud?.toUpperCase() ===
+                                      'APROBADA' ? (
+                                        <i
+                                          className="bi bi-check-circle-fill text-success mb-1"
+                                          style={{ fontSize: '1.8rem' }}
+                                        ></i>
+                                      ) : (
+                                        <i
+                                          className="bi bi-x-circle-fill text-danger mb-1"
+                                          style={{ fontSize: '1.8rem' }}
+                                        ></i>
+                                      )}
+                                      <div className="fw-bold text-dark fs-6">
+                                        {solicitud.estadoSolicitud?.toUpperCase()}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    )}
+                </>
+              )}
             </div>
           )}
         </div>
