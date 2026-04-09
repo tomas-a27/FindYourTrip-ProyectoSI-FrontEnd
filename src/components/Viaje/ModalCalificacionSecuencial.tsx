@@ -11,7 +11,7 @@ interface Props {
     viajeDestino?: string;
     viajeFecha?: string;
     cancelacionTardia?: boolean; 
-    fotoPerfil?: any; // <-- AGREGAMOS LA FOTO
+    fotoPerfil?: any; 
   };
   viajeId: number | null;
   indice: number;
@@ -120,7 +120,7 @@ export const ModalCalificacionSecuencial = ({
           </div>
           <h4 className="fw-bold">Calificación exitosa</h4>
           {motivoReporte && (
-            <p className="text-muted small">Reporte enviado: {motivoReporte}</p>
+            <p className="text-muted small">Reporte de infracción enviado: {motivoReporte}</p>
           )}
           <button
             className="btn w-100 mt-4 py-2 fw-bold"
@@ -153,7 +153,6 @@ export const ModalCalificacionSecuencial = ({
           paso === 'reporte') && (
           <div className="animate__animated animate__fadeIn text-center">
             
-            {/* CAJA CON LOS DATOS DEL VIAJE */}
             {(usuarioACalificar.viajeOrigen && usuarioACalificar.viajeDestino) && (
               <div className="mb-4 p-2 rounded-3 text-start position-relative" style={{ backgroundColor: '#f8f9fa', border: '1px solid #eaeaea' }}>
                 {usuarioACalificar.cancelacionTardia && (
@@ -170,7 +169,6 @@ export const ModalCalificacionSecuencial = ({
               </div>
             )}
 
-            {/* TÍTULO DINÁMICO */}
             <h5 className="fw-bold mb-3" style={styles.titulo}>
               {usuarioACalificar.cancelacionTardia 
                 ? `Calificación por cancelación al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}:` 
@@ -178,7 +176,6 @@ export const ModalCalificacionSecuencial = ({
               }
             </h5>
 
-            {/* FOTO DE PERFIL Y NOMBRE */}
             <div className="d-flex flex-column align-items-center justify-content-center mb-3">
               <img
                 src={bufferToBase64(usuarioACalificar.fotoPerfil)}
@@ -229,7 +226,7 @@ export const ModalCalificacionSecuencial = ({
                     className="btn btn-light border text-danger w-100"
                     onClick={() => setPaso('reporte')}
                   >
-                    REPORTAR {tipo === 'Conductor' ? 'CONDUCTOR' : 'PASAJERO'}
+                    REPORTAR INFRACCIÓN {tipo === 'Conductor' ? 'CONDUCTOR' : 'PASAJERO'}
                   </button>
                 </div>
               </>
@@ -239,7 +236,7 @@ export const ModalCalificacionSecuencial = ({
 
         {paso === 'reporte' && (
           <div className="animate__animated animate__fadeIn text-start">
-            <h5 className="fw-bold mb-2 text-center">Motivo de Reporte</h5>
+            <h5 className="fw-bold mb-2 text-center">Tipo de infracción</h5>
             <div
               className="list-group list-group-flush mb-3"
               style={{ maxHeight: '130px', overflowY: 'auto' }}
