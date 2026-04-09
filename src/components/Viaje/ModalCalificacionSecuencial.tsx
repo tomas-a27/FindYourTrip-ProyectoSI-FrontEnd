@@ -120,7 +120,7 @@ export const ModalCalificacionSecuencial = ({
           </div>
           <h4 className="fw-bold">Calificación exitosa</h4>
           {motivoReporte && (
-            <p className="text-muted small">Reporte de infracción enviado: {motivoReporte}</p>
+            <p className="text-muted small">Motivo de infracción enviado: {motivoReporte}</p>
           )}
           <button
             className="btn w-100 mt-4 py-2 fw-bold"
