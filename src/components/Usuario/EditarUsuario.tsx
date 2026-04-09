@@ -439,7 +439,15 @@ export const EditarUsuario = () => {
                 <div className="mb-4">
                   <input
                     type="tel"
-                    className={`form-control p-2 ${nuevoValor && !esTelValido ? 'is-invalid' : ''} ${nuevoValor && esTelValido ? 'is-valid' : ''}`}
+                    className={`form-control p-2 ${
+                      nuevoValor.trim().length === 0
+                        ? 'is-invalid'
+                        : nuevoValor && esTelValido
+                        ? 'is-valid'
+                        : nuevoValor && !esTelValido
+                        ? 'is-invalid'
+                        : ''
+                    }`}
                     style={
                       nuevoValor && esTelValido
                         ? { backgroundImage: 'none' }
@@ -450,7 +458,14 @@ export const EditarUsuario = () => {
                     onChange={(e) => setNuevoValor(e.target.value)}
                     required
                   />
-                  {nuevoValor && !esTelValido && (
+
+                  {nuevoValor.trim().length === 0 && (
+                    <div className="invalid-feedback fw-semibold mt-1">
+                      El teléfono no puede estar vacío.
+                    </div>
+                  )}
+
+                  {nuevoValor && nuevoValor.trim().length > 0 && !esTelValido && (
                     <div className="invalid-feedback fw-semibold mt-1">
                       Debe comenzar con + y tener al menos 10 números.
                     </div>
@@ -460,7 +475,15 @@ export const EditarUsuario = () => {
                 <div className="mb-4">
                   <input
                     type="email"
-                    className={`form-control p-2 ${nuevoValor && !esEmailValido ? 'is-invalid' : ''} ${nuevoValor && esEmailValido ? 'is-valid' : ''}`}
+                    className={`form-control p-2 ${
+                      nuevoValor.trim().length === 0
+                        ? 'is-invalid'
+                        : nuevoValor && esEmailValido
+                        ? 'is-valid'
+                        : nuevoValor && !esEmailValido
+                        ? 'is-invalid'
+                        : ''
+                    }`}
                     style={
                       nuevoValor && esEmailValido
                         ? { backgroundImage: 'none' }
@@ -471,7 +494,14 @@ export const EditarUsuario = () => {
                     onChange={(e) => setNuevoValor(e.target.value)}
                     required
                   />
-                  {nuevoValor && !esEmailValido && (
+
+                  {nuevoValor.trim().length === 0 && (
+                    <div className="invalid-feedback fw-semibold mt-1">
+                      El email no puede estar vacío.
+                    </div>
+                  )}
+
+                  {nuevoValor && nuevoValor.trim().length > 0 && !esEmailValido && (
                     <div className="invalid-feedback fw-semibold mt-1">
                       Formato de email incorrecto.
                     </div>
