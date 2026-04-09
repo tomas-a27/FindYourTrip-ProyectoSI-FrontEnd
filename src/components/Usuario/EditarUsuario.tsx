@@ -251,8 +251,6 @@ export const EditarUsuario = () => {
 
         <h2 className="text-center mb-3">Editar datos de cuenta</h2>
 
-        {error && <div className="alert alert-danger">{error}</div>}
-
         {success && (
           <div className="modal-overlay">
             <div className="custom-modal text-center">
@@ -361,9 +359,19 @@ export const EditarUsuario = () => {
             <h5 className="text-center mb-4 fw-bold text-dark">
               Actualizar{' '}
               {campoSeleccionado === 'nombreCompleto'
-                ? 'Nombre'
+                ? 'nombre y apellido'
+                : campoSeleccionado === 'generoUsuario'
+                ? 'género'
+                : campoSeleccionado === 'telefono'
+                ? 'teléfono'
                 : campoSeleccionado}
             </h5>
+
+            {error && (
+              <div className="alert alert-danger text-center">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit}>
               {campoSeleccionado === 'nombreCompleto' ? (
@@ -499,7 +507,7 @@ export const EditarUsuario = () => {
                   className="btn btn-success py-2 fw-bold shadow-sm"
                   disabled={botonDeshabilitado()}
                 >
-                  Guardar Cambios
+                  Actualizar
                 </button>
               </div>
             </form>
