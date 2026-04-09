@@ -28,6 +28,9 @@ export const EditarUsuario = () => {
     tipoUsuario: '',
   });
 
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [loadingPass, setLoadingPass] = useState(false);
+
   useEffect(() => {
     if (data) {
       setUsuarioToUpdate({
@@ -105,6 +108,7 @@ export const EditarUsuario = () => {
     if (campoSeleccionado === 'telefono' && !esTelValido) return;
     if (campoSeleccionado === 'email' && !esEmailValido) return;
 
+    setLoadingUpdate(true);
     const {
       contrasenaUsuario,
       contrasenaUsuarioConfirmacion,
@@ -163,6 +167,8 @@ export const EditarUsuario = () => {
       cerrarModal();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error al actualizar');
+    } finally {
+      setLoadingUpdate(false); 
     }
   };
 
@@ -173,6 +179,8 @@ export const EditarUsuario = () => {
       setError('Revise los requisitos de la nueva contraseña');
       return;
     }
+
+    setLoadingPass(true); 
 
     try {
       const {
@@ -191,18 +199,25 @@ export const EditarUsuario = () => {
       });
 
       setError('');
-      setSuccess('El campo se actualizó correctamente');
+      setSuccess('La contraseña se actualizó correctamente');
       setMostrarModalPass(false);
       setPassActual('');
       setPassNueva('');
       setPassConfirmacion('');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error al cambiar contraseña');
+    } finally {
+      setLoadingPass(false); 
     }
   };
 
   if (!data) {
-    return <p className="text-center mt-5">Cargando...</p>;
+    return (
+      <div className="text-center mt-5 p-5">
+        <div className="spinner-border text-success" role="status"></div>
+        <p className="mt-3 text-muted fw-bold">Cargando datos...</p>
+      </div>
+    );
   }
 
   if (!data.idUsuario) {
@@ -256,18 +271,21 @@ export const EditarUsuario = () => {
 
         {success && (
           <div className="modal-overlay">
-            <div className="custom-modal text-center">
-              <button onClick={() => setSuccess('')} className="btn-cerrar">
-                X
+            <div className="custom-modal text-center p-4">
+              <button onClick={() => setSuccess('')} className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted">
+                <i className="bi bi-x-lg"></i>
               </button>
-              <h5>{success}</h5>
+              <div className="mb-3">
+                <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '3rem' }}></i>
+              </div>
+              <h5 className="fw-bold mb-0">{success}</h5>
             </div>
           </div>
         )}
 
-        <div className="editar-usuario-card">
+        <div className="editar-usuario-card bg-white p-4 rounded-4 shadow-sm border">
           {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
-            <div className="text-center mb-4">
+            <div className="text-center mb-4 pb-3 border-bottom">
               <img
                 src={
                   fotoPerfilTemp
@@ -276,28 +294,29 @@ export const EditarUsuario = () => {
                       ? URL.createObjectURL(fotoPerfil)
                       : usuarioToUpdate.fotoPerfil
                         ? bufferToBase64(usuarioToUpdate.fotoPerfil)
-                        : ''
+                        : 'https://via.placeholder.com/150'
                 }
                 alt="Foto de perfil"
-                className="usuario-foto-grande mb-0"
+                className="usuario-foto-grande mb-3 shadow-sm border border-2"
+                style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '50%' }}
               />
 
-              <div className="my-2">
+              <div>
                 <button
-                  className="btn btn-outline-secondary btn-sm"
+                  className="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold"
                   onClick={() => {
                     setCampoSeleccionado('fotoPerfil');
                     setFotoPerfil(null);
                   }}
                 >
-                  Renovar foto
+                  Cambiar foto
                 </button>
               </div>
             </div>
           )}
 
           {renderCampo(
-            'Nombre',
+            'Nombre Completo',
             `${usuarioToUpdate.nombreUsuario} ${usuarioToUpdate.apellidoUsuario}`,
             'nombreCompleto',
           )}
@@ -323,26 +342,26 @@ export const EditarUsuario = () => {
             </>
           )}
 
-          <div className="modificar-pass-container d-flex justify-content-between mt-4">
+          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-5 pt-3 gap-3">
             {usuarioToUpdate.tipoUsuario?.toLowerCase() === 'conductor' && (
               <button
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-secondary w-100 rounded-pill fw-bold"
                 onClick={() =>
                   navigate(`/mostrar-vehiculo/${usuarioToUpdate.idUsuario}`)
                 }
               >
-                Ver mis vehículos
+                Mis vehículos
               </button>
             )}
 
             <button
-              className="btn btn-outline-danger"
+              className="btn btn-outline-danger w-100 rounded-pill fw-bold"
               onClick={() => {
                 setError('');
                 setMostrarModalPass(true);
               }}
             >
-              Modificar contraseña
+              Cambiar contraseña
             </button>
           </div>
         </div>
@@ -354,6 +373,7 @@ export const EditarUsuario = () => {
           <div className="custom-modal p-4" style={{ maxWidth: '400px' }}>
             <button
               onClick={cerrarModal}
+              disabled={loadingUpdate}
               className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted"
             >
               <i className="bi bi-x-lg"></i>
@@ -367,11 +387,13 @@ export const EditarUsuario = () => {
                 ? 'género'
                 : campoSeleccionado === 'telefono'
                 ? 'teléfono'
+                : campoSeleccionado === 'fotoPerfil'
+                ? 'foto de perfil'
                 : campoSeleccionado}
             </h5>
 
             {error && (
-              <div className="alert alert-danger text-center">
+              <div className="alert alert-danger text-center fw-bold">
                 {error}
               </div>
             )}
@@ -538,10 +560,14 @@ export const EditarUsuario = () => {
               <div className="d-grid mt-2">
                 <button
                   type="submit"
-                  className="btn btn-success py-2 fw-bold shadow-sm"
-                  disabled={botonDeshabilitado()}
+                  className="btn btn-success py-2 fw-bold shadow-sm d-flex justify-content-center align-items-center"
+                  disabled={botonDeshabilitado() || loadingUpdate}
                 >
-                  Actualizar
+                  {loadingUpdate ? (
+                    <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+                  ) : (
+                    'Actualizar'
+                  )}
                 </button>
               </div>
             </form>
@@ -555,6 +581,7 @@ export const EditarUsuario = () => {
           <div className="custom-modal p-4" style={{ maxWidth: '400px' }}>
             <button
               onClick={() => setMostrarModalPass(false)}
+              disabled={loadingPass}
               className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted"
             >
               <i className="bi bi-x-lg"></i>
@@ -565,7 +592,7 @@ export const EditarUsuario = () => {
             </h5>
 
             {error && (
-              <div className="alert alert-danger text-center">
+              <div className="alert alert-danger text-center fw-bold">
                 {error}
               </div>
             )}
@@ -639,12 +666,16 @@ export const EditarUsuario = () => {
               <div className="d-grid mt-2">
                 <button
                   type="submit"
-                  className="btn btn-success py-2 fw-bold shadow-sm"
+                  className="btn btn-success py-2 fw-bold shadow-sm d-flex justify-content-center align-items-center"
                   disabled={
-                    !esPassNuevaLarga || !contrasenasCoinciden || !passActual
+                    !esPassNuevaLarga || !contrasenasCoinciden || !passActual || loadingPass
                   }
                 >
-                  Actualizar Contraseña
+                  {loadingPass ? (
+                    <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+                  ) : (
+                    'Actualizar Contraseña'
+                  )}
                 </button>
               </div>
             </form>
@@ -659,12 +690,12 @@ export const EditarUsuario = () => {
       <div className="campo-box d-flex justify-content-between align-items-center border-bottom py-3">
         <div>
           <div className="text-muted small fw-bold">{label}</div>
-          <div className="fs-5 text-dark">{valor}</div>
+          <div className="fs-5 text-dark fw-medium">{valor}</div>
         </div>
         <button
           onClick={() => handleEditar(campo)}
-          className="btn btn-light rounded-circle shadow-sm"
-          style={{ width: '40px', height: '40px' }}
+          className="btn btn-light rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+          style={{ width: '40px', height: '40px', border: '1px solid #eaeaea' }}
         >
           <i className="bi bi-pencil-fill text-success"></i>
         </button>
