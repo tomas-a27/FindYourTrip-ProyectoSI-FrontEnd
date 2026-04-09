@@ -74,6 +74,8 @@ export const EditarUsuario = () => {
   const esPassNuevaLarga = passNueva.length >= 8;
   const contrasenasCoinciden =
     passNueva === passConfirmacion && passNueva !== '';
+  
+  const today = new Date().toISOString().split('T')[0];
 
   const handleEditar = (campo: string) => {
     setCampoSeleccionado(campo);
@@ -487,6 +489,7 @@ export const EditarUsuario = () => {
               ) : campoSeleccionado === 'vigenciaLicenciaConductorUsuario' ? (
                 <input
                   type="date"
+                  min={today}
                   className="form-control mb-4 p-2"
                   value={nuevoValor}
                   onChange={(e) => setNuevoValor(e.target.value)}
