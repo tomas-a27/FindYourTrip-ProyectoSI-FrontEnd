@@ -361,7 +361,7 @@ export const EditarUsuario = () => {
                 setMostrarModalPass(true);
               }}
             >
-              Cambiar contraseña
+              Modificar contraseña
             </button>
           </div>
         </div>
