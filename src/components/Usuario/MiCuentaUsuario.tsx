@@ -27,7 +27,7 @@ export const MiCuenta = () => {
     return (
       <div className="text-center mt-5 p-5">
         <div className="spinner-border text-success" role="status"></div>
-        <p className="mt-3 text-muted fw-bold">Cargando tu perfil...</p>
+        <p className="mt-3 text-muted fw-bold">Cargando tu cuenta...</p>
       </div>
     );
   }

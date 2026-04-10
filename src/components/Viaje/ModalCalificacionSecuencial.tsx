@@ -111,7 +111,7 @@ export const ModalCalificacionSecuencial = ({
   if (mostrandoExito) {
     return (
       <div className="modal-overlay" style={styles.overlay}>
-        <div className="custom-modal text-center" style={styles.modal}>
+        <div className="custom-modal text-center p-4 p-sm-5 bg-white shadow-lg" style={styles.modal}>
           <div className="mb-3">
             <i
               className="bi bi-check-circle-fill text-success"
@@ -136,7 +136,7 @@ export const ModalCalificacionSecuencial = ({
 
   return (
     <div className="modal-overlay" style={styles.overlay}>
-      <div className="custom-modal" style={styles.modal}>
+      <div className="custom-modal p-3 p-sm-4 bg-white shadow-lg" style={styles.modal}>
         <div className="d-flex justify-content-between align-items-center mb-3">
           <span style={styles.badge}>
             {tipo} {indice} de {total}
@@ -154,22 +154,22 @@ export const ModalCalificacionSecuencial = ({
           <div className="animate__animated animate__fadeIn text-center">
             
             {(usuarioACalificar.viajeOrigen && usuarioACalificar.viajeDestino) && (
-              <div className="mb-4 p-2 rounded-3 text-start position-relative" style={{ backgroundColor: '#f8f9fa', border: '1px solid #eaeaea' }}>
+              <div className="mb-4 p-2 p-sm-3 rounded-3 text-start position-relative" style={{ backgroundColor: '#f8f9fa', border: '1px solid #eaeaea' }}>
                 {usuarioACalificar.cancelacionTardia && (
-                  <span className="badge bg-danger position-absolute top-0 end-0 m-2 shadow-sm">
+                  <span className="badge bg-danger position-absolute top-0 end-0 m-2 shadow-sm" style={{ fontSize: '0.7rem' }}>
                     Viaje Cancelado
                   </span>
                 )}
-                <p className="m-0 text-muted fw-bold pe-5" style={{ fontSize: '0.85rem' }}>
+                <p className="m-0 text-muted fw-bold pe-5" style={{ fontSize: 'clamp(0.8rem, 2.5vw, 0.85rem)' }}>
                   <i className="bi bi-geo-alt-fill text-success me-1"></i> {usuarioACalificar.viajeOrigen} a {usuarioACalificar.viajeDestino}
                 </p>
-                <p className="m-0 text-muted mt-1" style={{ fontSize: '0.8rem' }}>
+                <p className="m-0 text-muted mt-1" style={{ fontSize: 'clamp(0.75rem, 2vw, 0.8rem)' }}>
                   <i className="bi bi-calendar3 me-1"></i> {usuarioACalificar.viajeFecha ? usuarioACalificar.viajeFecha.split('-').reverse().join('/') : ''}
                 </p>
               </div>
             )}
 
-            <h5 className="fw-bold mb-3" style={styles.titulo}>
+            <h5 className="fw-bold mb-3" style={{ color: '#333', fontSize: 'clamp(1rem, 4vw, 1.15rem)' }}>
               {usuarioACalificar.cancelacionTardia 
                 ? `Calificación por cancelación al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}:` 
                 : `¿Cómo calificas al ${tipo === 'Conductor' ? 'conductor' : 'pasajero'}?`
@@ -181,8 +181,8 @@ export const ModalCalificacionSecuencial = ({
                 src={bufferToBase64(usuarioACalificar.fotoPerfil)}
                 alt="Avatar"
                 style={{
-                  width: '75px',
-                  height: '75px',
+                  width: 'clamp(60px, 15vw, 75px)',
+                  height: 'clamp(60px, 15vw, 75px)',
                   borderRadius: '50%',
                   objectFit: 'cover',
                   border: '3px solid #1f5c2f',
@@ -190,19 +190,20 @@ export const ModalCalificacionSecuencial = ({
                 }}
                 className="mb-2 shadow-sm"
               />
-              <h4 className="fw-bold text-success m-0">
+              <h4 className="fw-bold text-success m-0" style={{ fontSize: 'clamp(1.1rem, 5vw, 1.4rem)' }}>
                 {usuarioACalificar.nombre} {usuarioACalificar.apellido}
               </h4>
             </div>
 
-            {/* ESTRELLAS */}
-            <div className="my-3 d-flex justify-content-center gap-2">
+            <div className="my-3 d-flex justify-content-center gap-1 gap-sm-2 flex-wrap">
               {[1, 2, 3, 4, 5].map((star) => (
                 <i
                   key={star}
                   className={`bi bi-star${puntos >= star ? '-fill' : ''}`}
                   style={{
-                    ...styles.star,
+                    fontSize: 'clamp(2rem, 10vw, 2.8rem)', // Se adapta al celular
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s',
                     color: puntos >= star ? '#ffc107' : '#e4e4e4',
                   }}
                   onClick={() => setPuntos(star)}
@@ -224,6 +225,7 @@ export const ModalCalificacionSecuencial = ({
                 <div className="d-flex justify-content-center">
                   <button
                     className="btn btn-light border text-danger w-100"
+                    style={{ fontSize: 'clamp(0.85rem, 3vw, 1rem)' }}
                     onClick={() => setPaso('reporte')}
                   >
                     REPORTAR INFRACCIÓN {tipo === 'Conductor' ? 'CONDUCTOR' : 'PASAJERO'}
@@ -236,45 +238,47 @@ export const ModalCalificacionSecuencial = ({
 
         {paso === 'reporte' && (
           <div className="animate__animated animate__fadeIn text-start">
-            <h5 className="fw-bold mb-2 text-center">Tipo de infracción</h5>
+            <h5 className="fw-bold mb-2 text-center" style={{ fontSize: 'clamp(1rem, 4vw, 1.15rem)' }}>Tipo de infracción</h5>
             <div
-              className="list-group list-group-flush mb-3"
-              style={{ maxHeight: '130px', overflowY: 'auto' }}
+              className="list-group list-group-flush mb-3 border rounded-3"
+              style={{ maxHeight: '140px', overflowY: 'auto' }}
             >
               {motivosAMostrar.map((m) => (
                 <label
                   key={m}
                   className="list-group-item border-0 d-flex align-items-center gap-2 py-2"
+                  style={{ cursor: 'pointer' }}
                 >
                   <input
                     type="radio"
                     name="motivo"
-                    className="form-check-input mt-0"
+                    className="form-check-input mt-0 flex-shrink-0"
                     checked={motivoReporte === m}
                     onChange={() => setMotivoReporte(m)}
                   />
-                  <span style={{ fontSize: '0.9rem' }}>{m}</span>
+                  <span style={{ fontSize: 'clamp(0.85rem, 2.5vw, 0.95rem)', lineHeight: '1.2' }}>{m}</span>
                 </label>
               ))}
             </div>
-            <div className="mb-2">
-              <h6 className="fw-bold mb-1">Comentario (opcional)</h6>
+            <div className="mb-3">
+              <h6 className="fw-bold mb-1" style={{ fontSize: '0.95rem' }}>Comentario (opcional)</h6>
               <textarea
-                className="form-control border-0 bg-light p-3"
-                rows={3}
+                className="form-control border bg-light p-2"
+                rows={2}
                 placeholder={
                   tipo === 'Conductor'
                     ? 'Ej: Adelantó un camión en una curva a 150km/h.'
                     : 'Ej: Mal trato hacia los demás pasajeros.'
                 }
-                style={{ borderRadius: '12px', resize: 'none' }}
+                style={{ borderRadius: '8px', resize: 'none', fontSize: '0.9rem' }}
                 value={comentario}
                 onChange={(e) => setComentario(e.target.value)}
               ></textarea>
             </div>
             <div className="d-flex gap-2">
               <button
-                className="btn btn-light w-50 border"
+                className="btn btn-light w-50 border fw-semibold"
+                style={{ fontSize: 'clamp(0.85rem, 3vw, 0.95rem)' }}
                 onClick={() => {
                   setMotivoReporte('');
                   setComentario('');
@@ -285,6 +289,7 @@ export const ModalCalificacionSecuencial = ({
               </button>
               <button
                 className="btn btn-danger w-50 fw-bold"
+                style={{ fontSize: 'clamp(0.85rem, 3vw, 0.95rem)' }}
                 onClick={handleEnviar}
                 disabled={!motivoReporte || puntos === 0}
               >
@@ -305,19 +310,19 @@ const styles: any = {
     left: 0,
     width: '100vw',
     height: '100vh',
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.5)', 
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2000,
+    padding: '15px' 
   },
   modal: {
-    backgroundColor: '#fff',
-    padding: '2rem',
     borderRadius: '24px',
-    width: '90%',
-    maxWidth: '400px',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+    width: '100%',
+    maxWidth: '420px', 
+    maxHeight: '90vh', 
+    overflowY: 'auto'
   },
   badge: {
     backgroundColor: '#eaf5ea',
@@ -327,7 +332,6 @@ const styles: any = {
     fontSize: '0.8rem',
     fontWeight: 'bold',
   },
-  star: { fontSize: '2.5rem', cursor: 'pointer', transition: 'transform 0.2s' },
   btnPrimary: {
     backgroundColor: '#1f5c2f',
     color: '#fff',
@@ -339,6 +343,5 @@ const styles: any = {
     color: '#adb5bd',
     borderRadius: '12px',
     border: 'none',
-  },
-  titulo: { color: '#333', fontSize: '1.1rem' },
+  }
 };
