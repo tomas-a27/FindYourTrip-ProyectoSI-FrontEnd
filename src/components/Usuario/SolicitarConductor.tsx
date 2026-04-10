@@ -30,6 +30,9 @@ export const SolicitarConductor = () => {
   const [color, setColor] = useState('');
   const [cantLugares, setCantLugares] = useState(1);
 
+  // NUEVO ESTADO DE CARGA PARA EL BOTÓN
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const esLicenciaValida = nroLicencia.length >= 5 && /^[a-zA-Z0-9]+$/.test(nroLicencia);
   
   const regexPatente = /^[A-Z]{3}\d{3}$|^[A-Z]{2}\d{3}[A-Z]{2}$/i;
@@ -58,6 +61,8 @@ export const SolicitarConductor = () => {
       setError('Por favor, revise los campos marcados en rojo y adjunte las imágenes.');
       return;
     }
+
+    setIsSubmitting(true); // Bloqueamos el formulario e iniciamos carga
 
     const formData = new FormData();
     formData.append('nroLicenciaConductorUsuario', nroLicencia.trim());
@@ -88,6 +93,8 @@ export const SolicitarConductor = () => {
       }
     } catch (err: any) {
       setError(err.response?.data?.message || err.response?.data?.detalles || 'Ocurrió un error al enviar la solicitud');
+    } finally {
+      setIsSubmitting(false); // Liberamos el botón al terminar
     }
   };
 
@@ -289,14 +296,19 @@ export const SolicitarConductor = () => {
                 type="button" 
                 className="btn btn-light-cancel px-4" 
                 onClick={handleCancelar}
+                disabled={isSubmitting} // Bloqueamos también si está enviando
                 style={{ transition: 'all 0.2s ease' }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                  if(!isSubmitting) {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
+                  if(!isSubmitting) {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }
                 }}
               >
                 Cancelar
@@ -304,25 +316,29 @@ export const SolicitarConductor = () => {
               
               <button 
                 type="submit" 
-                className="btn btn-pastel-green px-5 shadow-sm"
-                disabled={!formValido} 
-                style={{ transition: 'all 0.2s ease' }}
+                className="btn btn-pastel-green px-5 shadow-sm d-flex justify-content-center align-items-center"
+                disabled={!formValido || isSubmitting} 
+                style={{ transition: 'all 0.2s ease', minWidth: '130px' }}
                 onMouseEnter={(e) => {
-                  if (formValido) { 
+                  if (formValido && !isSubmitting) { 
                     e.currentTarget.style.transform = 'translateY(-2px)';
                     e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
                     e.currentTarget.style.filter = 'brightness(0.95)';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (formValido) {
+                  if (formValido && !isSubmitting) {
                     e.currentTarget.style.transform = 'translateY(0)';
                     e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
                     e.currentTarget.style.filter = 'brightness(1)';
                   }
                 }}
               >
-                Solicitar
+                {isSubmitting ? (
+                  <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+                ) : (
+                  'Solicitar'
+                )}
               </button>
             </div>
 
