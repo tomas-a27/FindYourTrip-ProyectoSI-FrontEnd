@@ -6,8 +6,8 @@ export const PoliticasUso = () => {
   const politicas = [
     'Solo pueden registrarse como conductores quienes posean una licencia de conducir válida emitida por el Estado argentino.',
     'Los datos personales y de contacto deben ser verídicos y estarán sujetos a validación.',
-    'Las solicitudes de viaje están sujetas a aceptación por parte del conductor. Los conductores disponen de hasta 12 horas para responder.',
-    'Pasajeros y conductores pueden cancelar viajes sin penalización hasta 12 horas antes del inicio.',
+    'Las solicitudes de viaje están sujetas a aceptación por parte del conductor.',
+    'Conductores pueden cancelar viajes sin penalización hasta 24 horas antes del inicio.',
     'Luego del viaje, ambos pueden calificar y reportar al otro usuario. Las infracciones reiteradas serán evaluadas por el administrador.',
     'El mal uso del sistema, el ingreso de datos falsos o el incumplimiento reiterado de normas podrá derivar en sanciones.',
   ];
