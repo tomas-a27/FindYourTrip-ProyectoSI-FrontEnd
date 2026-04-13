@@ -123,7 +123,7 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
             <hr />
 
             <div className="d-flex align-items-center mt-3 mb-2 gap-5">
-              <h5 className="m-0">Reportes</h5>
+              <h5 className="m-0">Infracciones</h5>
               
               <span className="text-muted">
                 <b>Cantidad:</b> {data.cantidadInfracciones}

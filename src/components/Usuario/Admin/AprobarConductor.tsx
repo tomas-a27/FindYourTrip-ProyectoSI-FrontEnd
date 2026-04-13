@@ -21,7 +21,6 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
   const [mostrarReportes, setMostrarReportes] = useState(false);
 
-  // NUEVO: Estado para controlar si se muestra la licencia en pantalla completa
   const [mostrarLicenciaAmpliada, setMostrarLicenciaAmpliada] = useState(false);
 
   const bufferToBase64 = (buffer: any) => {
@@ -130,7 +129,7 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                     setMostrarReportes(true);
                   }}
                 >
-                  Historial de reportes
+                  Historial de infracciones
                 </a>
               </div>
 
@@ -177,7 +176,6 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                 </p>
               </div>
 
-              {/* --- ACÁ INYECTAMOS LA MINIATURA DE LA LICENCIA --- */}
               <div className="col-md-6 text-center border-start">
                 <p className="fw-bold mb-2">Foto de la Licencia:</p>
                 {usuario.fotoLicenciaConductorUsuario ? (
@@ -215,7 +213,6 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                   </p>
                 )}
               </div>
-              {/* -------------------------------------------------- */}
             </div>
 
             <hr />
@@ -239,7 +236,6 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
         </div>
       </div>
 
-      {/* --- NUEVO: MODAL PARA AMPLIAR LA LICENCIA --- */}
       {mostrarLicenciaAmpliada && (
         <div
           className="modal show fade modal-overlay d-block"
@@ -360,7 +356,7 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
 
               <div className="card-body p-4">
                 <div className="d-flex align-items-center mt-3 mb-3 gap-5">
-                  <h5 className="m-0">Historial de reportes</h5>
+                  <h5 className="m-0">Historial de infracciones</h5>
 
                   <span className="text-muted">
                     <b>Cantidad:</b> {reportesData?.cantidadInfracciones ?? 0}
@@ -368,7 +364,7 @@ export const AprobarConductor = ({ usuarioId, onClose, onSuccess }: Props) => {
                 </div>
 
                 {!reportesData?.infracciones?.length ? (
-                  <p className="text-muted">No tiene reportes</p>
+                  <p className="text-muted">No tiene infracciones</p>
                 ) : (
                   reportesData.infracciones.map((i: any, idx: number) => (
                     <div key={idx} className="border p-2 mb-2 rounded">
