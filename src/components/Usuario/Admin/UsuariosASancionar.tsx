@@ -26,11 +26,16 @@ export const UsuariosASancionar = () => {
   };
 
   if (loading) {
-    return <p className="text-center mt-5">Cargando usuarios...</p>;
+    return (
+      <div className="text-center mt-5 p-5">
+        <div className="spinner-border text-success" role="status"></div>
+        <p className="mt-3 text-muted fw-bold">Cargando usuarios...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="container-fluid mt-5 px-5 position-relative">
+    <div className="container mt-5 mb-5 px-3 px-md-4 position-relative">
       <div className="mb-3">
         <Link
           to="/admin-home"
@@ -44,81 +49,93 @@ export const UsuariosASancionar = () => {
 
       <h2 style={{ color: '#2d4a2d' }}>Sancionar usuarios</h2>
 
-      <hr className="mb-3" />
+      <hr className="mb-4" />
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      {usuarios.length === 0 ? (
-        <p className="text-muted p-4 mb-0">No hay usuarios a sancionar</p>
+      {usuarios.length === 0 && !error ? (
+        <p className="text-muted p-4 mb-0 text-center fw-bold bg-light rounded-4 border">
+          No hay usuarios pendientes a sancionar en este momento.
+        </p>
       ) : (
         <div
-          className="card border-0 shadow-sm px-4"
+          className="card border-0 shadow-sm p-3 p-md-4"
           style={{ borderRadius: '16px', overflow: 'hidden' }}
         >
           {usuarios.map((u, index) => (
             <div key={u.idUsuario}>
-              <div className="d-flex align-items-center justify-content-between py-3 list-hover">
-                <div className="d-flex align-items-center w-100">
-                  {u.tipoUsuario !== 'pasajero' && u.foto ? (
-                    <img
-                      src={bufferToBase64(u.foto)}
-                      alt="foto usuario"
-                      className="usuario-foto"
-                    />
-                  ) : (
-                    <div className="usuario-foto d-flex align-items-center justify-content-center text-center">
-                      <span style={{ fontSize: '0.7rem' }}>Sin foto</span>
-                    </div>
-                  )}
+              <div className="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between py-3 list-hover gap-3">
+                
+                {/* Lado izquierdo: Foto + Datos del usuario */}
+                <div className="d-flex flex-column flex-sm-row align-items-sm-center w-100 gap-3 gap-md-4">
+                  
+                  {/* Foto centrada en celulares */}
+                  <div className="d-flex justify-content-center justify-content-sm-start flex-shrink-0">
+                    {u.tipoUsuario !== 'pasajero' && u.foto ? (
+                      <img
+                        src={bufferToBase64(u.foto)}
+                        alt="foto usuario"
+                        className="usuario-foto shadow-sm border"
+                        style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '50%' }}
+                      />
+                    ) : (
+                      <div 
+                        className="usuario-foto d-flex align-items-center justify-content-center text-center bg-light border text-muted"
+                        style={{ width: '60px', height: '60px', borderRadius: '50%' }}
+                      >
+                        <span style={{ fontSize: '0.7rem' }}>Sin foto</span>
+                      </div>
+                    )}
+                  </div>
 
-                  <div className="d-flex w-100">
-                    <div className="d-flex flex-column usuario-col">
-                      <span>
-                        <b>Nombre:</b> {u.nombre}
-                      </span>
-                      <span>
-                        <b>Apellido:</b> {u.apellido}
-                      </span>
+                  {/* Datos usando la grilla de Bootstrap */}
+                  <div className="row w-100 g-2 text-center text-sm-start">
+                    
+                    {/* Columna 1: Nombre */}
+                    <div className="col-12 col-sm-4 d-flex flex-column justify-content-center">
+                      <div className="mb-1" style={{ fontSize: '0.95rem' }}>
+                        <b className="text-muted">Nombre:</b> <br className="d-sm-none"/> {u.nombre}
+                      </div>
+                      <div style={{ fontSize: '0.95rem' }}>
+                        <b className="text-muted">Apellido:</b> <br className="d-sm-none"/> {u.apellido}
+                      </div>
                     </div>
 
-                    <div
-                      className="d-flex flex-column usuario-col"
-                      style={{ marginLeft: '150px' }}
-                    >
-                      <span>
-                        <b>Tipo usuario:</b> {u.tipoUsuario}
-                      </span>
-                      <span>
-                        <b>Cant infracciones:</b> {u.cantidadReportes}
-                      </span>
+                    {/* Columna 2: Infracciones */}
+                    <div className="col-12 col-sm-4 d-flex flex-column justify-content-center">
+                      <div style={{ fontSize: '0.95rem' }}>
+                        <b className="text-danger">Cantidad de infracciones:</b> <br className="d-sm-none"/> 
+                        <span className="badge bg-danger rounded-pill ms-sm-1">{u.cantidadReportes}</span>
+                      </div>
                     </div>
 
-                    <div
-                      className="d-flex flex-column usuario-col"
-                      style={{ marginLeft: '200px' }}
-                    >
-                      <span>
-                        <b>Email:</b> {u.email}
-                      </span>
-                      <span>
-                        <b>Teléfono:</b> {u.telefono}
-                      </span>
+                    <div className="col-12 col-sm-4 d-flex flex-column justify-content-center" style={{ minWidth: 0 }}>
+                      <div className="mb-1" title={u.email} style={{ fontSize: '0.95rem' }}>
+                        <b className="text-muted">Email:</b> <br className="d-sm-none"/> 
+                        <span className="d-inline-block text-truncate align-middle" style={{ maxWidth: '100%' }}>
+                          {u.email}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '0.95rem' }}>
+                        <b className="text-muted">Teléfono:</b> <br className="d-sm-none"/> {u.telefono}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="ms-3">
+                <div className="mt-3 mt-lg-0 flex-shrink-0 d-flex justify-content-center justify-content-lg-end">
                   <button
-                    className="btn btn-outline-custom-dark"
-                    style={{ whiteSpace: 'nowrap' }}
+                    className="btn btn-outline-secondary fw-bold px-4 py-2 w-100"
+                    style={{ whiteSpace: 'nowrap', borderRadius: '10px' }}
                     onClick={() => setUsuarioSeleccionado(u.idUsuario)}
                   >
                     Ver infracciones
                   </button>
                 </div>
+
               </div>
 
-              {index < usuarios.length - 1 && <hr className="my-2" />}
+              {index < usuarios.length - 1 && <hr className="my-2 text-muted opacity-25" />}
             </div>
           ))}
         </div>

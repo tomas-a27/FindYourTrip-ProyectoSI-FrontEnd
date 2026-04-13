@@ -106,7 +106,6 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
               <div className="col-md-8 mt-3 mt-md-0">
                 <p><b>Nombre:</b> {data.nombre}</p>
                 <p><b>Apellido:</b> {data.apellido}</p>
-                <p><b>Tipo de usuario:</b> <span className="text-capitalize">{data.tipoUsuario}</span></p>
 
                 <div className="d-flex gap-4">
                   <p><b>Tipo doc:</b> {data.tipoDocumento}</p>
