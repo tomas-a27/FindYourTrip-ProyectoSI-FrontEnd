@@ -50,7 +50,7 @@ export const InformeConductores = () => {
       <h2 style={{ color: '#2d4a2d' }}>Informe de conductores</h2>
 
       <p className="text-muted mb-4">
-        Listado de todos los conductores aprobados ordenados por su calificación
+        Informe de todos los conductores aprobados ordenados por su calificación
         (de mayor a menor).
       </p>
 
