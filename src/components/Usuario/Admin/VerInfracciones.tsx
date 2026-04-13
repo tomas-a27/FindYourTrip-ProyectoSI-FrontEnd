@@ -238,7 +238,10 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
             <div className="d-flex justify-content-center gap-2">
               <button
                 className="btn btn-light border fw-bold w-50"
-                onClick={() => setMostrarDias(false)}
+                onClick={() => {
+                  setMostrarDias(false);
+                  setMostrarMotivo(true);
+                }}
               >
                 Atrás
               </button>
