@@ -20,30 +20,30 @@ export const InicioAdmin = () => {
     {
       titulo: 'Solicitudes para ser conductor',
       descripcion:
-        'Permite revisar a los usuarios que han pedido permiso para manejar en la plataforma.',
+        'Permite revisar a los usuarios que han solicitado ser conductores.',
       ruta: '/aprobar-conductores',
     },
     {
       titulo: 'Usuarios a sancionar',
-      descripcion: 'Sección para gestionar a usuarios que han cometido faltas.',
+      descripcion: 'Sección para gestionar a usuarios que han cometido infracciones.',
       ruta: '/usuarios-a-sancionar',
     },
     {
       titulo: 'Listado de localidades',
       descripcion:
-        'Acceso a la base de datos de las ciudades o puntos cubiertos por el servicio.',
+        'Acceso a la base de datos de las localidades.',
       ruta: '/mostrar-localidad',
     },
     {
       titulo: 'Informe de conductores ordenados por calificación',
       descripcion:
-        'Muestra un listado basado en el puntaje o reseñas de los conductores.',
+        'Muestra un listado basado en la calificación de los conductores.',
       ruta: '/informe-conductores',
     },
     {
       titulo: 'Informe de rutas frecuentes',
       descripcion:
-        'Ver informe de rutas más frecuentes y su precio promedio, en el último mes.',
+        'Ver informe de rutas más frecuentes y su precio promedio, en los últimos 30 días.',
       ruta: '/informe-rutas-mas-frecuentes',
     },
   ];
