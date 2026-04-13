@@ -153,11 +153,22 @@ export const MostrarViaje = () => {
 
               return (
                 <div key={viaje.viajeId} className="col-12 col-lg-6 mb-4">
+                  {/* --- TARJETA CON HOVER EFFECT --- */}
                   <div
-                    className="card border-1 shadow-sm p-3 h-100"
+                    className="card border-0 p-3 h-100"
                     style={{
                       borderRadius: '20px',
                       backgroundColor: '#fff',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-6px)';
+                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
                     }}
                   >
                     <div className="card-body p-2">
@@ -297,6 +308,7 @@ export const MostrarViaje = () => {
                             setViajeSeleccionado(viaje);
                             setMostrarModalConfirmacion(true);
                           }}
+                          style={{ transition: 'all 0.2s ease' }}
                         >
                           {sinLugar
                             ? 'Sin lugares disponibles'

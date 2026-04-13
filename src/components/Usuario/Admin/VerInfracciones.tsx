@@ -12,6 +12,8 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
   const [mostrarMotivo, setMostrarMotivo] = useState(false);
   const [mostrarDias, setMostrarDias] = useState(false);
   const [mostrarExito, setMostrarExito] = useState(false);
+  
+  const [mostrarTodas, setMostrarTodas] = useState(false);
 
   const [motivo, setMotivo] = useState('');
   const [dias, setDias] = useState('');
@@ -59,12 +61,16 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
     setMostrarExito(true);
   };
 
+  const infraccionesAMostrar = mostrarTodas 
+    ? data.infracciones 
+    : data.infracciones.slice(0, 1);
+
   return (
     <div className="modal show fade modal-overlay d-block">
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content card shadow-sm aprobar-conductor-card">
-          <button className="btn-cerrar" onClick={onClose}>
-            X
+          <button className="btn-cerrar position-absolute top-0 end-0 m-3 border-0 bg-transparent fs-5 text-muted" onClick={onClose}>
+            <i className="bi bi-x-lg"></i>
           </button>
 
           <div className="card-body p-4">
@@ -73,30 +79,34 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
                 {data.foto ? (
                   <img
                     src={bufferToBase64(data.foto)}
-                    className="usuario-foto-grande"
+                    className="usuario-foto-grande shadow-sm"
+                    alt="Foto de perfil"
                   />
                 ) : (
-                  <div className="usuario-foto-grande d-flex align-items-center justify-content-center text-center p-2">
-                    <span style={{ fontSize: '0.8rem' }}>Sin foto de perfil</span>
+                  <div className="usuario-foto-grande d-flex align-items-center justify-content-center text-center p-2 bg-light border">
+                    <span className="text-muted" style={{ fontSize: '0.8rem' }}>Sin foto</span>
                   </div>
                 )}
                 
-                <div className="mt-3 d-flex justify-content-center gap-3 flex-wrap">
-                  <div className="calificacion-badge">
-                    <i className="bi bi-star-fill"></i>
-                    {data.calificacionPas?.toFixed(2) ?? '-'}
+                <div className="mt-3 d-flex justify-content-center gap-2 flex-wrap">
+                  <div className="calificacion-badge border px-2 py-1 bg-light rounded-pill d-flex align-items-center shadow-sm" style={{ fontSize: '0.8rem' }}>
+                    <span className="fw-bold text-muted me-1" style={{ fontSize: '0.7rem' }}>PASAJERO:</span>
+                    <i className="bi bi-star-fill text-warning me-1"></i>
+                    <span className="fw-bold">{data.calificacionPas?.toFixed(2) ?? '-'}</span>
                   </div>
                   
-                  <div className="calificacion-badge">
-                    <i className="bi bi-star-fill"></i>
-                    {data.calificacionConductor?.toFixed(2) ?? '-'}
+                  <div className="calificacion-badge border px-2 py-1 bg-light rounded-pill d-flex align-items-center shadow-sm" style={{ fontSize: '0.8rem' }}>
+                    <span className="fw-bold text-muted me-1" style={{ fontSize: '0.7rem' }}>CONDUCTOR:</span>
+                    <i className="bi bi-star-fill text-warning me-1"></i>
+                    <span className="fw-bold">{data.calificacionConductor?.toFixed(2) ?? '-'}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="col-md-8">
+              <div className="col-md-8 mt-3 mt-md-0">
                 <p><b>Nombre:</b> {data.nombre}</p>
                 <p><b>Apellido:</b> {data.apellido}</p>
+                <p><b>Tipo de usuario:</b> <span className="text-capitalize">{data.tipoUsuario}</span></p>
 
                 <div className="d-flex gap-4">
                   <p><b>Tipo doc:</b> {data.tipoDocumento}</p>
@@ -108,7 +118,7 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
               </div>
 
               {data.tipoUsuario !== 'pasajero' && (
-                <>
+                <div className="col-12 mt-2">
                   <hr className="my-3" />
                   
                   <p><b>Nro licencia:</b> {data.nroLicencia}</p>
@@ -116,44 +126,58 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
                     ? new Date(data.vencimientoLicencia).toLocaleDateString()
                     : '-'}
                   </p>
-                </>
+                </div>
               )}
             </div>
 
-            <hr />
+            <hr className="my-4" />
 
-            <div className="d-flex align-items-center mt-3 mb-2 gap-5">
-              <h5 className="m-0">Reportes</h5>
-              
-              <span className="text-muted">
-                <b>Cantidad:</b> {data.cantidadInfracciones}
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <h5 className="fw-bold m-0 text-dark">Historial de Infracciones</h5>
+              <span className="badge bg-danger rounded-pill px-3 py-2" style={{ fontSize: '0.85rem' }}>
+                Total: {data.cantidadInfracciones}
               </span>
             </div>
 
-            {data.infracciones.map((i: any, idx: number) => (
-              <div key={idx} className="border p-2 mb-2 rounded">
-                <p><b>Fecha:</b> {new Date(i.fecha).toLocaleDateString()}</p>
-                <p><b>Descripción:</b> {i.descripcion}</p>
-
-                <p><b>Comentario:</b> {i.comentario
-                  ? i.comentario
-                  : '-'}
-                </p>
-
-                <p><b>Tipo:</b> {i.tipo}</p>
+            {infraccionesAMostrar.map((i: any, idx: number) => (
+              <div key={idx} className="border p-3 mb-3 rounded-4 bg-light shadow-sm">
+                <div className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                  <span className="fw-bold text-danger"><i className="bi bi-exclamation-triangle-fill me-2"></i>Infracción</span>
+                  <span className="badge bg-white text-muted border"><i className="bi bi-calendar3 me-1"></i>{new Date(i.fecha).toLocaleDateString()}</span>
+                </div>
+                <p className="mb-1"><strong className="text-dark small">Descripción:</strong> <span className="text-muted small">{i.descripcion}</span></p>
+                <p className="mb-1"><strong className="text-dark small">Comentario:</strong> <span className="text-muted small">{i.comentario ? i.comentario : '-'}</span></p>
+                <p className="mb-0"><strong className="text-dark small">Tipo:</strong> <span className="badge bg-secondary ms-1">{i.tipo}</span></p>
               </div>
             ))}
 
-            <div className="d-flex justify-content-between mt-4">
+            {data.infracciones.length > 1 && (
+              <div className="text-center mt-2 mb-4">
+                <button 
+                  className="btn btn-link text-decoration-none fw-bold"
+                  style={{ color: '#1f5c2f' }}
+                  onClick={() => setMostrarTodas(!mostrarTodas)}
+                >
+                  {mostrarTodas ? (
+                    <><i className="bi bi-chevron-up me-2"></i>Ver menos</>
+                  ) : (
+                    <><i className="bi bi-chevron-down me-2"></i>Ver más ({data.infracciones.length - 1})</>
+                  )}
+                </button>
+              </div>
+            )}
+
+            {/* BOTONES DE ACCIÓN */}
+            <div className="d-flex justify-content-between mt-4 pt-3 border-top gap-3">
               <button
-                className="btn btn-light-cancel"
+                className="btn btn-outline-secondary fw-bold w-50 py-2 rounded-3"
                 onClick={desestimar}
               >
                 Desestimar
               </button>
 
               <button
-                className="btn btn-danger"
+                className="btn btn-danger fw-bold w-50 py-2 rounded-3 shadow-sm"
                 onClick={abrirMotivo}
               >
                 Inhabilitar usuario
@@ -164,32 +188,31 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
       </div>
 
       {mostrarMotivo && (
-        <div className="modal-overlay">
-          <div className="custom-modal">
-            <h5 className="mb-3">¿Desea inhabilitar al usuario?</h5>
-
-            <p>Motivo de inhabilitación:</p>
-
+        <div className="modal-overlay" style={{ zIndex: 1060 }}>
+          <div className="custom-modal p-4 text-center rounded-4 shadow-lg" style={{ maxWidth: '400px' }}>
+            <div className="mb-3">
+              <i className="bi bi-person-x-fill text-danger" style={{ fontSize: '3rem' }}></i>
+            </div>
+            <h5 className="fw-bold mb-3">¿Desea inhabilitar al usuario?</h5>
+            <p className="text-muted small mb-2 text-start">Motivo de inhabilitación:</p>
             <input
-              className="form-control custom-input"
+              className="form-control custom-input p-2 mb-4"
               value={motivo}
               placeholder="Describa brevemente el motivo"
               onChange={(e) => setMotivo(e.target.value)}
             />
-
-            <div className="d-flex justify-content-center mt-3 gap-5">
+            <div className="d-flex justify-content-center gap-2">
               <button
-                className="btn btn-secondary"
+                className="btn btn-light border fw-bold w-50"
                 onClick={() => setMostrarMotivo(false)}
               >
                 Cancelar
               </button>
-
               <button
-                className="btn btn-pastel-green"
+                className="btn btn-danger fw-bold w-50 shadow-sm"
                 onClick={aceptarMotivo}
               >
-                Aceptar
+                Continuar
               </button>
             </div>
           </div>
@@ -197,31 +220,36 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
       )}
 
       {mostrarDias && (
-        <div className="modal-overlay">
-          <div className="custom-modal">
-            <p className="fw-bold">Ingrese días de inhabilitación</p>
-
+        <div className="modal-overlay" style={{ zIndex: 1060 }}>
+          <div className="custom-modal p-4 text-center rounded-4 shadow-lg" style={{ maxWidth: '400px' }}>
+            <div className="mb-3">
+              <i className="bi bi-calendar-x text-danger" style={{ fontSize: '3rem' }}></i>
+            </div>
+            <h5 className="fw-bold mb-3">Tiempo de sanción</h5>
+            <p className="text-muted small mb-2 text-start">Ingrese días de inhabilitación:</p>
             <input
               type="number"
-              className="form-control custom-input"
+              className="form-control custom-input p-2 mb-4 text-center fs-5"
               value={dias}
-              min="0"
+              min="1"
+              placeholder="Ej: 15"
               onChange={(e) => setDias(e.target.value)}
             />
-
-            <div className="d-flex justify-content-end mt-3 gap-2">
+            <div className="d-flex justify-content-center gap-2">
               <button
-                className="btn btn-secondary"
-                onClick={() => setMostrarDias(false)}
+                className="btn btn-light border fw-bold w-50"
+                onClick={() => {
+                  setMostrarDias(false);
+                  setMostrarMotivo(true);
+                }}
               >
-                Cancelar
+                Atrás
               </button>
-
               <button
-                className="btn btn-danger"
+                className="btn btn-danger fw-bold w-50 shadow-sm"
                 onClick={confirmarInhabilitacion}
               >
-                Aceptar
+                Inhabilitar
               </button>
             </div>
           </div>
@@ -229,12 +257,15 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
       )}
 
       {mostrarExito && (
-        <div className="modal-overlay">
-          <div className="custom-modal text-center">
-            <h5>El usuario se ha sancionado con éxito</h5>
-
+        <div className="modal-overlay" style={{ zIndex: 1060 }}>
+          <div className="custom-modal text-center p-4 rounded-4 shadow-lg" style={{ maxWidth: '400px' }}>
+            <div className="mb-3">
+              <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '3.5rem' }}></i>
+            </div>
+            <h5 className="fw-bold mb-4">El usuario ha sido sancionado con éxito</h5>
             <button
-              className="btn btn-success mt-3"
+              className="btn btn-success fw-bold w-100 py-2 shadow-sm"
+              style={{ backgroundColor: '#1f5c2f', border: 'none' }}
               onClick={() => {
                 onClose();
                 window.location.reload();

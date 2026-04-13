@@ -89,7 +89,7 @@ export const UsuariosASancionar = () => {
                         <b>Tipo usuario:</b> {u.tipoUsuario}
                       </span>
                       <span>
-                        <b>Cant reportes:</b> {u.cantidadReportes}
+                        <b>Cant infracciones:</b> {u.cantidadReportes}
                       </span>
                     </div>
 

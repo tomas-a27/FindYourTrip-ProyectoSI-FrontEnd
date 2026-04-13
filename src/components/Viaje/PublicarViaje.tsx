@@ -12,7 +12,6 @@ export const PublicarViaje = () => {
   const now = new Date();
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-  // CORRECCIÓN: Le sacamos el "loading" porque getOne no lo tiene
   const { data: usuarioCompleto } = getOne<UsuarioDTO>(
     userId ? `usuario/${userId}` : '',
   );
@@ -31,6 +30,8 @@ export const PublicarViaje = () => {
   const [rutaModal, setRutaModal] = useState<string | undefined>(undefined);
   const [error, setError] = useState('');
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const localidadesFiltradasOrigen = localidades?.filter((l) =>
     l.nombre.toLowerCase().startsWith(localidadOrigen.toLowerCase()),
   );
@@ -46,8 +47,8 @@ export const PublicarViaje = () => {
     viajePrecio: 1,
     viajeAceptaMascotas: false,
     viajeComentario: '',
-    viajeOrigen: '', // ID de localidad por defecto (se actualizará al seleccionar)
-    viajeDestino: '', // ID de localidad por defecto (se actualizará al seleccionar
+    viajeOrigen: '', 
+    viajeDestino: '', 
     vehiculo: '',
   });
 
@@ -59,7 +60,6 @@ export const PublicarViaje = () => {
 
     if (!usuarioCompleto) return;
 
-    // Validamos que el usuario sea conductor aprobado antes de mostrar el formulario
     if (usuarioCompleto.estadoConductor?.toLowerCase() === 'pendiente') {
       setMensajeModal(
         'Usted podrá publicar un viaje una vez que su solicitud sea aprobada.',
@@ -69,7 +69,6 @@ export const PublicarViaje = () => {
       return;
     }
 
-    // Validamos que el usuario sea conductor aprobado antes de mostrar el formulario
     if (
       usuarioCompleto.tipoUsuario?.toLowerCase() !== 'conductor' &&
       usuarioCompleto.estadoConductor?.toLowerCase() !== 'aprobado'
@@ -82,7 +81,6 @@ export const PublicarViaje = () => {
       return;
     }
 
-    //Validamos que haya localidades cargadas para mostrar el formulario
     if (!cargandoLocs && (!localidades || localidades.length === 0)) {
       setMensajeModal(
         'No hay localidades disponibles. Por favor, contacta al administrador.',
@@ -92,7 +90,6 @@ export const PublicarViaje = () => {
       return;
     }
 
-    // Verificamos que tenga vehículos registrados
     if (!usuarioCompleto.vehiculos || usuarioCompleto.vehiculos.length === 0) {
       setMensajeModal(
         'Primero debés registrar un vehículo para publicar un viaje.',
@@ -101,7 +98,7 @@ export const PublicarViaje = () => {
       setMostrarModal(true);
       return;
     }
-  }, [navigate, userId, usuarioCompleto]);
+  }, [navigate, userId, usuarioCompleto, cargandoLocs, localidades]);
 
   const scrollToTop = () => {
     const main = document.querySelector('main');
@@ -136,12 +133,9 @@ export const PublicarViaje = () => {
       return;
     }
 
-    // valida que la fecha/hora no haya pasado
     const ahora = new Date();
-
     const [anio, mes, dia] = formData.viajeFecha.split('-').map(Number);
     const [horas, minutos] = formData.viajeHorario.split(':').map(Number);
-
     const fechaHoraViaje = new Date(anio, mes - 1, dia, horas, minutos, 0, 0);
 
     if (fechaHoraViaje <= ahora) {
@@ -150,21 +144,25 @@ export const PublicarViaje = () => {
       return;
     }
 
-    const viajeAPublicar = {
-      ...formData,
-      usuarioConductor: usuarioCompleto?.idUsuario,
-    };
+    setIsSubmitting(true); 
 
-    console.log('Datos del viaje a publicar:', viajeAPublicar);
+    try {
+      const viajeAPublicar = {
+        ...formData,
+        usuarioConductor: usuarioCompleto?.idUsuario,
+      };
 
-    const response = await post('viaje', viajeAPublicar);
+      const response = await post('viaje', viajeAPublicar);
 
-    if (response && response.status === 201) {
-      setMostrarModalExito(true);
-    } else {
-      const errorMsg = response?.data?.message || 'Ocurrió un error inesperado';
-      setMensajeModal(errorMsg);
-      setMostrarModal(true);
+      if (response && response.status === 201) {
+        setMostrarModalExito(true);
+      } else {
+        const errorMsg = response?.data?.message || 'Ocurrió un error inesperado';
+        setMensajeModal(errorMsg);
+        setMostrarModal(true);
+      }
+    } finally {
+      setIsSubmitting(false); 
     }
   };
 
@@ -180,8 +178,13 @@ export const PublicarViaje = () => {
 
   const esPrecioValido = formData.viajePrecio > 0;
 
-  if (!usuarioCompleto) {
-    return <p className="text-center mt-5 text-muted fw-bold">Cargando...</p>;
+  if (!usuarioCompleto || cargandoLocs) {
+    return (
+      <div className="text-center mt-5 p-5">
+        <div className="spinner-border text-success" role="status"></div>
+        <p className="mt-3 text-muted fw-bold">Cargando...</p>
+      </div>
+    );
   }
 
   return (
@@ -250,7 +253,7 @@ export const PublicarViaje = () => {
 
               {mostrarSugerenciaOrigen && localidadOrigen.length > 0 && (
                 <ul className="lista-sugerencias">
-                  {localidadesFiltradasOrigen.length > 0 ? (
+                  {localidadesFiltradasOrigen && localidadesFiltradasOrigen.length > 0 ? (
                     localidadesFiltradasOrigen.map((l) => (
                       <li
                         key={l.id}
@@ -299,7 +302,7 @@ export const PublicarViaje = () => {
 
               {mostrarSugerenciaDestino && localidadDestino.length > 0 && (
                 <ul className="lista-sugerencias">
-                  {localidadesFiltradasDestino.length > 0 ? (
+                  {localidadesFiltradasDestino && localidadesFiltradasDestino.length > 0 ? (
                     localidadesFiltradasDestino.map((l) => (
                       <li
                         key={l.id}
@@ -469,16 +472,21 @@ export const PublicarViaje = () => {
               type="button"
               className="btn btn-light-cancel w-50"
               onClick={handleCancelar}
+              disabled={isSubmitting} 
             >
               Cancelar
             </button>
 
             <button
               type="submit"
-              className="btn btn-pastel-green w-50 shadow-sm"
-              disabled={!esCantLugaresValida}
+              className="btn btn-pastel-green w-50 shadow-sm d-flex justify-content-center align-items-center"
+              disabled={!esCantLugaresValida || isSubmitting}
             >
-              Publicar Viaje
+              {isSubmitting ? (
+                <div className="spinner-border spinner-border-sm text-light" role="status"></div>
+              ) : (
+                'Publicar Viaje'
+              )}
             </button>
           </div>
         </form>
