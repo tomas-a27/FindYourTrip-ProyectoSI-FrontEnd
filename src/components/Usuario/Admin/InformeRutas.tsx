@@ -41,7 +41,7 @@ export const InformeRutas = () => {
 
       <h2 style={{ color: '#2d4a2d' }}>Informe de rutas</h2>
       <p className="text-muted mb-4">
-        Listado de las rutas más utilizadas por los usuarios y su precio promedio, en los últimos 30 días,
+        Listado de las rutas más frecuentes (más utilizadas por los usuarios) y su precio promedio, en los últimos 30 días,
         ordenadas de mayor a menor por cantidad de viajes realizados.
       </p>
       {!loading && !error && data?.length === 0 && (

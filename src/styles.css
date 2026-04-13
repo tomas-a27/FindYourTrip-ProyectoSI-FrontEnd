@@ -376,3 +376,15 @@
     font-size: 1.1rem !important;
   }
 }
+
+.vehiculo-card {
+  transition: all 0.25s ease;
+  cursor: default;
+}
+
+.vehiculo-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  border-color: #b2d8b2;
+  background-color: #f7fbf7;
+}
