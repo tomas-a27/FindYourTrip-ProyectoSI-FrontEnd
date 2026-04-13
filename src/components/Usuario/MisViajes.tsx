@@ -185,10 +185,12 @@ export const MisViajes = () => {
         s.viaje?.viajeEstado?.toLowerCase() === 'pendiente' ||
         s.viaje?.viajeEstado?.toLowerCase() === 'encurso'),
   );
+  
   const recientesPasajero = solicitudes.filter(
     (s) =>
       s.estadoSolicitud?.toLowerCase() === 'pendiente' ||
-      s.estadoSolicitud?.toLowerCase() === 'denegada',
+      s.estadoSolicitud?.toLowerCase() === 'denegada' ||
+      s.estadoSolicitud?.toLowerCase() === 'cancelada',
   );
 
   const proximosConductor = viajesPublicados
@@ -203,6 +205,7 @@ export const MisViajes = () => {
       const dateB = new Date(`${b.viajeFecha}T${b.viajeHorario}`);
       return dateA.getTime() - dateB.getTime();
     });
+    
   const realizadosConductor = viajesPublicados
     .filter(
       (v) =>
@@ -250,7 +253,6 @@ export const MisViajes = () => {
       style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}
     >
       <div className="container pt-4 pb-3">
-        {/* NUEVO HEADER CON TABS DE SELECCIÓN */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
           <h2
             className="fw-bold m-0"
@@ -437,7 +439,6 @@ export const MisViajes = () => {
         </>
       )}
 
-      {/* MODAL CANCELAR VIAJE */}
       {mostrarModalCancelar && (
         <div className="modal-overlay">
           <div className="custom-modal p-4 text-center">
@@ -468,7 +469,6 @@ export const MisViajes = () => {
         </div>
       )}
 
-      {/* MODAL CANCELAR SOLICITUD */}
       {mostrarModalCancelarSolicitud && solicitudACancelar && (
         <div className="modal-overlay">
           <div className="custom-modal p-4 text-center">
@@ -654,7 +654,7 @@ const TarjetaPasajeroProximo = ({ solicitud, hora, foto, onCancelar }: any) => {
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.85rem' }}>
               <i className="bi bi-car-front-fill me-2"></i>
               {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.color} - {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
             </p>
             {viaje?.usuarioConductor?.telefono && (
               <p
@@ -783,26 +783,31 @@ const TarjetaPasajeroReciente = ({
 }: any) => {
   const viaje = solicitud.viaje;
   const isPendiente = solicitud.estadoSolicitud?.toLowerCase() === 'pendiente';
+  const isDenegada = solicitud.estadoSolicitud?.toLowerCase() === 'denegada';
+  const isCancelada = solicitud.estadoSolicitud?.toLowerCase() === 'cancelada';
 
   return (
     <div
-      className="card bg-white mb-3"
+      className="card mb-3"
       style={{
         borderRadius: '16px',
-        border: '1px solid #eaeaea',
+        border: isCancelada ? '1px solid #f5c2c7' : '1px solid #eaeaea',
+        backgroundColor: isCancelada ? '#fffafb' : '#ffffff',
         boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
         transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+        e.currentTarget.style.boxShadow = isCancelada 
+          ? '0 8px 20px rgba(220, 53, 69, 0.08)' 
+          : '0 8px 20px rgba(0,0,0,0.1)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'translateY(0)';
         e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
       }}
     >
-      <div className="card-body p-4 position-relative">
+      <div className={`card-body p-4 position-relative ${isCancelada ? 'opacity-75' : ''}`}>
         <div className="row align-items-center">
           <div className="col-6 col-md-5">
             <div
@@ -859,9 +864,8 @@ const TarjetaPasajeroReciente = ({
               </span>
             </div>
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.8rem' }}>
-              <i className="bi bi-car-front-fill me-1"></i>
               {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.color} - {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.patente}
             </p>
           </div>
 
@@ -890,7 +894,7 @@ const TarjetaPasajeroReciente = ({
           </div>
 
           <div className="col-3 col-md-3 d-flex flex-column align-items-center justify-content-center text-center border-start">
-            {isPendiente ? (
+            {isPendiente && (
               <>
                 <i
                   className="bi bi-clock-fill"
@@ -903,7 +907,9 @@ const TarjetaPasajeroReciente = ({
                   Pendiente
                 </span>
               </>
-            ) : (
+            )}
+            
+            {isDenegada && (
               <>
                 <i
                   className="bi bi-x-circle-fill text-danger"
@@ -914,6 +920,21 @@ const TarjetaPasajeroReciente = ({
                   style={{ fontSize: '0.85rem' }}
                 >
                   Denegada
+                </span>
+              </>
+            )}
+
+            {isCancelada && (
+              <>
+                <i
+                  className="bi bi-slash-circle-fill text-danger"
+                  style={{ fontSize: '2rem', opacity: 0.8 }}
+                ></i>
+                <span
+                  className="badge mt-2 px-2 py-1 shadow-sm"
+                  style={{ backgroundColor: '#fde8e8', color: '#dc3545', border: '1px solid #f5c2c7' }}
+                >
+                  Cancelada
                 </span>
               </>
             )}
