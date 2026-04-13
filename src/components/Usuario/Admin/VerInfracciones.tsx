@@ -94,12 +94,14 @@ export const VerInfracciones = ({ usuarioId, onClose }: Props) => {
                     <i className="bi bi-star-fill text-warning me-1"></i>
                     <span className="fw-bold">{data.calificacionPas?.toFixed(2) ?? '-'}</span>
                   </div>
-                  
-                  <div className="calificacion-badge border px-2 py-1 bg-light rounded-pill d-flex align-items-center shadow-sm" style={{ fontSize: '0.8rem' }}>
-                    <span className="fw-bold text-muted me-1" style={{ fontSize: '0.7rem' }}>CONDUCTOR:</span>
-                    <i className="bi bi-star-fill text-warning me-1"></i>
-                    <span className="fw-bold">{data.calificacionConductor?.toFixed(2) ?? '-'}</span>
-                  </div>
+
+                  {data.tipoUsuario !== 'pasajero' && (
+                    <div className="calificacion-badge border px-2 py-1 bg-light rounded-pill d-flex align-items-center shadow-sm" style={{ fontSize: '0.8rem' }}>
+                      <span className="fw-bold text-muted me-1" style={{ fontSize: '0.7rem' }}>CONDUCTOR:</span>
+                      <i className="bi bi-star-fill text-warning me-1"></i>
+                      <span className="fw-bold">{data.calificacionConductor?.toFixed(2) ?? '-'}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
