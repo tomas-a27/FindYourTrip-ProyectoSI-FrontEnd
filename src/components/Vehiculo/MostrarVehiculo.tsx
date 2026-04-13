@@ -49,7 +49,7 @@ export const MostrarVehiculo = () => {
         {vehiculos.map((v: any) => (
           <div
             key={v.patente}
-            className="card shadow-sm"
+            className="card shadow-sm vehiculo-card"
             style={{
               width: '420px',
               borderRadius: '12px',
