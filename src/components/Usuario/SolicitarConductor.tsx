@@ -203,7 +203,7 @@ export const SolicitarConductor = () => {
                   className={`form-control custom-input ${patente && !esPatenteValida ? 'is-invalid' : ''} ${patente && esPatenteValida ? 'is-valid' : ''}`}
                   placeholder="Ej: AAA111 o AA111AA"
                   value={patente} 
-                  onChange={(e) => setPatente(e.target.value)} 
+                  onChange={(e) => setPatente(e.target.value.toUpperCase())}
                   required 
                 />
                 {patente && !esPatenteValida && (
