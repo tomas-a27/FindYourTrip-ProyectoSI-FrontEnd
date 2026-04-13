@@ -120,7 +120,7 @@ export const ModalCalificacionSecuencial = ({
           </div>
           <h4 className="fw-bold">Calificación exitosa</h4>
           {motivoReporte && (
-            <p className="text-muted small">Motivo de infracción enviado: {motivoReporte}</p>
+            <p className="text-muted small">Infracción enviada: {motivoReporte}</p>
           )}
           <button
             className="btn w-100 mt-4 py-2 fw-bold"
@@ -238,7 +238,7 @@ export const ModalCalificacionSecuencial = ({
 
         {paso === 'reporte' && (
           <div className="animate__animated animate__fadeIn text-start">
-            <h5 className="fw-bold mb-2 text-center" style={{ fontSize: 'clamp(1rem, 4vw, 1.15rem)' }}>Tipo de infracción</h5>
+            <h5 className="fw-bold mb-2 text-center" style={{ fontSize: 'clamp(1rem, 4vw, 1.15rem)' }}>Descripción de infracción</h5>
             <div
               className="list-group list-group-flush mb-3 border rounded-3"
               style={{ maxHeight: '140px', overflowY: 'auto' }}
