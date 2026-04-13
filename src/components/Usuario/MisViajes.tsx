@@ -185,7 +185,7 @@ export const MisViajes = () => {
         s.viaje?.viajeEstado?.toLowerCase() === 'pendiente' ||
         s.viaje?.viajeEstado?.toLowerCase() === 'encurso'),
   );
-  
+
   const recientesPasajero = solicitudes.filter(
     (s) =>
       s.estadoSolicitud?.toLowerCase() === 'pendiente' ||
@@ -205,7 +205,7 @@ export const MisViajes = () => {
       const dateB = new Date(`${b.viajeFecha}T${b.viajeHorario}`);
       return dateA.getTime() - dateB.getTime();
     });
-    
+
   const realizadosConductor = viajesPublicados
     .filter(
       (v) =>
@@ -388,6 +388,12 @@ export const MisViajes = () => {
         <>
           <div style={{ backgroundColor: bgVerdeClaro }} className="py-4">
             <div className="container">
+              <h3
+                className="fw-bold mb-4"
+                style={{ color: colorTextoGrisOscuro, fontSize: '1.3rem' }}
+              >
+                Mis próximos viajes
+              </h3>
               {proximosConductor.length === 0 ? (
                 <p className="text-muted text-center my-4">
                   No tenés viajes publicados activos.
@@ -798,8 +804,8 @@ const TarjetaPasajeroReciente = ({
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = isCancelada 
-          ? '0 8px 20px rgba(220, 53, 69, 0.08)' 
+        e.currentTarget.style.boxShadow = isCancelada
+          ? '0 8px 20px rgba(220, 53, 69, 0.08)'
           : '0 8px 20px rgba(0,0,0,0.1)';
       }}
       onMouseLeave={(e) => {
@@ -807,7 +813,9 @@ const TarjetaPasajeroReciente = ({
         e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)';
       }}
     >
-      <div className={`card-body p-4 position-relative ${isCancelada ? 'opacity-75' : ''}`}>
+      <div
+        className={`card-body p-4 position-relative ${isCancelada ? 'opacity-75' : ''}`}
+      >
         <div className="row align-items-center">
           <div className="col-6 col-md-5">
             <div
@@ -908,7 +916,7 @@ const TarjetaPasajeroReciente = ({
                 </span>
               </>
             )}
-            
+
             {isDenegada && (
               <>
                 <i
@@ -932,7 +940,11 @@ const TarjetaPasajeroReciente = ({
                 ></i>
                 <span
                   className="badge mt-2 px-2 py-1 shadow-sm"
-                  style={{ backgroundColor: '#fde8e8', color: '#dc3545', border: '1px solid #f5c2c7' }}
+                  style={{
+                    backgroundColor: '#fde8e8',
+                    color: '#dc3545',
+                    border: '1px solid #f5c2c7',
+                  }}
                 >
                   Cancelada
                 </span>
