@@ -265,7 +265,7 @@ export const CrearUsuario = () => {
                 <button
                   type="button"
                   className="btn btn-light-cancel px-4"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/')}
                 >
                   Cancelar
                 </button>
