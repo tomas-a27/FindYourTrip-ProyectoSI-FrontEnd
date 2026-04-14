@@ -87,6 +87,9 @@ export const EditarUsuario = () => {
     if (campo === 'nombreCompleto') {
       setNuevoValor(usuarioToUpdate.nombreUsuario);
       setNuevoApellido(usuarioToUpdate.apellidoUsuario);
+    } else if (campo === 'vigenciaLicenciaConductorUsuario') {
+      const val = usuarioToUpdate.vigenciaLicenciaConductorUsuario;
+      setNuevoValor(val ? new Date(val).toISOString().split('T')[0] : '');
     } else {
       setNuevoValor((usuarioToUpdate as any)[campo]);
     }
@@ -224,12 +227,10 @@ export const EditarUsuario = () => {
     return <p className="text-center mt-5">Usuario no encontrado</p>;
   }
 
-  // --- ACÁ ESTÁ LA CORRECCIÓN DE LA LÓGICA DEL BOTÓN ---
   const botonDeshabilitado = () => {
     if (campoSeleccionado === 'telefono') return !esTelValido;
     if (campoSeleccionado === 'email') return !esEmailValido;
     
-    // Si estamos editando la foto, el botón se bloquea si NO hay una foto temporal seleccionada
     if (campoSeleccionado === 'fotoPerfil') {
       return fotoPerfilTemp === null;
     }
@@ -312,7 +313,6 @@ export const EditarUsuario = () => {
                   className="btn btn-outline-success btn-sm rounded-pill px-3 fw-bold"
                   onClick={() => {
                     setCampoSeleccionado('fotoPerfil');
-                    // setFotoPerfil(null); <-- Saqué esto porque rompía visualmente si cerrabas el modal sin guardar
                   }}
                 >
                   Cambiar foto
@@ -342,6 +342,9 @@ export const EditarUsuario = () => {
                   ? new Date(usuarioToUpdate.vigenciaLicenciaConductorUsuario)
                       .toISOString()
                       .split('T')[0]
+                      .split('-')
+                      .reverse()
+                      .join('/') 
                   : '',
                 'vigenciaLicenciaConductorUsuario',
               )}
@@ -395,6 +398,8 @@ export const EditarUsuario = () => {
                 ? 'teléfono'
                 : campoSeleccionado === 'fotoPerfil'
                 ? 'foto de perfil'
+                : campoSeleccionado === 'vigenciaLicenciaConductorUsuario'
+                ? 'vencimiento de licencia'
                 : campoSeleccionado}
             </h5>
 
