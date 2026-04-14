@@ -485,7 +485,7 @@ export const PublicarViaje = () => {
               {isSubmitting ? (
                 <div className="spinner-border spinner-border-sm text-light" role="status"></div>
               ) : (
-                'Publicar Viaje'
+                'Publicar'
               )}
             </button>
           </div>
