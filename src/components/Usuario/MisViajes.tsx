@@ -873,7 +873,7 @@ const TarjetaPasajeroReciente = ({
             </div>
             <p className="text-muted m-0 mt-1" style={{ fontSize: '0.8rem' }}>
               {viaje?.vehiculo?.marca} {viaje?.vehiculo?.modelo} -{' '}
-              {viaje?.vehiculo?.patente}
+              {viaje?.vehiculo?.color} - Patente {viaje?.vehiculo?.patente}
             </p>
           </div>
 
